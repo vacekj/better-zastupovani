@@ -2,14 +2,16 @@
     "env": {
 		"es6": true,
 		"jquery": true,
-		"browser": true
+		"browser": true,
+		"node": true
     },
 	"extends": [
 		"google",
 		"eslint:recommended"
 	],
 	"parserOptions": {
-		"ecmaVersion": 7,
+		"sourceType": "module",
+		"ecmaVersion": 8,
 		"node": true
 	},
 	"rules": {

@@ -1,0 +1,32 @@
+{
+	"name": "better-zastupovani",
+	"version": "1.0.0",
+	"description": "Better Zastupovani",
+	"main": "dist/index.html",
+	"directories": {
+		"test": "test"
+	},
+	"dependencies": {
+		"jquery": "^3.2.1"
+	},
+	"devDependencies": {
+		"chai": "^4.1.1",
+		"file-loader": "^0.11.2",
+		"mocha": "^3.5.0",
+		"webpack": "^3.5.5"
+	},
+	"scripts": {
+		"test": "mocha",
+		"build": "webpack"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/JouzaLoL/better-zastupovani.git"
+	},
+	"author": "Josef Vacek",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/JouzaLoL/better-zastupovani/issues"
+	},
+	"homepage": "https://github.com/JouzaLoL/better-zastupovani#readme"
+}
