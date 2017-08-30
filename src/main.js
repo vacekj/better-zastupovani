@@ -1,9 +1,9 @@
 // Webpack imports
-import index from './index.html';
-import style from './style.css';
+require('./index.html');
+require('./style.css');
 
-import $ from 'jquery';
-import * as supl from './supl';
+let $ = require('jquery');
+let supl = require('./supl');
 
 $(document).ready(() => {
 	supl.getClasses().then(result => {
