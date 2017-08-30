@@ -17,6 +17,8 @@ describe('Supl library', () => {
 		supl.getDates()
 			.then((dates) => {
 				expect(dates).to.be.an.instanceof(Array);
+				expect(typeof dates[0].url).to.equal('string');
+				expect(dates[0].date).to.exist;
 				done();
 			}).catch((err) => {
 				done(err);

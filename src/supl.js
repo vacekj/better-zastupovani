@@ -56,7 +56,7 @@ function getDates() {
 					date: moment($(option).text().split(' ').slice(2).toString(' ').replace(',', '').replace(',', '').replace('.', '/').replace('.', '/').replace('.', '/'), 'DD/MM/YYYY')
 				};
 			});
-			resolve(data);
+			resolve(data.toArray());
 		}).catch((err) => {
 			reject(err);
 		});

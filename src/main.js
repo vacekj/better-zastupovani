@@ -9,4 +9,8 @@ $(document).ready(() => {
 	supl.getClasses().then(result => {
 		console.log(result);
 	});
+
+	supl.getDates().then(result => {
+		console.log(result);
+	});
 });
