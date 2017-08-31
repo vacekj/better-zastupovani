@@ -9,46 +9,13 @@ const URL_SUPL = 'suplovani.gytool.cz/';
 const URL_ROZVRH = 'rozvrh.gytool.cz/index_Trida_Menu.html';
 const URL_DATES = URL_SUPL + '!index_menu.html';
 
-var axios;
-
-function init() {
-	axios = Axios.create({
-		baseURL: needsProxy() ? URL_PROXY : '', // Proxy everything thru the CORS proxy to avoid silly SOP limitations (sigh)
-		timeout: 10000,
-		headers: { 'X-Requested-With': 'gytool.cz' }, // Also set the origin to gytool
-		transformResponse: [function (data) {
-			return decode(data);
-		}]
-	});
-}
-
-function needsProxy() {
-	return new Promise((resolve, reject) => {
-		let instanceWithOrigin = Axios.create({
-			timeout: 10000,
-			headers: { 'X-Requested-With': 'gytool.cz' },
-			transformResponse: [function (data) {
-				return decode(data);
-			}],
-		});
-
-		instanceWithOrigin.get('http://' + URL_SUPL).then((res) => {
-			return false;
-		}, (err) => {
-			return true;
-		});
-	});
-}
-
-// Config Http padding
-axios.interceptors.request.use(function (config) {
-	let fixedConfig = config;
-	if (!needsProxy()) {
-		fixedConfig.url = 'http://' + fixedConfig.url;
-	}
-	return fixedConfig;
-}, function (error) {
-	return Promise.reject(error);
+var axios = Axios.create({
+	baseURL: URL_PROXY,
+	timeout: 10000,
+	headers: { 'X-Requested-With': 'gytool.cz' }, // Also set the origin to gytool
+	transformResponse: [function (data) {
+		return decode(data);
+	}]
 });
 
 function getClasses() {
