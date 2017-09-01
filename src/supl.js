@@ -9,20 +9,33 @@ const URL_SUPL = 'suplovani.gytool.cz/';
 const URL_ROZVRH = 'rozvrh.gytool.cz/index_Trida_Menu.html';
 const URL_DATES = URL_SUPL + '!index_menu.html';
 
-var request = req.defaults({
+var requestInstance = req.defaults({
 	baseUrl: URL_PROXY,
 	timeout: 10000,
 	headers: { 'X-Requested-With': 'gytool.cz' },
-	encoding: null
+	encoding: null // Output response as Buffer, then decode it using wrapper
 });
+
+/**
+ * Request wrapper that automatically decodes every request 
+ * Encoding: windows-1250
+ * @param {any} url 
+ * @param {any} callback 
+ */
+function request(url, callback) {
+	requestInstance(url, (err, res, b) => {
+		// Decode the response body
+		let body = iconv.decode(b, 'win1250');
+		callback(err, res, body);
+	});
+}
 
 function getClasses() {
 	return new Promise((resolve, reject) => {
-		request(URL_ROZVRH, (err, res, b) => {
+		request(URL_ROZVRH, (err, res, body) => {
 			if (err) {
 				reject(err);
 			}
-			let body = iconv.decode(b, 'win1250');
 			let options = $(body).find('option');
 			let values = options.map((i, option) => {
 				return $(option).text();
@@ -35,11 +48,10 @@ function getClasses() {
 
 function getSuplovani(date_url) {
 	return new Promise((resolve, reject) => {
-		request(URL_SUPL + date_url, (err, res, b) => {
+		request(URL_SUPL + date_url, (err, res, body) => {
 			if (err) {
 				reject(err);
 			}
-			let body = iconv.decode(b, 'win1250');
 			let page = $(body);
 			let suplovani_table = $(page).find('div:contains("Suplování")').next();
 			let supl = parseTable($, suplovani_table);
@@ -50,11 +62,10 @@ function getSuplovani(date_url) {
 
 function getDates() {
 	return new Promise((resolve, reject) => {
-		request(URL_DATES, (err, res, b) => {
+		request(URL_DATES, (err, res, body) => {
 			if (err) {
 				reject(err);
 			}
-			let body = iconv.decode(b, 'win1250');
 			let options = $(body).find('option');
 			let data = options.map((i, option) => {
 				return {
