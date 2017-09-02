@@ -1,4 +1,12 @@
 language: node_js
 node_js:
-  - "iojs"
-  - "7"
+- iojs
+- '7'
+before_install:
+- openssl aes-256-cbc -K $encrypted_bf9fca9b60c9_key -iv $encrypted_bf9fca9b60c9_iv
+  -in deploy.enc -out deploy -d
+
+env:
+  global:
+  - ENCRYPTION_LABEL: "bf9fca9b60c9"
+  - COMMIT_AUTHOR_EMAIL: "vacekj@outlook.com"
