@@ -3,6 +3,9 @@ const parseTable = require('./cheerio-tableparser');
 const req = require('request');
 const moment = require('moment');
 const iconv = require('iconv-lite');
+const clean = require('htmlclean');
+const sanitize = require('sanitize-html');
+const array2d = require('array2d');
 
 const URL_PROXY = 'https://cors-anywhere.herokuapp.com/';
 const URL_SUPL = 'suplovani.gytool.cz/';
@@ -26,7 +29,12 @@ function request(url, callback) {
 	requestInstance(url, (err, res, b) => {
 		// Decode the response body
 		let body = iconv.decode(b, 'win1250');
-		callback(err, res, body);
+		let cleanedBody = clean(body);
+		let sanitizedBody = sanitize(cleanedBody, {
+			allowedTags: sanitize.defaults.allowedTags.concat(['input', 'form', 'select', 'option']),
+			allowedAttributes: false
+		});
+		callback(err, res, sanitizedBody);
 	});
 }
 
@@ -42,20 +50,6 @@ function getClasses() {
 			});
 			let classes = values.toArray();
 			resolve(classes);
-		});
-	});
-}
-
-function getSuplovani(date_url) {
-	return new Promise((resolve, reject) => {
-		request(URL_SUPL + date_url, (err, res, body) => {
-			if (err) {
-				reject(err);
-			}
-			let page = $(body);
-			let suplovani_table = $(page).find('div:contains("Suplování")').next();
-			let supl = parseTable($, suplovani_table);
-			resolve(supl);
 		});
 	});
 }
@@ -76,6 +70,46 @@ function getDates() {
 			resolve(data.toArray());
 		});
 	});
+}
+
+function getSuplovani(date_url) {
+	return new Promise((resolve, reject) => {
+		request(URL_SUPL + date_url, (err, res, body) => {
+			if (err) {
+				reject(err);
+			}
+			let suplovani_table = $('div:contains("Suplování")', body).next();
+			let supl = parseTable($, suplovani_table);
+			resolve(supl);
+		});
+	});
+}
+
+function parseSuplovani(suplArray) {
+
+}
+
+class SuplRow {
+	constructor(hodina, trida, predmet, ucebna, nahucebna, vyuc, zastup, pozn) {
+		this.hodina = hodina;
+		this.trida = trida;
+		this.predmet = predmet;
+		this.ucebna = ucebna;
+		this.nahucebna = nahucebna;
+		this.vyuc = vyuc;
+		this.zastup = zastup;
+		this.pozn = pozn;
+	}
+
+	/**
+	 * 
+	 * 
+	 * @memberof SuplRow
+	 * @returns An HTML table-row representation of the object, ready to be inserted into a table
+	 */
+	getHTML() {
+		
+	}
 }
 
 module.exports = { getClasses, getSuplovani, getDates };

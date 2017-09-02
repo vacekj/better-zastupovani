@@ -7,11 +7,14 @@
 		"test": "test"
 	},
 	"dependencies": {
+		"array2d": "0.0.5",
 		"cheerio": "^1.0.0-rc.2",
+		"htmlclean": "^3.0.3",
 		"iconv-lite": "^0.4.18",
 		"jquery": "^3.2.1",
 		"moment": "^2.18.1",
 		"request": "^2.81.0",
+		"sanitize-html": "^1.14.1",
 		"windows-1250": "^1.0.0"
 	},
 	"devDependencies": {

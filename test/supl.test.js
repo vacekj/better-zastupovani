@@ -30,10 +30,8 @@ describe('Supl library', () => {
 		supl
 			.getDates().then((res) => {
 				date_url = res[0].url;
-				supl.getSuplovani(date_url).then((supl) => {
-					expect(supl).to.be.an.instanceof(Array);
-					expect(typeof supl[0].url).to.equal('string');
-					expect(supl[0].date).to.exist;
+				supl.getSuplovani(date_url).then((suplovani) => {
+					expect(suplovani).to.be.an.instanceof(Array);
 					done();
 				}).catch((err) => {
 					done(err);
