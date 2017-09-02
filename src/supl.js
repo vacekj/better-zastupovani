@@ -113,8 +113,13 @@ function parseSuplovani(data) {
 	correctedChybejiciArray.forEach((row) => {
 		// Parse the string
 		let parsedArray = row.split(', ');
-		parsedArray.forEach((elem) => {
+		parsedArray.some((elem) => {
 			let kdo = elem.split(' ')[0];
+			// check if range is present
+			if (!elem.includes(' ')) {
+				result.chybejici.push(new ChybejiciRow(kdo, null));
+				return true;
+			}
 			let rangePart = elem.split(' ')[1];
 			let formatted = rangePart.replace('(', '').replace(')', '');
 			let range = Array(2);
@@ -216,4 +221,4 @@ function getSuplovaniForAllDates() {
 	];
 }
 
-module.exports = { getClasses, getSuplovani, getDates, parseSuplovani, SuplRow, NahradniUcebnyRow, getSuplovaniForAllDates };
+module.exports = { getClasses, getSuplovani, getDates, parseSuplovani, ChybejiciRow, SuplRow, NahradniUcebnyRow, getSuplovaniForAllDates };

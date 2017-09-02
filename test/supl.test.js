@@ -25,33 +25,18 @@ describe('Supl library', () => {
 			});
 	});
 
-	it('Should get suplovani list', (done) => {
-		let date_url;
-		supl
-			.getDates().then((res) => {
-				date_url = res[0].url;
-				supl.getSuplovani(date_url).then((suplovani) => {
-					expect(suplovani).to.be.an.instanceof(Array);
-					done();
-				}).catch((err) => {
-					done(err);
-				});
-			}, done);
-
-	});
-
-	it('Should parse a row of suplovani', (done) => {
+	it('Should get data (chybejici, suplovani, nahradni ucebny) and parse it succesfully', (done) => {
 		let date_url;
 		supl
 			.getDates().then((res) => {
 				date_url = res[0].url;
 				supl.getSuplovani(date_url).then((suplovani) => {
 					let parsed = supl.parseSuplovani(suplovani);
-					expect(parsed).to.have.keys(['chybejici, suplovani, nahradniUcebny']);
+					expect(parsed).to.have.keys(['chybejici', 'suplovani', 'nahradniUcebny']);
 					expect(parsed.chybejici).to.be.an.instanceof(Array);
 					expect(parsed.suplovani).to.be.an.instanceof(Array);
 					expect(parsed.nahradniUcebny).to.be.an.instanceof(Array);
-					expect(parsed.chybejici[0]).to.be.an.instanceof(supl.SuplRow);
+					expect(parsed.chybejici[0]).to.be.an.instanceof(supl.ChybejiciRow);
 					expect(parsed.suplovani[0]).to.be.an.instanceof(supl.SuplRow);
 					expect(parsed.nahradniUcebny[0]).to.be.an.instanceof(supl.NahradniUcebnyRow);
 					done();
