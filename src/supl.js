@@ -88,6 +88,9 @@ function getSuplovani(date_url) {
 				nahradniUcebny: []
 			};
 
+			let chybejiciTable = $('div:contains("Chybějící")').next();
+			data.chybejici = parseTable($, chybejiciTable);
+
 			let suplovani_table = $('div:contains("Suplování")').next();
 			data.suplovani = parseTable($, suplovani_table);
 
@@ -106,6 +109,28 @@ function parseSuplovani(data) {
 		nahradniUcebny: []
 	};
 
+	let correctedChybejiciArray = data.chybejici[0].slice(1);
+	correctedChybejiciArray.forEach((row) => {
+		// Parse the string
+		let parsedArray = row.split(', ');
+		parsedArray.forEach((elem) => {
+			let kdo = elem.split(' ')[0];
+			let rangePart = elem.split(' ')[1];
+			let formatted = rangePart.replace('(', '').replace(')', '');
+			let range = Array(2);
+			// decide if range or only one hour: (1..2) or (2)
+			if (formatted.length == 1) {
+				// only one hour
+				range = [formatted, formatted];
+			} else {
+				// range of hours
+				let splitRange = formatted.split('..');
+				range = [splitRange[0], splitRange[1]];
+			}
+			result.chybejici.push(new ChybejiciRow(kdo, range));
+		});
+	});
+
 	let correctedSuplArray = array2d.transpose(data.suplovani).slice(2);
 	array2d.eachRow(correctedSuplArray, (row) => {
 		result.suplovani.push(new SuplRow(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]));
@@ -117,6 +142,23 @@ function parseSuplovani(data) {
 	});
 
 	return result;
+}
+
+class ChybejiciRow {
+	constructor(kdo, range) {
+		this.kdo = kdo;
+		this.range = range;
+	}
+
+	/**
+	 * 
+	 * 
+	 * @memberof SuplRow
+	 * @returns An HTML table-row representation of the object, ready to be inserted into a table
+	 */
+	getHTML() {
+
+	}
 }
 
 class SuplRow {
