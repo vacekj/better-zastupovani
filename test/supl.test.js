@@ -39,4 +39,26 @@ describe('Supl library', () => {
 			}, done);
 
 	});
+
+	it('Should parse a row of suplovani', (done) => {
+		let date_url;
+		supl
+			.getDates().then((res) => {
+				date_url = res[0].url;
+				supl.getSuplovani(date_url).then((suplovani) => {
+					let parsed = supl.parseSuplovani(suplovani);
+					expect(parsed).to.have.keys(['chybejici, suplovani, nahradniUcebny']);
+					expect(parsed.chybejici).to.be.an.instanceof(Array);
+					expect(parsed.suplovani).to.be.an.instanceof(Array);
+					expect(parsed.nahradniUcebny).to.be.an.instanceof(Array);
+					expect(parsed.chybejici[0]).to.be.an.instanceof(supl.SuplRow);
+					expect(parsed.suplovani[0]).to.be.an.instanceof(supl.SuplRow);
+					expect(parsed.nahradniUcebny[0]).to.be.an.instanceof(supl.NahradniUcebnyRow);
+					done();
+				}).catch((err) => {
+					done(err);
+				});
+			}, done);
+
+	});
 });

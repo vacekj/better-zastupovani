@@ -1,4 +1,4 @@
-const $ = require('cheerio');
+const cheerio = require('cheerio');
 const parseTable = require('./cheerio-tableparser');
 const req = require('request');
 const moment = require('moment');
@@ -26,25 +26,28 @@ var requestInstance = req.defaults({
  * @param {any} callback 
  */
 function request(url, callback) {
-	requestInstance(url, (err, res, b) => {
+	requestInstance(url, (err, res, rawBody) => {
 		// Decode the response body
-		let body = iconv.decode(b, 'win1250');
+		let body = iconv.decode(rawBody, 'win1250');
 		let cleanedBody = clean(body);
 		let sanitizedBody = sanitize(cleanedBody, {
 			allowedTags: sanitize.defaults.allowedTags.concat(['input', 'form', 'select', 'option']),
 			allowedAttributes: false
 		});
-		callback(err, res, sanitizedBody);
+		let $ = cheerio.load(sanitizedBody, {
+			decodeEntities: false
+		});
+		callback(err, res, sanitizedBody, $);
 	});
 }
 
 function getClasses() {
 	return new Promise((resolve, reject) => {
-		request(URL_ROZVRH, (err, res, body) => {
+		request(URL_ROZVRH, (err, res, body, $) => {
 			if (err) {
 				reject(err);
 			}
-			let options = $(body).find('option');
+			let options = $('option');
 			let values = options.map((i, option) => {
 				return $(option).text();
 			});
@@ -56,11 +59,11 @@ function getClasses() {
 
 function getDates() {
 	return new Promise((resolve, reject) => {
-		request(URL_DATES, (err, res, body) => {
+		request(URL_DATES, (err, res, body, $) => {
 			if (err) {
 				reject(err);
 			}
-			let options = $(body).find('option');
+			let options = $('option');
 			let data = options.map((i, option) => {
 				return {
 					url: $(option).attr('value'),
@@ -74,19 +77,46 @@ function getDates() {
 
 function getSuplovani(date_url) {
 	return new Promise((resolve, reject) => {
-		request(URL_SUPL + date_url, (err, res, body) => {
+		request(URL_SUPL + date_url, (err, res, body, $) => {
 			if (err) {
 				reject(err);
 			}
-			let suplovani_table = $('div:contains("Suplování")', body).next();
-			let supl = parseTable($, suplovani_table);
-			resolve(supl);
+
+			let data = {
+				chybejici: [],
+				suplovani: [],
+				nahradniUcebny: []
+			};
+
+			let suplovani_table = $('div:contains("Suplování")').next();
+			data.suplovani = parseTable($, suplovani_table);
+
+			let nahradniUcebny_table = $('div:contains("Náhradní")').next();
+			data.nahradniUcebny = parseTable($, nahradniUcebny_table);
+
+			resolve(data);
 		});
 	});
 }
 
-function parseSuplovani(suplArray) {
+function parseSuplovani(data) {
+	let result = {
+		chybejici: [],
+		suplovani: [],
+		nahradniUcebny: []
+	};
 
+	let correctedSuplArray = array2d.transpose(data.suplovani).slice(2);
+	array2d.eachRow(correctedSuplArray, (row) => {
+		result.suplovani.push(new SuplRow(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]));
+	});
+
+	let correctedNahradniUcebnyArray = array2d.transpose(data.nahradniUcebny).slice(2);
+	array2d.eachRow(correctedNahradniUcebnyArray, (row) => {
+		result.nahradniUcebny.push(new NahradniUcebnyRow(row[0], row[1], row[2], row[3], row[4], row[5], row[6]));
+	});
+
+	return result;
 }
 
 class SuplRow {
@@ -108,8 +138,40 @@ class SuplRow {
 	 * @returns An HTML table-row representation of the object, ready to be inserted into a table
 	 */
 	getHTML() {
-		
+
 	}
 }
 
-module.exports = { getClasses, getSuplovani, getDates };
+class NahradniUcebnyRow {
+	constructor(hodina, trida, predmet, chybucebna, nahucebna, vyuc, pozn) {
+		this.hodina = hodina;
+		this.trida = trida;
+		this.predmet = predmet;
+		this.chybucebna = chybucebna;
+		this.nahucebna = nahucebna;
+		this.vyuc = vyuc;
+		this.pozn = pozn;
+	}
+
+	/**
+	 * 
+	 * 
+	 * @memberof SuplRow
+	 * @returns An HTML table-row representation of the object, ready to be inserted into a table
+	 */
+	getHTML() {
+
+	}
+}
+
+// TODO: implement this
+function getSuplovaniForAllDates() {
+	let result = [
+		{
+			date, // date object
+			suplovani, // suplovani object
+		}
+	];
+}
+
+module.exports = { getClasses, getSuplovani, getDates, parseSuplovani, SuplRow, NahradniUcebnyRow, getSuplovaniForAllDates };
