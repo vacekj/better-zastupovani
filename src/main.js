@@ -12,5 +12,9 @@ $(document).ready(() => {
 
 	supl.getDates().then(result => {
 		console.log(result);
+		supl.getSuplovani(result[0].url).then((suplres) => {
+			console.log(supl.parseSuplovani(suplres));
+		});
 	});
+
 });
