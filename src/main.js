@@ -7,6 +7,7 @@ require('bootstrap-loader');
 let $ = require('jquery');
 let supl = require('./supl');
 let moment = require('moment');
+let md5 = require('blueimp-md5');
 
 var state = {
 	suplovani: [],
@@ -15,15 +16,56 @@ var state = {
 	currentClass: ''
 };
 
+var localStorage = window.localStorage;
+
+// MAIN ENTRY POINT
 $(document).ready(() => {
 	registerEventHandlers();
-	updateState().then(() => {
+	if (isCachePresent()) {
+		updateStateFromCache();
 		render();
-	});
-
+		validateCache().then((valid) => {
+			if (valid) {
+				// Everything ok
+			} else {
+				updateState().then(() => {
+					updateCacheFromState();
+					render();
+				});
+			}
+		});
+	}
 });
 
+function isCachePresent() {
+	return localStorage.getItem('state') !== undefined;
+}
 
+function updateStateFromCache() {
+	let cachedState = localStorage.getItem('state');
+	state.suplovani = JSON.parse(cachedState);
+}
+
+function updateCacheFromState() {
+	let toCache = state.suplovani;
+	localStorage.setItem('state', JSON.stringify(toCache));
+}
+
+function validateCache() {
+	return new Promise((resolve, reject) => {
+		let currentCache = localStorage.getItem('state');
+		let currentCacheHash = md5(currentCache);
+
+		supl.getSuplovaniForAllDates().then((suplovani) => {
+			let liveDataHash = md5(JSON.stringify(suplovani));
+			if (liveDataHash !== currentCacheHash) {
+				resolve(false);
+			} else {
+				resolve(true);
+			}
+		});
+	});
+}
 
 function updateState() {
 	return new Promise((resolve, reject) => {

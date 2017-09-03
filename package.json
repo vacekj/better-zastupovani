@@ -8,6 +8,7 @@
 	},
 	"dependencies": {
 		"array2d": "0.0.5",
+		"blueimp-md5": "^2.10.0",
 		"bootstrap": "^4.0.0-beta",
 		"bootstrap-loader": "^2.2.0",
 		"cheerio": "^1.0.0-rc.2",
