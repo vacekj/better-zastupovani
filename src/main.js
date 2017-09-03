@@ -195,9 +195,13 @@ function updateDates(context) {
 
 function updateClasses() {
 	$('#selector_class').empty();
-	let html = ClassesToOptions(state.classes);
-	$('#selector_class').append(html);
-	$('#selector_class').append(ClassesToOptions([state.currentClass]));
+	if (state.classes) {
+		let html = ClassesToOptions(state.classes);
+		$('#selector_class').append(html);
+	}
+	else {
+		$('#selector_class').append(ClassesToOptions([state.currentClass]));
+	}
 	$('#selector_class').val(state.currentClass);
 }
 
