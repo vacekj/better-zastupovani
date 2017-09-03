@@ -26,11 +26,11 @@ describe('Supl library', () => {
 	});
 
 	it('Should get data (chybejici, suplovani, nahradni ucebny) and parse it succesfully', (done) => {
-		let date_url;
+		
 		supl
 			.getDates().then((res) => {
-				date_url = res[0].url;
-				supl.getSuplovani(date_url).then((suplovani) => {
+				let date = res[0];
+				supl.getSuplovani(date).then((suplovani) => {
 					let parsed = supl.parseSuplovani(suplovani);
 					expect(parsed).to.have.keys(['chybejici', 'suplovani', 'nahradniUcebny']);
 					expect(parsed.chybejici).to.be.an.instanceof(Array);

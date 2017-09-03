@@ -23,6 +23,8 @@ $(document).ready(() => {
 
 });
 
+
+
 function updateState() {
 	return new Promise((resolve, reject) => {
 		Promise.all([
