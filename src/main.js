@@ -59,7 +59,7 @@ $(document).ready(() => {
 });
 
 function isCachePresent() {
-	return localStorage.getItem('state') !== undefined;
+	return localStorage.getItem('state');
 }
 
 function updateStateFromCache() {
