@@ -2,12 +2,14 @@
 require('./index.html');
 require('./style.css');
 require('./bootstrap.min.css');
+require('./bootstrap-reboot.min.css');
 require('bootstrap-loader');
 
 let $ = require('jquery');
 let supl = require('./supl');
 let moment = require('moment');
 let md5 = require('blueimp-md5');
+let Cookies = require('js-cookie');
 
 var state = {
 	suplovani: [],
@@ -21,9 +23,23 @@ var localStorage = window.localStorage;
 // MAIN ENTRY POINT
 $(document).ready(() => {
 	registerEventHandlers();
+
+	// Remember class
+	if (Cookies.get('trida')) {
+		state.currentClass = Cookies.get('trida');
+		updateClasses();
+	}
+
+	supl.getClasses().then((classes) => {
+		state.classes = classes;
+		updateClasses();
+	});
+
+	// Caching mechanism
 	if (isCachePresent()) {
 		updateStateFromCache();
-		render();
+		updateDates(state);
+		updateSuplovani();
 		validateCache().then((valid) => {
 			if (valid) {
 				// Everything ok
@@ -34,6 +50,11 @@ $(document).ready(() => {
 				});
 			}
 		});
+	} else {
+		updateState().then(() => {
+			updateCacheFromState();
+			render();
+		});
 	}
 });
 
@@ -43,7 +64,13 @@ function isCachePresent() {
 
 function updateStateFromCache() {
 	let cachedState = localStorage.getItem('state');
-	state.suplovani = JSON.parse(cachedState);
+	let parsedCachedState = JSON.parse(cachedState);
+	let fixedState = parsedCachedState.map((suplovani) => {
+		let obj = suplovani;
+		obj.date = moment(obj.date);
+		return obj;
+	});
+	state.suplovani = fixedState;
 }
 
 function updateCacheFromState() {
@@ -84,6 +111,7 @@ function registerEventHandlers() {
 	$('#selector_class').on('change', function () {
 		let newValue = this.value;
 		state.currentClass = newValue;
+		Cookies.set('trida', newValue);
 		render();
 	});
 
@@ -166,8 +194,11 @@ function updateDates(context) {
 }
 
 function updateClasses() {
+	$('#selector_class').empty();
 	let html = ClassesToOptions(state.classes);
 	$('#selector_class').append(html);
+	$('#selector_class').append(ClassesToOptions([state.currentClass]));
+	$('#selector_class').val(state.currentClass);
 }
 
 function ClassesToOptions(classes) {
