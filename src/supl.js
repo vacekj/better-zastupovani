@@ -75,9 +75,9 @@ function getDates() {
 	});
 }
 
-function getSuplovani(date_url) {
+function getSuplovani(date) {
 	return new Promise((resolve, reject) => {
-		request(URL_SUPL + date_url, (err, res, body, $) => {
+		request(URL_SUPL + date.url, (err, res, body, $) => {
 			if (err) {
 				reject(err);
 			}
@@ -85,7 +85,8 @@ function getSuplovani(date_url) {
 			let data = {
 				chybejici: [],
 				suplovani: [],
-				nahradniUcebny: []
+				nahradniUcebny: [],
+				date
 			};
 
 			let chybejiciTable = $('div:contains("Chybějící")').next();
@@ -199,26 +200,23 @@ class NahradniUcebnyRow {
 		this.vyuc = vyuc;
 		this.pozn = pozn;
 	}
-
-	/**
-	 * 
-	 * 
-	 * @memberof SuplRow
-	 * @returns An HTML table-row representation of the object, ready to be inserted into a table
-	 */
-	getHTML() {
-
-	}
 }
 
-// TODO: implement this
 function getSuplovaniForAllDates() {
-	let result = [
-		{
-			date, // date object
-			suplovani, // suplovani object
-		}
-	];
+	return new Promise((resolve, reject) => {
+		getDates().then((dates) => {
+			let promises = dates.map((date) => {
+				return getSuplovani(date);
+			});
+			let allPromises = Promise.all(promises);
+			allPromises.then((res) => {
+				let result = res.map((supl) => {
+					return Object.assign({}, supl.date, parseSuplovani(supl));
+				});
+				resolve(result);
+			});
+		});
+	});
 }
 
 module.exports = { getClasses, getSuplovani, getDates, parseSuplovani, ChybejiciRow, SuplRow, NahradniUcebnyRow, getSuplovaniForAllDates };
