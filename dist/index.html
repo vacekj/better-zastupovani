@@ -10,8 +10,22 @@
 </head>
 
 <body>
-	<div id="wrapper">
-		<div id="main"></div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 text-center">
+				<h1>Zastupování 2.0</h1>
+			</div>
+		</div>
+		<div class="row justify-content-center">
+			<div class="col-md-1">
+				<label for="selector_date">Datum</label>
+				<input type="date" name="selector_date" id="selector_date">
+			</div>
+			<div class="col-md-3">
+				<label for="selector_class">Třída</label>
+				<select name="selector_class" id="selector_class"></select>
+			</div>
+		</div>
 	</div>
 	<script src="bundle.js"></script>
 </body>
