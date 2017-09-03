@@ -18,9 +18,11 @@
 		"moment": "^2.18.1",
 		"request": "^2.81.0",
 		"sanitize-html": "^1.14.1",
+		"webpack-merge": "^4.1.0",
 		"windows-1250": "^1.0.0"
 	},
 	"devDependencies": {
+		"babel-minify-webpack-plugin": "^0.2.0",
 		"chai": "^4.1.1",
 		"css-loader": "^0.28.7",
 		"exports-loader": "^0.6.4",
@@ -40,8 +42,8 @@
 	},
 	"scripts": {
 		"test": "mocha",
-		"build": "webpack",
-		"dev": "webpack-dev-server --open"
+		"build": "webpack --config webpack.prod.js",
+		"dev": "webpack-dev-server --open --config webpack.dev.js"
 	},
 	"repository": {
 		"type": "git",

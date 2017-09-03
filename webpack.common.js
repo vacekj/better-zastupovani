@@ -29,11 +29,6 @@ module.exports = {
 		filename: 'bundle.js',
 		path: path.resolve(__dirname, 'dist')
 	},
-	devServer: {
-		contentBase: './dist',
-		host: '192.168.1.200'
-	},
-	devtool: 'eval-source-map',
 	node: {
 		fs: 'empty',
 		net: 'empty',
