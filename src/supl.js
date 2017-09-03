@@ -67,7 +67,7 @@ function getDates() {
 			let data = options.map((i, option) => {
 				return {
 					url: $(option).attr('value'),
-					date: moment($(option).text().split(' ').slice(2).toString(' ').replace(',', '').replace(',', '').replace('.', '/').replace('.', '/').replace('.', '/'), 'DD/MM/YYYY')
+					date: moment($(option).attr('value').slice(7, 17), 'YYYY/MM/DD')
 				};
 			});
 			resolve(data.toArray());
