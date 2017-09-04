@@ -12,7 +12,7 @@ let $ = require('jquery');
 let moment = require('moment');
 let Cookies = require('js-cookie');
 
-const API_URL = 'http://zastupovani.herokuapp.com/api';
+const API_URL = 'https://zastupovani.herokuapp.com/api';
 const COOKIE_CLASS = 'trida';
 
 // Create global state
