@@ -1,140 +1,116 @@
 // Webpack imports
 require('./index.html');
 require('./style.css');
-require('./bootstrap.min.css');
+let popper = require('popper.js');
+window.popper = popper;
 require('./bootstrap-reboot.min.css');
+require('./bootstrap.min.css');
 require('bootstrap-loader');
 
+
 let $ = require('jquery');
-let supl = require('./supl');
 let moment = require('moment');
-let md5 = require('blueimp-md5');
 let Cookies = require('js-cookie');
 
-var state = {
+const API_URL = 'http://zastupovani.herokuapp.com/api';
+const COOKIE_CLASS = 'trida';
+
+// Create global state
+window.state = {
 	suplovani: [],
 	classes: [],
 	currentDate: moment().format('YYYY-MM-DD'),
 	currentClass: ''
 };
 
-var localStorage = window.localStorage;
-
 // MAIN ENTRY POINT
 $(document).ready(() => {
 	registerEventHandlers();
 
 	// Remember class
-	if (Cookies.get('trida')) {
-		state.currentClass = Cookies.get('trida');
-		updateClasses();
+	let classCookie = Cookies.get(COOKIE_CLASS);
+	if (classCookie !== undefined && classCookie !== '') {
+		let newState = Object.assign(getState(), {
+			currentClass: classCookie
+		});
+		updateState(newState);
+		renderClasses();
 	}
 
-	supl.getClasses().then((classes) => {
-		state.classes = classes;
-		updateClasses();
+	// Update state from server
+	getStateFromServer().then((state) => {
+		// overwrite state
+		updateState(state);
+		render();
+	}).catch((err) => {
+		console.log(err);
 	});
-
-	// Caching mechanism
-	if (isCachePresent()) {
-		updateStateFromCache();
-		updateDates(state);
-		updateSuplovani();
-		validateCache().then((valid) => {
-			if (valid) {
-				// Everything ok
-			} else {
-				updateState().then(() => {
-					updateCacheFromState();
-					render();
-				});
-			}
-		});
-	} else {
-		updateState().then(() => {
-			updateCacheFromState();
-			render();
-		});
-	}
 });
 
-function isCachePresent() {
-	return localStorage.getItem('state');
+function updateState(newState, overwrite) {
+	if (overwrite) {
+		window.state = newState;
+	} else {
+		window.state = Object.assign(getState(), newState);
+	}
 }
 
-function updateStateFromCache() {
-	let cachedState = localStorage.getItem('state');
-	let parsedCachedState = JSON.parse(cachedState);
-	let fixedState = parsedCachedState.map((suplovani) => {
-		let obj = suplovani;
-		obj.date = moment(obj.date);
-		return obj;
-	});
-	state.suplovani = fixedState;
+function getState() {
+	return window.state;
 }
 
-function updateCacheFromState() {
-	let toCache = state.suplovani;
-	localStorage.setItem('state', JSON.stringify(toCache));
-}
-
-function validateCache() {
+function getStateFromServer() {
 	return new Promise((resolve, reject) => {
-		let currentCache = localStorage.getItem('state');
-		let currentCacheHash = md5(currentCache);
-
-		supl.getSuplovaniForAllDates().then((suplovani) => {
-			let liveDataHash = md5(JSON.stringify(suplovani));
-			if (liveDataHash !== currentCacheHash) {
-				resolve(false);
-			} else {
-				resolve(true);
-			}
-		});
-	});
-}
-
-function updateState() {
-	return new Promise((resolve, reject) => {
-		Promise.all([
-			supl.getClasses(),
-			supl.getSuplovaniForAllDates()
-		]).then((data) => {
-			state.classes = data[0];
-			state.suplovani = data[1];
-			resolve();
-		});
+		$.get(API_URL + '/data').then((res) => {
+			// revive dates to moment objects
+			let revivedSuplovani = res.suplovani.map((supl) => {
+				return Object.assign(supl, {
+					date: moment(supl.date)
+				});
+			});
+			let revivedState = Object.assign(res, {
+				suplovani: revivedSuplovani
+			});
+			resolve(revivedState);
+		}, reject);
 	});
 }
 
 function registerEventHandlers() {
 	$('#selector_class').on('change', function () {
 		let newValue = this.value;
-		state.currentClass = newValue;
-		Cookies.set('trida', newValue);
+		updateState({
+			currentClass: newValue
+		});
+		Cookies.set(COOKIE_CLASS, newValue);
 		render();
 	});
 
 	$('#selector_date').on('change', function () {
 		let newValue = this.value;
-		state.currentDate = newValue;
+		updateState({
+			currentDate: newValue
+		});
 		render();
 	});
 }
 
 function render() {
-	updateClasses(state);
-	updateDates(state);
-	updateSuplovani();
+	renderClasses();
+	renderDates();
+	renderSuplovani();
 }
 
-function updateSuplovani() {
+function renderSuplovani() {
+	// clear the table
 	$('#table_suplovani > tbody').empty();
-	let currentSuplovani = state.suplovani.find((suplovani) => {
-		return moment(suplovani.date.format('YYYY-MM-DD')).isSame(state.currentDate);
+
+	let currentSuplovani = getState().suplovani.find((suplovani) => {
+		return moment(suplovani.date.format('YYYY-MM-DD')).isSame(getState().currentDate);
 	});
+
 	let filter = {};
-	filter.class = state.currentClass;
+	filter.class = getState().currentClass;
 	let contentToAppend = '';
 	const noSupl = `<tr>
 	<td colspan="8">Žádné suplování</td>
@@ -172,14 +148,14 @@ function SuplToTrs(suplovani) {
 	});
 }
 
-function updateDates(context) {
+function renderDates() {
 	// Extract dates from context
-	let dates = context.suplovani.map((suplovani) => {
+	let dates = getState().suplovani.map((suplovani) => {
 		return suplovani.date;
 	});
 
 	// Set current value
-	$('#selector_date').val(state.currentDate);
+	$('#selector_date').val(getState().currentDate);
 
 	// Set Max and Min value
 	let sorted = dates.sort(function (a, b) {
@@ -193,16 +169,13 @@ function updateDates(context) {
 	});
 }
 
-function updateClasses() {
+function renderClasses() {
 	$('#selector_class').empty();
-	if (state.classes) {
-		let html = ClassesToOptions(state.classes);
-		$('#selector_class').append(html);
+	let html = ClassesToOptions(getState().classes);
+	$('#selector_class').append(html);
+	if (getState().currentClass) {
+		$('#selector_class').val(getState().currentClass);
 	}
-	else {
-		$('#selector_class').append(ClassesToOptions([state.currentClass]));
-	}
-	$('#selector_class').val(state.currentClass);
 }
 
 function ClassesToOptions(classes) {

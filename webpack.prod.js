@@ -1,6 +1,5 @@
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
-var CompressionPlugin = require("compression-webpack-plugin");
 const ClosureCompilerPlugin = require('webpack-closure-compiler');
 
 module.exports = merge(common, {
@@ -11,12 +10,6 @@ module.exports = merge(common, {
 				language_out: 'ECMASCRIPT5'
 			},
 			concurrency: 3,
-		}),
-		new CompressionPlugin({
-			asset: "[path].gz[query]",
-			algorithm: "gzip",
-			test: /\.(js|html)$/,
-			minRatio: 0.8
 		})
 	]
 });

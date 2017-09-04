@@ -1,4 +1,4 @@
-# better-zastupovani
+# better-zastupovani-next
 ![travis](https://api.travis-ci.org/JouzaLoL/better-zastupovani.svg)
 ### [Live development version](https://jouzalol.github.com/better-zastupovani)
 

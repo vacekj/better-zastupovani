@@ -3,8 +3,9 @@
 		"es6": true,
 		"jquery": true,
 		"browser": true,
-		"node": true,
-		"mocha": true
+		"mocha": true,
+		"commonjs": true,
+		"node": true
     },
 	"extends": [
 		"google",

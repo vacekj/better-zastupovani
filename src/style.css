@@ -1,9 +1,0 @@
-table td, 
-table tr {
-    white-space: nowrap;
-	width: 1%;
-	font-size: small;
-}
-th {
-	font-size: xx-small;
-}

@@ -3,34 +3,21 @@
 	"version": "1.0.0",
 	"description": "Better Zastupovani",
 	"main": "dist/index.html",
-	"directories": {
-		"test": "test"
-	},
 	"dependencies": {
-		"array2d": "0.0.5",
-		"blueimp-md5": "^2.10.0",
 		"bootstrap": "^4.0.0-beta",
-		"bootstrap-loader": "^2.2.0",
-		"cheerio": "^1.0.0-rc.2",
-		"htmlclean": "^3.0.3",
-		"iconv-lite": "^0.4.18",
+		"jquery": "^3.2.1",
 		"js-cookie": "^2.1.4",
 		"moment": "^2.18.1",
-		"request": "^2.81.0",
-		"sanitize-html": "^1.14.1",
-		"webpack-merge": "^4.1.0",
-		"windows-1250": "^1.0.0",
-		"jquery": "^3.2.1"
+		"webpack-merge": "^4.1.0"
 	},
 	"devDependencies": {
-		"chai": "^4.1.1",
+		"bootstrap-loader": "^2.2.0",
 		"compression-webpack-plugin": "^1.0.0",
 		"css-loader": "^0.28.7",
 		"exports-loader": "^0.6.4",
 		"file-loader": "^0.11.2",
 		"imports-loader": "^0.7.1",
 		"jquery": "^3.2.1",
-		"mocha": "^3.5.0",
 		"node-sass": "^4.5.3",
 		"popper.js": "^1.12.5",
 		"postcss-loader": "^2.0.6",
@@ -43,7 +30,6 @@
 		"webpack-dev-server": "^2.7.1"
 	},
 	"scripts": {
-		"test": "mocha",
 		"build": "webpack --config webpack.prod.js",
 		"dev": "webpack-dev-server --open --config webpack.dev.js"
 	},
