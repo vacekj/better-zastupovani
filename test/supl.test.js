@@ -26,7 +26,7 @@ describe('Supl library', () => {
 	});
 
 	it('Should get data (chybejici, suplovani, nahradni ucebny) and parse it succesfully', (done) => {
-		
+
 		supl
 			.getDates().then((res) => {
 				let date = res[0];

@@ -1,12 +1,10 @@
 // Webpack imports
 require('./index.html');
 require('./style.css');
-let popper = require('popper.js');
-window.popper = popper;
+
+// Bootstrap imports
 require('./bootstrap-reboot.min.css');
 require('./bootstrap.min.css');
-require('bootstrap-loader');
-
 
 let $ = require('jquery');
 let moment = require('moment');
@@ -171,14 +169,14 @@ function renderDates() {
 
 function renderClasses() {
 	$('#selector_class').empty();
-	let html = ClassesToOptions(getState().classes);
+	let html = classesToOptions(getState().classes);
 	$('#selector_class').append(html);
 	if (getState().currentClass) {
 		$('#selector_class').val(getState().currentClass);
 	}
 }
 
-function ClassesToOptions(classes) {
+function classesToOptions(classes) {
 	var option = '';
 	for (var i = 0; i < classes.length; i++) {
 		option += '<option value="' + classes[i] + '">' + classes[i] + '</option>';

@@ -7,17 +7,16 @@
 		"bootstrap": "^4.0.0-beta",
 		"jquery": "^3.2.1",
 		"js-cookie": "^2.1.4",
-		"moment": "^2.18.1",
-		"webpack-merge": "^4.1.0"
+		"moment": "^2.18.1"
 	},
 	"devDependencies": {
+		"webpack-merge": "^4.1.0",
 		"bootstrap-loader": "^2.2.0",
 		"compression-webpack-plugin": "^1.0.0",
 		"css-loader": "^0.28.7",
 		"exports-loader": "^0.6.4",
 		"file-loader": "^0.11.2",
 		"imports-loader": "^0.7.1",
-		"jquery": "^3.2.1",
 		"node-sass": "^4.5.3",
 		"popper.js": "^1.12.5",
 		"postcss-loader": "^2.0.6",
