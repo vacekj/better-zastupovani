@@ -1,6 +1,7 @@
 // Webpack imports
 require('./index.html');
 require('./style.css');
+require('./style.js');
 
 // Bootstrap imports
 require('./bootstrap-reboot.min.css');

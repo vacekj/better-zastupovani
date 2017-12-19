@@ -1,3 +1,17 @@
 .col {
 	padding: 0px !important;
 }
+
+table {
+	table-layout: auto;
+	border-collapse: collapse;
+	width: 100%;
+}
+
+table td {
+	border: 1px solid #ccc;
+}
+
+tabl td:last-child() {
+	width: 100%;
+}
