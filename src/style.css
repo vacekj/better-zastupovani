@@ -6,6 +6,10 @@ table {
 	float: none;
 }
 
+table th {
+	background-color: #2d548d !important;
+}
+
 table td {
 	border: 1px solid #ccc;
 	height: 10px;
@@ -18,3 +22,7 @@ table tr {
 table td:last-child() {
 	width: 100%;
 }
+
+/*
+Main color: #2d548d
+*/
