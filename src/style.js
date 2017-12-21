@@ -1,3 +1,5 @@
+// script to expand collapsed table headers
+
 let $ = require('jquery');
 let headers = [];
 $(document).ready(() => {
