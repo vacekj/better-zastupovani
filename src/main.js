@@ -46,6 +46,15 @@ $(document).ready(() => {
 	});
 });
 
+function setState(newState, overwrite) {
+	if (overwrite) {
+		window.state = newState;
+	} else {
+		window.state = Object.assign(getState(), newState);
+	}
+	render();
+}
+
 function updateState(newState, overwrite) {
 	if (overwrite) {
 		window.state = newState;

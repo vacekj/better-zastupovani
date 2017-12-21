@@ -1,17 +1,20 @@
-.col {
-	padding: 0px !important;
-}
-
 table {
 	table-layout: auto;
 	border-collapse: collapse;
 	width: 100%;
+	margin: 0px auto;
+	float: none;
 }
 
 table td {
 	border: 1px solid #ccc;
+	height: 10px;
 }
 
-tabl td:last-child() {
+table tr {
+	white-space: nowrap;
+}
+
+table td:last-child() {
 	width: 100%;
 }
