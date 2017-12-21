@@ -26,7 +26,7 @@ window.state = {
 $(document).ready(() => {
 	registerEventHandlers();
 
-	// Remember class
+	// Remember filter
 	let filterCookie = Cookies.get(COOKIE_FILTER);
 	if (filterCookie !== undefined && filterCookie !== '') {
 		let newState = Object.assign(getState(), {
@@ -39,7 +39,6 @@ $(document).ready(() => {
 	getStateFromServer().then((state) => {
 		// overwrite state
 		setState(state);
-		render();
 	}).catch((err) => {
 		console.log(err);
 	});
@@ -52,14 +51,6 @@ function setState(newState, overwrite) {
 		window.state = Object.assign(getState(), newState);
 	}
 	render();
-}
-
-function updateState(newState, overwrite) {
-	if (overwrite) {
-		window.state = newState;
-	} else {
-		window.state = Object.assign(getState(), newState);
-	}
 }
 
 function getState() {
@@ -86,19 +77,17 @@ function getStateFromServer() {
 function registerEventHandlers() {
 	$('#selector_filter').on('keyup', function () {
 		let newValue = this.value;
-		updateState({
+		setState({
 			currentFilter: newValue
 		});
 		Cookies.set(COOKIE_FILTER, newValue);
-		render();
 	});
 
 	$('#selector_date').on('change', function () {
 		let newValue = this.value;
-		updateState({
+		setState({
 			currentDate: newValue
 		});
-		render();
 	});
 }
 
@@ -118,30 +107,37 @@ function renderSuplovani() {
 	`;
 
 	let selectedSuplovani = getSelectedSuplovani();
-	contentToAppend = selectedSuplovani.length ? SuplovaniRowToTrs(selectedSuplovani) : noSupl;
+	contentToAppend = selectedSuplovani ? SuplovaniRowToTrs(selectedSuplovani) : noSupl;
 
 	$('#table_suplovani').append(contentToAppend);
 }
 
 function getSelectedSuplovani() {
-	let currentSuplovani = getSuplovaniForSelectedDate();
+	let suplovani = getState().suplovani;
+	if (!suplovani) {
+		return;
+	}
+	let currentSuplovani = getSuplovaniForSelectedDate(getState().suplovani, getState().currentDate);
+	if (!currentSuplovani) {
+		return;
+	}
 	let filter = getState().currentFilter;
 	return filterSuplovani(currentSuplovani.suplovani, filter);
 }
 
-function getSuplovaniForSelectedDate() {
-	return getState().suplovani.find((suplovani) => {
-		return moment(suplovani.date.format('YYYY-MM-DD')).isSame(getState().currentDate);
+function getSuplovaniForSelectedDate(suplovani, date) {
+	return suplovani.find((supl) => {
+		return moment(supl.date.format('YYYY-MM-DD')).isSame(date);
 	});
 }
 
 function filterSuplovani(suplovani, filter) {
 	return suplovani.filter((elem) => {
-		return suplovaniRowContainsFilter(elem, filter);
+		return suplovaniRowContainsString(elem, filter);
 	});
 }
 
-function suplovaniRowContainsFilter(suplovaniRow, filter) {
+function suplovaniRowContainsString(suplovaniRow, filter) {
 	return Object.keys(suplovaniRow).some((element, index, array) => {
 		return suplovaniRow[element].toLowerCase().includes(filter.toLowerCase());
 	});
@@ -169,6 +165,10 @@ function renderDates() {
 		return suplovani.date;
 	});
 
+	if (!dates.length) {
+		return;
+	}
+
 	// Set current value
 	$('#selector_date').val(getState().currentDate);
 
@@ -187,5 +187,5 @@ function renderDates() {
 }
 
 function renderFilter() {
-	$('#selector_class').text = getState().currentFilter;
+	$('#selector_filter').val(getState().currentFilter);
 }
