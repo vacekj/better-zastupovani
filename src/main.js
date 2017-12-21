@@ -12,35 +12,33 @@ let moment = require('moment');
 let Cookies = require('js-cookie');
 
 const API_URL = 'https://zastupovani.herokuapp.com/api';
-const COOKIE_CLASS = 'trida';
+const COOKIE_FILTER = 'trida';
 
 // Create global state
 window.state = {
 	suplovani: [],
 	classes: [],
 	currentDate: moment().format('YYYY-MM-DD'),
-	currentClass: ''
+	currentFilter: ''
 };
 
 // MAIN ENTRY POINT
 $(document).ready(() => {
 	registerEventHandlers();
 
-	// Remember class
-	let classCookie = Cookies.get(COOKIE_CLASS);
-	if (classCookie !== undefined && classCookie !== '') {
+	// Remember filter
+	let filterCookie = Cookies.get(COOKIE_FILTER);
+	if (filterCookie !== undefined && filterCookie !== '') {
 		let newState = Object.assign(getState(), {
-			currentClass: classCookie
+			currentFilter: filterCookie
 		});
-		updateState(newState);
-		renderClasses();
+		setState(newState);
 	}
 
 	// Update state from server
 	getStateFromServer().then((state) => {
 		// overwrite state
-		updateState(state);
-		render();
+		setState(state);
 	}).catch((err) => {
 		console.log(err);
 	});
@@ -53,14 +51,6 @@ function setState(newState, overwrite) {
 		window.state = Object.assign(getState(), newState);
 	}
 	render();
-}
-
-function updateState(newState, overwrite) {
-	if (overwrite) {
-		window.state = newState;
-	} else {
-		window.state = Object.assign(getState(), newState);
-	}
 }
 
 function getState() {
@@ -85,26 +75,24 @@ function getStateFromServer() {
 }
 
 function registerEventHandlers() {
-	$('#selector_class').on('change', function () {
+	$('#selector_filter').on('keyup', function () {
 		let newValue = this.value;
-		updateState({
-			currentClass: newValue
+		setState({
+			currentFilter: newValue
 		});
-		Cookies.set(COOKIE_CLASS, newValue);
-		render();
+		Cookies.set(COOKIE_FILTER, newValue);
 	});
 
 	$('#selector_date').on('change', function () {
 		let newValue = this.value;
-		updateState({
+		setState({
 			currentDate: newValue
 		});
-		render();
 	});
 }
 
 function render() {
-	renderClasses();
+	renderFilter();
 	renderDates();
 	renderSuplovani();
 }
@@ -112,36 +100,51 @@ function render() {
 function renderSuplovani() {
 	// clear the table
 	$('#table_suplovani > tbody').empty();
-
-	let currentSuplovani = getState().suplovani.find((suplovani) => {
-		return moment(suplovani.date.format('YYYY-MM-DD')).isSame(getState().currentDate);
-	});
-
-	let filter = {};
-	filter.class = getState().currentClass;
 	let contentToAppend = '';
 	const noSupl = `<tr>
 	<td colspan="8">Žádné suplování</td>
 	</tr>
 	`;
-	if (!currentSuplovani) {
-		contentToAppend = noSupl;
-	} else {
-		let filteredSuplovani = currentSuplovani.suplovani.filter((elem) => {
-			return filter.class == elem.trida;
-		});
-		if (!filteredSuplovani.length) {
-			contentToAppend = noSupl;
-		} else {
-			contentToAppend = SuplToTrs(filteredSuplovani);
-		}
-	}
+
+	let selectedSuplovani = getSelectedSuplovani();
+	contentToAppend = selectedSuplovani ? SuplovaniRowToTrs(selectedSuplovani) : noSupl;
 
 	$('#table_suplovani').append(contentToAppend);
 }
 
-function SuplToTrs(suplovani) {
-	return suplovani.map((element) => {
+function getSelectedSuplovani() {
+	let suplovani = getState().suplovani;
+	if (!suplovani) {
+		return;
+	}
+	let currentSuplovani = getSuplovaniForSelectedDate(getState().suplovani, getState().currentDate);
+	if (!currentSuplovani) {
+		return;
+	}
+	let filter = getState().currentFilter;
+	return filterSuplovani(currentSuplovani.suplovani, filter);
+}
+
+function getSuplovaniForSelectedDate(suplovani, date) {
+	return suplovani.find((supl) => {
+		return moment(supl.date.format('YYYY-MM-DD')).isSame(date);
+	});
+}
+
+function filterSuplovani(suplovani, filter) {
+	return suplovani.filter((elem) => {
+		return suplovaniRowContainsString(elem, filter);
+	});
+}
+
+function suplovaniRowContainsString(suplovaniRow, filter) {
+	return Object.keys(suplovaniRow).some((element, index, array) => {
+		return suplovaniRow[element].toLowerCase().includes(filter.toLowerCase());
+	});
+}
+
+function SuplovaniRowToTrs(suplovaniRow) {
+	return suplovaniRow.map((element) => {
 		return `<tr>
 			<td>${element.hodina}</td>
 			<td>${element.trida}</td>
@@ -162,13 +165,19 @@ function renderDates() {
 		return suplovani.date;
 	});
 
+	if (!dates.length) {
+		return;
+	}
+
 	// Set current value
 	$('#selector_date').val(getState().currentDate);
 
-	// Set Max and Min value
+	// Sort dates ascending
 	let sorted = dates.sort(function (a, b) {
 		return a - b;
 	});
+
+	// Set Max and Min value
 	let min = sorted[0];
 	let max = sorted[sorted.length - 1];
 	$('#selector_date').attr({
@@ -177,19 +186,6 @@ function renderDates() {
 	});
 }
 
-function renderClasses() {
-	$('#selector_class').empty();
-	let html = classesToOptions(getState().classes);
-	$('#selector_class').append(html);
-	if (getState().currentClass) {
-		$('#selector_class').val(getState().currentClass);
-	}
-}
-
-function classesToOptions(classes) {
-	var option = '';
-	for (var i = 0; i < classes.length; i++) {
-		option += '<option value="' + classes[i] + '">' + classes[i] + '</option>';
-	}
-	return option;
+function renderFilter() {
+	$('#selector_filter').val(getState().currentFilter);
 }
