@@ -16,9 +16,10 @@ $(() => {
 	});
 });
 
-
-$('th').on('touch click hover', (th) => {
+let eventHandler = (th) => {
 	th.target.innerHTML = headers.find((el) => {
 		return el.newText == th.target.innerText;
 	}).originalText;
-});
+};
+
+$('th').one('touch', eventHandler).one('click', eventHandler).one('mouseover', eventHandler);

@@ -106,7 +106,7 @@ function renderSuplovani() {
 	let selectedSuplovani = getSelectedSuplovani();
 	contentToAppend = selectedSuplovani.length ? SuplovaniRowToTrs(selectedSuplovani) : noSupl;
 
-	$('#table_suplovani').append(contentToAppend);
+	$('#table_suplovani > tbody').append(contentToAppend);
 }
 
 function getSelectedSuplovani() {
