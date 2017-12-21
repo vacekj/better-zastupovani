@@ -189,11 +189,3 @@ function renderDates() {
 function renderFilter() {
 	$('#selector_class').text = getState().currentFilter;
 }
-
-function classesToOptions(classes) {
-	var option = '';
-	for (var i = 0; i < classes.length; i++) {
-		option += '<option value="' + classes[i] + '">' + classes[i] + '</option>';
-	}
-	return option;
-}
