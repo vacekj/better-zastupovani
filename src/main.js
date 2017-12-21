@@ -27,19 +27,18 @@ $(document).ready(() => {
 	registerEventHandlers();
 
 	// Remember class
-	let classCookie = Cookies.get(COOKIE_FILTER);
-	if (classCookie !== undefined && classCookie !== '') {
+	let filterCookie = Cookies.get(COOKIE_FILTER);
+	if (filterCookie !== undefined && filterCookie !== '') {
 		let newState = Object.assign(getState(), {
-			currentFilter: classCookie
+			currentFilter: filterCookie
 		});
-		updateState(newState);
-		renderClasses();
+		setState(newState);
 	}
 
 	// Update state from server
 	getStateFromServer().then((state) => {
 		// overwrite state
-		updateState(state);
+		setState(state);
 		render();
 	}).catch((err) => {
 		console.log(err);
@@ -104,7 +103,7 @@ function registerEventHandlers() {
 }
 
 function render() {
-	renderClasses();
+	renderFilter();
 	renderDates();
 	renderSuplovani();
 }
@@ -112,31 +111,34 @@ function render() {
 function renderSuplovani() {
 	// clear the table
 	$('#table_suplovani > tbody').empty();
-
-	let currentSuplovani = getState().suplovani.find((suplovani) => {
-		return moment(suplovani.date.format('YYYY-MM-DD')).isSame(getState().currentDate);
-	});
-
-	let filter = getState().currentFilter;
 	let contentToAppend = '';
 	const noSupl = `<tr>
 	<td colspan="8">Žádné suplování</td>
 	</tr>
 	`;
-	if (!currentSuplovani) {
-		contentToAppend = noSupl;
-	} else {
-		let filteredSuplovani = currentSuplovani.suplovani.filter((elem) => {
-			return suplovaniRowContainsFilter(elem, filter);
-		});
-		if (!filteredSuplovani.length) {
-			contentToAppend = SuplToTrs(currentSuplovani.suplovani);
-		} else {
-			contentToAppend = SuplToTrs(filteredSuplovani);
-		}
-	}
+
+	let selectedSuplovani = getSelectedSuplovani();
+	contentToAppend = selectedSuplovani.length ? SuplovaniRowToTrs(selectedSuplovani) : noSupl;
 
 	$('#table_suplovani').append(contentToAppend);
+}
+
+function getSelectedSuplovani() {
+	let currentSuplovani = getSuplovaniForSelectedDate();
+	let filter = getState().currentFilter;
+	return filterSuplovani(currentSuplovani.suplovani, filter);
+}
+
+function getSuplovaniForSelectedDate() {
+	return getState().suplovani.find((suplovani) => {
+		return moment(suplovani.date.format('YYYY-MM-DD')).isSame(getState().currentDate);
+	});
+}
+
+function filterSuplovani(suplovani, filter) {
+	return suplovani.filter((elem) => {
+		return suplovaniRowContainsFilter(elem, filter);
+	});
 }
 
 function suplovaniRowContainsFilter(suplovaniRow, filter) {
@@ -145,8 +147,8 @@ function suplovaniRowContainsFilter(suplovaniRow, filter) {
 	});
 }
 
-function SuplToTrs(suplovani) {
-	return suplovani.map((element) => {
+function SuplovaniRowToTrs(suplovaniRow) {
+	return suplovaniRow.map((element) => {
 		return `<tr>
 			<td>${element.hodina}</td>
 			<td>${element.trida}</td>
@@ -184,13 +186,8 @@ function renderDates() {
 	});
 }
 
-function renderClasses() {
-	$('#selector_class').empty();
-	let html = classesToOptions(getState().classes);
-	$('#selector_class').append(html);
-	if (getState().currentFilter) {
-		$('#selector_class').val(getState().currentFilter);
-	}
+function renderFilter() {
+	$('#selector_class').text = getState().currentFilter;
 }
 
 function classesToOptions(classes) {
