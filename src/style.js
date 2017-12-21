@@ -1,9 +1,9 @@
 // script to expand collapsed table headers
 
-let $ = require('jquery');
+let $ = require('cash-dom');
 let headers = [];
-$(document).ready(() => {
-	$('th').each((index, th) => {
+$(() => {
+	$('th').each((th, index) => {
 		let originalText = th.innerText;
 		let newText = originalText.slice(0, 4);
 

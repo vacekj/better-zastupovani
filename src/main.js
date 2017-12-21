@@ -7,9 +7,12 @@ require('./style.js');
 require('./bootstrap-reboot.min.css');
 require('./bootstrap.min.css');
 
-let $ = require('jquery');
-let dfns = require('date-fns');
+let $ = require('cash-dom');
 let Cookies = require('js-cookie');
+
+let dfnsFormat = require('date-fns/format');
+let dfnsIsEqual = require('date-fns/is_equal');
+let dfnsCompareAsc = require('date-fns/compare_asc');
 
 const API_URL = 'https://zastupovani.herokuapp.com/api';
 const COOKIE_FILTER = 'trida';
@@ -18,12 +21,12 @@ const COOKIE_FILTER = 'trida';
 window.state = {
 	suplovani: [],
 	classes: [],
-	currentDate: dfns.format(new Date(), 'YYYY-MM-DD'),
+	currentDate: dfnsFormat(new Date(), 'YYYY-MM-DD'),
 	currentFilter: ''
 };
 
 // MAIN ENTRY POINT
-$(document).ready(() => {
+$(() => {
 	registerEventHandlers();
 
 	// Remember filter
@@ -59,9 +62,12 @@ function getState() {
 
 function getStateFromServer() {
 	return new Promise((resolve, reject) => {
-		$.get(API_URL + '/data').then((res) => {
-			resolve({ suplovani: res.suplovani });
-		}, reject);
+		fetch(API_URL + '/data')
+			.then((res) => {
+				res.json().then((data) => {
+					resolve({ suplovani: data.suplovani });
+				}, reject);
+			});
 	});
 }
 
@@ -118,7 +124,7 @@ function getSelectedSuplovani() {
 
 function getSuplovaniForSelectedDate(suplovani, date) {
 	return suplovani.find((supl) => {
-		return dfns.isEqual(dfns.format(supl.date, 'YYYY-MM-DD'), date);
+		return dfnsIsEqual(dfnsFormat(supl.date, 'YYYY-MM-DD'), date);
 	});
 }
 
@@ -165,15 +171,15 @@ function renderDates() {
 
 	// Sort dates ascending
 	let sorted = dates.sort(function (a, b) {
-		return dfns.compareAsc(a, b);
+		return dfnsCompareAsc(a, b);
 	});
 
 	// Set Max and Min value
 	let min = sorted[0];
 	let max = sorted[sorted.length - 1];
-	$('#selector_date').attr({
-		"max": dfns.format(max, 'YYYY-MM-DD'),
-		"min": dfns.format(min, 'YYYY-MM-DD'),
+	$('#selector_date').prop({
+		"max": dfnsFormat(max, 'YYYY-MM-DD'),
+		"min": dfnsFormat(min, 'YYYY-MM-DD'),
 	});
 }
 
