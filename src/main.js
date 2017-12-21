@@ -12,14 +12,14 @@ let moment = require('moment');
 let Cookies = require('js-cookie');
 
 const API_URL = 'https://zastupovani.herokuapp.com/api';
-const COOKIE_CLASS = 'trida';
+const COOKIE_FILTER = 'trida';
 
 // Create global state
 window.state = {
 	suplovani: [],
 	classes: [],
 	currentDate: moment().format('YYYY-MM-DD'),
-	currentClass: ''
+	currentFilter: ''
 };
 
 // MAIN ENTRY POINT
@@ -27,10 +27,10 @@ $(document).ready(() => {
 	registerEventHandlers();
 
 	// Remember class
-	let classCookie = Cookies.get(COOKIE_CLASS);
+	let classCookie = Cookies.get(COOKIE_FILTER);
 	if (classCookie !== undefined && classCookie !== '') {
 		let newState = Object.assign(getState(), {
-			currentClass: classCookie
+			currentFilter: classCookie
 		});
 		updateState(newState);
 		renderClasses();
@@ -85,12 +85,12 @@ function getStateFromServer() {
 }
 
 function registerEventHandlers() {
-	$('#selector_class').on('change', function () {
+	$('#selector_filter').on('keyup', function () {
 		let newValue = this.value;
 		updateState({
-			currentClass: newValue
+			currentFilter: newValue
 		});
-		Cookies.set(COOKIE_CLASS, newValue);
+		Cookies.set(COOKIE_FILTER, newValue);
 		render();
 	});
 
@@ -117,8 +117,7 @@ function renderSuplovani() {
 		return moment(suplovani.date.format('YYYY-MM-DD')).isSame(getState().currentDate);
 	});
 
-	let filter = {};
-	filter.class = getState().currentClass;
+	let filter = getState().currentFilter;
 	let contentToAppend = '';
 	const noSupl = `<tr>
 	<td colspan="8">Žádné suplování</td>
@@ -128,16 +127,22 @@ function renderSuplovani() {
 		contentToAppend = noSupl;
 	} else {
 		let filteredSuplovani = currentSuplovani.suplovani.filter((elem) => {
-			return filter.class == elem.trida;
+			return suplovaniRowContainsFilter(elem, filter);
 		});
 		if (!filteredSuplovani.length) {
-			contentToAppend = noSupl;
+			contentToAppend = SuplToTrs(currentSuplovani.suplovani);
 		} else {
 			contentToAppend = SuplToTrs(filteredSuplovani);
 		}
 	}
 
 	$('#table_suplovani').append(contentToAppend);
+}
+
+function suplovaniRowContainsFilter(suplovaniRow, filter) {
+	return Object.keys(suplovaniRow).some((element, index, array) => {
+		return suplovaniRow[element].toLowerCase().includes(filter.toLowerCase());
+	});
 }
 
 function SuplToTrs(suplovani) {
@@ -165,10 +170,12 @@ function renderDates() {
 	// Set current value
 	$('#selector_date').val(getState().currentDate);
 
-	// Set Max and Min value
+	// Sort dates ascending
 	let sorted = dates.sort(function (a, b) {
 		return a - b;
 	});
+
+	// Set Max and Min value
 	let min = sorted[0];
 	let max = sorted[sorted.length - 1];
 	$('#selector_date').attr({
@@ -181,8 +188,8 @@ function renderClasses() {
 	$('#selector_class').empty();
 	let html = classesToOptions(getState().classes);
 	$('#selector_class').append(html);
-	if (getState().currentClass) {
-		$('#selector_class').val(getState().currentClass);
+	if (getState().currentFilter) {
+		$('#selector_class').val(getState().currentFilter);
 	}
 }
 
