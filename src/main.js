@@ -8,7 +8,7 @@ require('./bootstrap-reboot.min.css');
 require('./bootstrap.min.css');
 
 let $ = require('jquery');
-let moment = require('moment');
+let dfns = require('date-fns');
 let Cookies = require('js-cookie');
 
 const API_URL = 'https://zastupovani.herokuapp.com/api';
@@ -18,7 +18,7 @@ const COOKIE_FILTER = 'trida';
 window.state = {
 	suplovani: [],
 	classes: [],
-	currentDate: moment().format('YYYY-MM-DD'),
+	currentDate: dfns.format(new Date(), 'YYYY-MM-DD'),
 	currentFilter: ''
 };
 
@@ -60,16 +60,7 @@ function getState() {
 function getStateFromServer() {
 	return new Promise((resolve, reject) => {
 		$.get(API_URL + '/data').then((res) => {
-			// revive dates to moment objects
-			let revivedSuplovani = res.suplovani.map((supl) => {
-				return Object.assign(supl, {
-					date: moment(supl.date)
-				});
-			});
-			let revivedState = Object.assign(res, {
-				suplovani: revivedSuplovani
-			});
-			resolve(revivedState);
+			resolve({ suplovani: res.suplovani });
 		}, reject);
 	});
 }
@@ -107,7 +98,7 @@ function renderSuplovani() {
 	`;
 
 	let selectedSuplovani = getSelectedSuplovani();
-	contentToAppend = selectedSuplovani ? SuplovaniRowToTrs(selectedSuplovani) : noSupl;
+	contentToAppend = selectedSuplovani.length ? SuplovaniRowToTrs(selectedSuplovani) : noSupl;
 
 	$('#table_suplovani').append(contentToAppend);
 }
@@ -115,11 +106,11 @@ function renderSuplovani() {
 function getSelectedSuplovani() {
 	let suplovani = getState().suplovani;
 	if (!suplovani) {
-		return;
+		return [];
 	}
 	let currentSuplovani = getSuplovaniForSelectedDate(getState().suplovani, getState().currentDate);
 	if (!currentSuplovani) {
-		return;
+		return [];
 	}
 	let filter = getState().currentFilter;
 	return filterSuplovani(currentSuplovani.suplovani, filter);
@@ -127,7 +118,7 @@ function getSelectedSuplovani() {
 
 function getSuplovaniForSelectedDate(suplovani, date) {
 	return suplovani.find((supl) => {
-		return moment(supl.date.format('YYYY-MM-DD')).isSame(date);
+		return dfns.isEqual(dfns.format(supl.date, 'YYYY-MM-DD'), date);
 	});
 }
 
@@ -174,15 +165,15 @@ function renderDates() {
 
 	// Sort dates ascending
 	let sorted = dates.sort(function (a, b) {
-		return a - b;
+		return dfns.compareAsc(a, b);
 	});
 
 	// Set Max and Min value
 	let min = sorted[0];
 	let max = sorted[sorted.length - 1];
 	$('#selector_date').attr({
-		"max": max.format('YYYY-MM-DD'),
-		"min": min.format('YYYY-MM-DD')
+		"max": dfns.format(max, 'YYYY-MM-DD'),
+		"min": dfns.format(min, 'YYYY-MM-DD'),
 	});
 }
 
