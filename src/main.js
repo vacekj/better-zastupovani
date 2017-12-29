@@ -4,8 +4,7 @@ require('./style.css');
 require('./style.js');
 
 // Bootstrap imports
-require('./bootstrap-reboot.min.css');
-require('./bootstrap.min.css');
+require('./bootstrap-md.min.css');
 
 let $ = require('cash-dom');
 let Cookies = require('js-cookie');
