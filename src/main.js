@@ -40,6 +40,7 @@ $(() => {
 	}
 
 	// Update state from server
+	showLoadingIndicator();
 	getStateFromServer().then((state) => {
 		// overwrite state
 		setState(state);
@@ -186,4 +187,17 @@ function renderDates() {
 
 function renderFilter() {
 	$('#selector_filter').val(getState().currentFilter);
+}
+
+// Loading indicator
+function showLoadingIndicator() {
+	let indicator = `
+	<tr>
+		<td colspan="8">
+			<svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+				<circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg>
+		</td>
+	</tr>`;
+
+	$('tbody').append(indicator);
 }

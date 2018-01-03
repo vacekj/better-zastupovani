@@ -1,10 +1,6 @@
-/* table {
-	table-layout: auto;
-	border-collapse: collapse;
-	width: 100%;
-	margin: 0px auto;
-	float: none;
-} */
+/*
+Main color: #2d548d
+*/
 
 #selector_date {
 	height: 34px;
@@ -18,7 +14,7 @@ table thead {
 	border-top: 3px solid #2d548d;
 }
 
-table>* {
+table {
 	background-color: white;
 	box-shadow: 2px 2px 5px grey;
 }
@@ -39,6 +35,58 @@ table td:last-child() {
 	background-image: linear-gradient(0deg, #2d548d 2px, rgba(0, 150, 136, 0) 0), linear-gradient(0deg, rgba(0, 0, 0, .26) 1px, transparent 0);
 }
 
-/*
-Main color: #2d548d
+/* 
+Loading indicator
 */
+
+.spinner {
+	animation: rotator 1.4s linear infinite;
+}
+
+@keyframes rotator {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(270deg);
+	}
+}
+
+.path {
+	stroke-dasharray: 187;
+	stroke-dashoffset: 0;
+	transform-origin: center;
+	animation: dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
+}
+
+@keyframes colors {
+	0% {
+		stroke: #4285f4;
+	}
+	25% {
+		stroke: #de3e35;
+	}
+	50% {
+		stroke: #f7c223;
+	}
+	75% {
+		stroke: #1b9a59;
+	}
+	100% {
+		stroke: #4285f4;
+	}
+}
+
+@keyframes dash {
+	0% {
+		stroke-dashoffset: 187;
+	}
+	50% {
+		stroke-dashoffset: 46.75;
+		transform: rotate(135deg);
+	}
+	100% {
+		stroke-dashoffset: 187;
+		transform: rotate(450deg);
+	}
+}
