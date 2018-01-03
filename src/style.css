@@ -6,6 +6,10 @@
 	float: none;
 } */
 
+#selector_date {
+	height: 34px;
+}
+
 body {
 	background-color: #fff;
 }
