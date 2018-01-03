@@ -2,6 +2,7 @@
 
 let $ = require('cash-dom');
 let headers = [];
+
 $(() => {
 	$('th').each((th, index) => {
 		let originalText = th.innerText;
