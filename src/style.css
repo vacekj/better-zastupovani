@@ -6,6 +6,10 @@
 	float: none;
 } */
 
+body {
+	background-color: #fff;
+}
+
 table thead {
 	border-top: 3px solid #2d548d;
 }
