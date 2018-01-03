@@ -41,6 +41,7 @@ Loading indicator
 
 .spinner {
 	animation: rotator 1.4s linear infinite;
+	margin: 10px;
 }
 
 @keyframes rotator {
