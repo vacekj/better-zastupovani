@@ -5,7 +5,7 @@ require('./bootstrap-md.min.css');
 require('./index.html');
 require('./style.css');
 require('./style.js');
-
+require('./favicon.png');
 
 
 let $ = require('cash-dom');
