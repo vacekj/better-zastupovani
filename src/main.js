@@ -1,10 +1,12 @@
+// Bootstrap imports
+require('./bootstrap-md.min.css');
+
 // Webpack imports
 require('./index.html');
 require('./style.css');
 require('./style.js');
 
-// Bootstrap imports
-require('./bootstrap-md.min.css');
+
 
 let $ = require('cash-dom');
 let Cookies = require('js-cookie');
