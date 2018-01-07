@@ -21,6 +21,11 @@ body > * {
 	background-color: white;
 }
 
+.container {
+	height: 100% !important;
+	overflow: auto;
+}
+
 .logo {
 	padding-top: 10px;
 	margin: 20px 20px;
