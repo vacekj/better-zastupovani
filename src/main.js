@@ -1,19 +1,21 @@
 // Bootstrap imports
 require('./bootstrap-md.min.css');
 
+// Parsing library
+const suplParser = require('./supl_parser');
+
 // Webpack imports
 require('./index.html');
 require('./style.css');
 require('./style.js');
 require('./favicon.png');
 
+const $ = require('cash-dom');
+const Cookies = require('js-cookie');
 
-let $ = require('cash-dom');
-let Cookies = require('js-cookie');
-
-let dfnsFormat = require('date-fns/format');
-let dfnsIsEqual = require('date-fns/is_equal');
-let dfnsCompareAsc = require('date-fns/compare_asc');
+const dfnsFormat = require('date-fns/format');
+const dfnsIsEqual = require('date-fns/is_equal');
+const dfnsCompareAsc = require('date-fns/compare_asc');
 
 const API_URL = 'https://zastupovani.herokuapp.com/api';
 const COOKIE_FILTER = 'trida';
