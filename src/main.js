@@ -1,12 +1,14 @@
 // Bootstrap imports
 require('./bootstrap-md.min.css');
 
+// Parsing library
+const suplParser = require('./supl_parser');
+
 // Webpack imports
 require('./index.html');
 require('./style.css');
 require('./style.js');
 require('./favicon.png');
-
 
 const $ = require('cash-dom');
 const Cookies = require('js-cookie');
