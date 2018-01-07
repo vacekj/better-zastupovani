@@ -2,7 +2,7 @@ const suplGetter = require('../src/supl_getter_node');
 const suplParser = require('../src/supl_parser');
 const expect = require('chai').expect;
 
-describe('Supl library - Unit', () => {
+describe('Supl library - Unit tests', () => {
 	it('Should get class list', (done) => {
 		suplGetter.getClasses()
 			.then((classesPage) => {
@@ -43,6 +43,5 @@ describe('Supl library - Unit', () => {
 					done(err);
 				});
 			}, done);
-
 	});
 });
