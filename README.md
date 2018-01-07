@@ -8,10 +8,3 @@ The current software in use at the link mentioned suffers from many flaws (and i
 
 ## Goal
 Provide a friendly and useful interface for anyone wanting to learn about the current changes in schedule, regardless of viewing environment. (mobile and desktop)
-
-
-## Feature list
-- Modern design
-- Filter entries by class
-
-The data used in Better Zastupovani is pulled directly from the old system, cached, and refreshed whenever a change is detected.

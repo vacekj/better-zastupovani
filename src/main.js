@@ -2,7 +2,6 @@
 require('./bootstrap-md.min.css');
 
 // Parsing library
-const suplParser = require('./supl_parser');
 const suplGetter = require('./supl_getter_browser');
 
 // Webpack imports
