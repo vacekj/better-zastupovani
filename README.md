@@ -12,6 +12,4 @@ Better Zastupovani is an open-source attempt to enhance the current Zastupovani 
 
 The current software in use suffers from many flaws (and is horribly outdated), which Better Zastupovani tries to correct.
 
-
-
 The data used in Better Zastupovani is pulled directly from the old system.
