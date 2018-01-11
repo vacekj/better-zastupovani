@@ -31,11 +31,6 @@ body > * {
 	margin: 20px 20px;
 }
 
-.row {
-	margin-right: 10px !important;
-	margin-left: 10px !important;
-}
-
 .container {
 	box-shadow: 0px 0px 10px grey;
 	height: 100%;
