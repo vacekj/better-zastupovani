@@ -25,17 +25,15 @@ body > * {
 
 .container {
 	height: 100% !important;
+	max-width: 1080px;
+	box-shadow: 0px 0px 10px grey;
+	height: 100%;
 	overflow: auto;
 }
 
 .logo {
 	font-family: Courgette;
 	margin: 20px 20px;
-}
-
-.container {
-	box-shadow: 0px 0px 10px grey;
-	height: 100%;
 }
 
 table thead {
