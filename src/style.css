@@ -3,7 +3,6 @@ Main color: #2d548d
 */
 
 @import url('https://fonts.googleapis.com/css?family=Courgette');
-
 #selector_date {
 	height: 34px;
 	margin: 0px 0px !important;
@@ -19,14 +18,14 @@ body {
 	background-color: #F5F7FE;
 }
 
-body > * {
+body>* {
 	background-color: white;
 }
 
 .container {
 	height: 100% !important;
 	max-width: 1080px;
-	box-shadow: 0px 0px 10px grey;
+	box-shadow: 0 0 30px #E1E2FA;
 	height: 100%;
 	overflow: auto;
 }
@@ -36,13 +35,23 @@ body > * {
 	margin: 20px 20px;
 }
 
-table thead {
-	border-top: 3px solid #2d548d;
+.form-control {
+	background-image: linear-gradient(0deg, #2d548d 2px, rgba(0, 150, 136, 0) 0), linear-gradient(0deg, rgba(0, 0, 0, .26) 1px, transparent 0);
+}
+
+label {
+	font-size: 0.8rem;
+	color: #2d548d !important;
+	margin-bottom: 0;
 }
 
 table {
-	background-color: white;
-	box-shadow: 2px 2px 5px grey;
+	box-shadow: rgb(225, 226, 250) 2px 2px 10px 0px;
+	border-style: hidden;
+}
+
+table thead {
+	border-top: 3px solid #2d548d;
 }
 
 table th {
@@ -55,16 +64,6 @@ table tr {
 
 table td:last-child() {
 	width: 100%;
-}
-
-.form-control {
-	background-image: linear-gradient(0deg, #2d548d 2px, rgba(0, 150, 136, 0) 0), linear-gradient(0deg, rgba(0, 0, 0, .26) 1px, transparent 0);
-}
-
-label {
-	font-size: 0.8rem;
-	color: #2d548d !important;
-	margin-bottom: 0;
 }
 
 /* 
