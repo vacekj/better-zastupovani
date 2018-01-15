@@ -8,12 +8,12 @@ require('./style.js');
 require('./favicon.png');
 
 
-let $ = require('cash-dom');
-let Cookies = require('js-cookie');
+const $ = require('cash-dom');
+const Cookies = require('js-cookie');
 
-let dfnsFormat = require('date-fns/format');
-let dfnsIsEqual = require('date-fns/is_equal');
-let dfnsCompareAsc = require('date-fns/compare_asc');
+const dfnsFormat = require('date-fns/format');
+const dfnsIsEqual = require('date-fns/is_equal');
+const dfnsCompareAsc = require('date-fns/compare_asc');
 
 const API_URL = 'https://zastupovani.herokuapp.com/api';
 const COOKIE_FILTER = 'trida';
@@ -33,16 +33,14 @@ $(() => {
 	// Remember filter
 	let filterCookie = Cookies.get(COOKIE_FILTER);
 	if (filterCookie !== undefined && filterCookie !== '') {
-		let newState = Object.assign(getState(), {
+		setState({
 			currentFilter: filterCookie
 		});
-		setState(newState);
 	}
 
 	// Update state from server
 	showLoadingIndicator();
 	getStateFromServer().then((state) => {
-		// overwrite state
 		setState(state);
 	}).catch((err) => {
 		console.log(err);
