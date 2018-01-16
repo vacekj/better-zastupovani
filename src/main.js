@@ -103,6 +103,36 @@ function render() {
 	renderFilter();
 	renderDates();
 	renderSuplovani();
+	renderMissings();
+}
+
+function renderMissings() {
+	// clear the table
+	$('#table_missings > tbody').empty();
+	let contentToAppend = '';
+	const noMissings = `<tr>
+	<td colspan="9">Žádní chybějící</td>
+	</tr>
+	`;
+
+	let missings = formatMissingsArray(getMissings().chybejici).map((missing) => missingToTimetableRow(missing));
+
+	contentToAppend = missings.length ? missings : noMissings;
+
+	$('#table_missings > tbody').append(contentToAppend);
+}
+
+function getMissings() {
+	let suplovani = getState().suplovani;
+	if (!suplovani) {
+		return [];
+	}
+	let currentSuplovani = getSuplovaniForSelectedDate(getState().suplovani, getState().currentDate);
+	if (!currentSuplovani) {
+		return [];
+	}
+
+	return currentSuplovani;
 }
 
 function renderSuplovani() {
@@ -153,7 +183,8 @@ function suplovaniRowContainsString(suplovaniRow, filter) {
 
 function SuplovaniRowToTrs(suplovaniRow) {
 	return suplovaniRow.map((element) => {
-		return `<tr>
+		// Use String.raw to strip control chars such as /n or /t
+		return removeControlChars(`<tr>
 			<td>${element.hodina}</td>
 			<td>${element.trida}</td>
 			<td>${element.predmet}</td>
@@ -163,7 +194,7 @@ function SuplovaniRowToTrs(suplovaniRow) {
 			<td>${element.zastup}</td>
 			<td>${element.pozn}</td>
 		</tr>
-		`;
+		`);
 	});
 }
 
@@ -200,13 +231,142 @@ function renderFilter() {
 
 // Loading indicator
 function showLoadingIndicator() {
-	let indicator = `
+	let indicator = (colspan) => `
 	<tr>
-		<td colspan="8">
+		<td colspan="${colspan}">
 			<svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
 				<circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg>
 		</td>
 	</tr>`;
 
-	$('tbody').append(indicator);
+	$('#table_suplovani > tbody').append(indicator(8));
+	$('#table_missings > tbody').append(indicator(9));
+}
+
+function formatMissingsArray(missingsArray) {
+	// dedupe and format missing array
+	// TODO: move this to parser
+	let dedupedArray = [];
+
+	missingsArray.map((missing) => {
+		let index = includesObjectWithProp(dedupedArray, 'kdo', missing.kdo);
+		if (index !== -1) {
+			let originalObject = dedupedArray[index];
+			dedupedArray[index] = Object.assign(originalObject, {
+				schedule: Object.assign(originalObject.schedule, rangeToSchedule(missing.range))
+			});
+
+		} else {
+			dedupedArray.push({
+				kdo: missing.kdo,
+				schedule: rangeToSchedule(missing.range)
+			});
+		}
+	});
+
+	return dedupedArray;
+}
+
+/**
+ * ["1", "3"] to {1: false, 2: false, 3: false, 4: true}
+ * 
+ * @param {String[]} range 
+ */
+function rangeToSchedule(range) {
+	// no range -> full 8 hours
+	if (range === null) {
+		return {
+			1: false,
+			2: false,
+			3: false,
+			4: false,
+			5: false,
+			6: false,
+			7: false,
+			8: false
+		};
+	}
+
+	// single hour
+	if ((range.length == 1) || (range[0] == range[1])) {
+		let defaultObject = {
+			1: true,
+			2: true,
+			3: true,
+			4: true,
+			5: true,
+			6: true,
+			7: true,
+			8: true
+		};
+		defaultObject[range[0]] = false;
+		return defaultObject;
+	}
+	else { //first and last hour of absence
+		var obj = {};
+		// until first hour of absence
+		for (let hour = 1; hour < range[0]; hour++) {
+			obj[hour] = true;
+		}
+
+		// absence hours
+		for (let hour = range[0]; hour <= range[1]; hour++) {
+			obj[hour] = false;
+		}
+
+		// after absence
+		for (let hour = parseInt(range[1]) + 1; hour <= 8; hour++) {
+			obj[hour] = true;
+		}
+
+		return obj;
+	}
+}
+
+/**
+ * 
+ * Returns index if found
+ * @param {any} arr 
+ * @param {any} prop 
+ * @returns 
+ */
+function includesObjectWithProp(arr, prop, value) {
+	for (var i = 0; i < arr.length; i++) {
+		if (arr[i][prop] == value) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+/**
+ * 
+ * 
+ * @param {Object} missing 
+ */
+function missingToTimetableRow(missing) {
+	let cells = [];
+
+	for (const hour in missing.schedule) {
+		cells.push(`<td class="${missing.schedule[hour] ? 'present' : 'absent'}">${hour}</td>`);
+	}
+
+	let row = `
+		<tr>
+			<td>${missing.kdo}</td>
+			${cells.join('')}
+		</tr >
+	`;
+
+	return removeControlChars(row);
+}
+
+/**
+ * Removes control characters
+ * 
+ * @param {any} s 
+ * @returns 
+ */
+function removeControlChars(s) {
+	return s.replace(/[\n\r\t]/g, '');
 }

@@ -4,7 +4,7 @@ let $ = require('cash-dom');
 let headers = [];
 
 $(() => {
-	$('th').each((th, index) => {
+	$('#suplovani_table > th').each((th, index) => {
 		let originalText = th.innerText;
 		let newText = originalText.slice(0, 4);
 
@@ -23,4 +23,4 @@ let eventHandler = (th) => {
 	}).originalText;
 };
 
-$('th').one('touch', eventHandler).one('click', eventHandler).one('mouseover', eventHandler);
+$('#suplovani_table > th').one('touch', eventHandler).one('click', eventHandler).one('mouseover', eventHandler);

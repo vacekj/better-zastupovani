@@ -58,12 +58,28 @@ table th {
 	text-align: center;
 }
 
+table td {
+	text-align: center;
+}
+
 table tr {
 	white-space: nowrap;
 }
 
 table td:last-child() {
 	width: 100%;
+}
+
+.present {
+	background-color: green;
+	color: white;
+	font-weight: bold;
+}
+
+.absent {
+	background-color: red;
+	color: white;
+	font-weight: bold;
 }
 
 /* 
