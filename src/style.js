@@ -2,7 +2,7 @@
 
 let $ = require('cash-dom');
 let headers = [];
-
+// Trigger build
 $(() => {
 	$('#suplovani_table > th').each((th, index) => {
 		let originalText = th.innerText;
