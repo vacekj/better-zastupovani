@@ -40,12 +40,23 @@ $(() => {
 
 	// Update state from server
 	showLoadingIndicator();
+	setInputsDisabled(true);
 	getStateFromServer().then((state) => {
 		setState(state);
+		setInputsDisabled(false);
 	}).catch((err) => {
 		console.log(err);
 	});
 });
+
+function setInputsDisabled(value) {
+	let collection = $('#selector_filter').add('#selector_date');
+	if (value) {
+		collection.attr('disabled', true);
+	} else {
+		collection.removeAttr('disabled');
+	}
+}
 
 function setState(newState, overwrite) {
 	if (overwrite) {
