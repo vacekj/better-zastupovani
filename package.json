@@ -9,9 +9,11 @@
 		"js-cookie": "^2.1.4"
 	},
 	"devDependencies": {
+		"clean-webpack-plugin": "^0.1.17",
 		"compression-webpack-plugin": "^1.0.0",
 		"css-loader": "^0.28.7",
 		"exports-loader": "^0.6.4",
+		"extract-text-webpack-plugin": "^3.0.2",
 		"file-loader": "^0.11.2",
 		"imports-loader": "^0.7.1",
 		"resolve-url-loader": "^2.1.0",

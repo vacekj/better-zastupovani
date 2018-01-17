@@ -18,31 +18,36 @@
 
 		gtag('config', 'UA-111548982-1');
 	</script>
+	<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 	<div class="container">
 		<div class="row">
-			<div class="col-md-12 text-center logo">
-				<h1>Zastupování 2.0</h1>
+			<div class="col-md-3">
+				<a href="http://www.gytool.cz" class="float-left p-2 backlink">Gytool.cz</a>
+			</div>
+			<div class="col-md-12 text-center">
+				<h1 class="logo">Zastupování</h1>
 			</div>
 		</div>
-		<div class="row justify-content-center">
-			<fieldset class="col-md-6 form-group">
+		<h5>Zastupování</h5>
+		<div class="form-row justify-content-center">
+			<fieldset class="col-md-4 form-group">
 				<label for="selector_date" class="bmd-label-floating">Datum</label>
 				<input class="form-control" type="date" name="selector_date" id="selector_date">
 			</fieldset>
-			<fieldset class="col-md-6 form-group">
+			<fieldset class="col-md-8 form-group">
 				<label for="selector_filter" class="bmd-label-floating">Filtr</label>
-				<input type="text" class="form-control" name="selector_filter" id="selector_filter">
+				<input type="text" class="form-control" name="selector_filter" id="selector_filter" placeholder="Třída, učitel...">
 			</fieldset>
 		</div>
 		<div class="row justify-content-center text-center">
 			<div class="col-md-12 table-responsive">
 				<table class="table table-bordered table-sm table-striped table-hover" id="table_suplovani">
-					<thead class="text-center">
+					<thead>
 						<tr>
-							<th>Hodina</th>
+							<th>#</th>
 							<th>Třída</th>
 							<th>Předmět</th>
 							<th>Učebna</th>
@@ -50,6 +55,31 @@
 							<th>Vyučující</th>
 							<th>Zastupující</th>
 							<th>Poznámka</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<hr>
+		<div class="row">
+			<div class="col-md-12">
+				<h5>Chybějící</h5>
+				<h6 class="float-left present p-2">Přítomný</h6>
+				<h6 class="float-left absent p-2">Chybějící</h6>
+				<table id="table_missings" class="table table-bordered table-sm table-striped table-hover">
+					<thead>
+						<tr>
+							<th>Kdo</th>
+							<th>1</th>
+							<th>2</th>
+							<th>3</th>
+							<th>4</th>
+							<th>5</th>
+							<th>6</th>
+							<th>7</th>
+							<th>8</th>
 						</tr>
 					</thead>
 					<tbody>
