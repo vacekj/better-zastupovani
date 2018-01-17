@@ -70,16 +70,24 @@ table td:last-child() {
 	width: 100%;
 }
 
-.present {
-	background-color: green;
+.present, .absent {
 	color: white;
 	font-weight: bold;
 }
 
+.present {
+	background-color: #2d548d;
+
+}
+
 .absent {
-	background-color: red;
+	background-color: gray;
+}
+
+.backlink {
+	background-color: #2d548d;
 	color: white;
-	font-weight: bold;
+	border-radius: 0px 0px 5px 5px;
 }
 
 /* 
