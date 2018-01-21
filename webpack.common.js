@@ -12,16 +12,14 @@ module.exports = {
 		rules: [
 			{
 				test: /\.(html)$/,
-				use: [
-					{
-						loader: 'file-loader',
-						options: {
-							context: path.resolve(__dirname, 'src'),
-							outputPath: '',
-							name: '[name].[ext]',
-						}
+				use: [{
+					loader: 'file-loader',
+					options: {
+						context: path.resolve(__dirname, 'src'),
+						outputPath: '',
+						name: '[name].[ext]',
 					}
-				]
+				}]
 			},
 			{
 				test: /\.(png|jpg|gif)$/,

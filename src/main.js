@@ -247,7 +247,9 @@ function formatMissingsArray(missingsArray) {
 	// dedupe and format missing array
 	// TODO: move this to parser
 	let dedupedArray = [];
-
+	if (!missingsArray || missingsArray.length == 0) {
+		return [];
+	}
 	missingsArray.map((missing) => {
 		let index = includesObjectWithProp(dedupedArray, 'kdo', missing.kdo);
 		if (index !== -1) {
