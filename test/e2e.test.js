@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const expect = require('chai').expect;
+const sha = require('sha1');
 
 const connect = require('connect');
 const serveStatic = require('serve-static');
@@ -30,12 +31,56 @@ before((done) => {
 });
 
 describe('Basic layout', () => {
-	it('should display date picker', async () => {
-		await page.waitForSelector(test('datePicker'));
+	describe('Date picker', () => {
+		it('should display date picker', async () => {
+			await page.waitForSelector(test('datePicker'));
+		});
+
+		it('should display loading indicator until data is loaded', async () => {
+			await page.waitForSelector(test('loadingIndicator'));
+		});
+
+		it('should disable date picker until data is loaded', async () => {
+			await page.waitForSelector(test('datePicker') + '[disabled="true"]');
+		});
+		// TODO: finish this test when date selector is basic select
+		// it('should change data on date change', async () => {
+		// 	await page.waitForSelector(test('suplovaniTable') + '> tbody > tr');
+		// 	let datePicker = await page.$(test('datePicker'));
+		// 	let currentSuplovani = await page.$(test('suplovaniTable')).then(el => el.getProperty('innerHTML'));
+		// 	let currentHash = sha(JSON.stringify(currentSuplovani));
+		// 	await datePicker.focus();
+		// 	await datePicker.type('ArrowUp');
+		// 	let newSuplovani = await page.$(test('suplovaniTable')).toString();
+		// 	let newHash = sha(JSON.stringify(newSuplovani));
+		// 	expect(currentHash).to.not.equal(newHash);
+		// });
 	});
-	it('should display filter textbox', async () => {
-		await page.waitForSelector(test('filterTextbox'));
+
+	describe('Filter textbot', () => {
+		it('should display filter textbox', async () => {
+			await page.waitForSelector(test('filterTextbox'));
+		});
+
+		it('should display filtered data on filter change', async () => {
+			await page.waitForSelector(test('suplovaniTable') + '> tbody > tr');
+			let filterTextbox = await page.$(test('filterTextbox'));
+
+			let suplovaniTable = await page.$(test('suplovaniTable'));
+			let currentSuplovani = await suplovaniTable.getProperty('innerHTML');
+			let currentHash = sha(currentSuplovani);
+
+			let randomFilter = await page.evaluate(() => document.querySelectorAll('[data-test="suplovaniTable"] > tbody > tr > td:nth-child(2)')[0].innerText);
+			await filterTextbox.type(randomFilter);
+
+			let newSuplovani = await suplovaniTable.getProperty('innerHTML');
+			let newHash = sha(newSuplovani);
+			expect(currentHash).to.not.equal(newHash);
+			// TODO: Check if all filtered rows contain the filtered phrase
+		});
 	});
+
+
 });
 
 after(async (done) => {
