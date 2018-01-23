@@ -33,7 +33,8 @@
 	"scripts": {
 		"build": "webpack --config webpack.prod.js",
 		"dev": "webpack-dev-server --open --config webpack.dev.js",
-		"test": "npm run build && mocha"
+		"test": "npm run build && mocha",
+		"prepush": "npm run test"
 	},
 	"repository": {
 		"type": "git",
