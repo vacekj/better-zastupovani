@@ -49,15 +49,6 @@ $(() => {
 	});
 });
 
-function setInputsDisabled(value) {
-	let collection = $('#selector_filter').add('#selector_date');
-	if (value) {
-		collection.attr('disabled', true);
-	} else {
-		collection.removeAttr('disabled');
-	}
-}
-
 function setState(newState, overwrite) {
 	if (overwrite) {
 		window.state = newState;
@@ -138,6 +129,7 @@ function getMissings() {
 function renderSuplovani() {
 	// clear the table
 	$('#table_suplovani > tbody').empty();
+
 	let contentToAppend = '';
 	const noSupl = `<tr>
 	<td colspan="8">Žádné suplování</td>
@@ -152,26 +144,25 @@ function renderSuplovani() {
 
 function getSelectedSuplovani() {
 	let suplovani = getState().suplovani;
+
 	if (!suplovani) {
 		return [];
 	}
+
 	let currentSuplovani = getSuplovaniForSelectedDate(getState().suplovani, getState().currentDate);
 	if (!currentSuplovani) {
 		return [];
 	}
+
 	let filter = getState().currentFilter.trim();
-	return filterSuplovani(currentSuplovani.suplovani, filter);
+	return suplovani.filter((elem) => {
+		return suplovaniRowContainsString(elem, filter);
+	});
 }
 
 function getSuplovaniForSelectedDate(suplovani, date) {
 	return suplovani.find((supl) => {
 		return dfnsIsEqual(dfnsFormat(supl.date, 'YYYY-MM-DD'), date);
-	});
-}
-
-function filterSuplovani(suplovani, filter) {
-	return suplovani.filter((elem) => {
-		return suplovaniRowContainsString(elem, filter);
 	});
 }
 
@@ -243,9 +234,13 @@ function showLoadingIndicator() {
 	$('#table_missings > tbody').append(indicator(9));
 }
 
+/**
+ * Dedupe and format missings array
+ * TODO: move this to parser
+ * @param {Array} missingsArray 
+ * @returns 
+ */
 function formatMissingsArray(missingsArray) {
-	// dedupe and format missing array
-	// TODO: move this to parser
 	let dedupedArray = [];
 	if (!missingsArray || missingsArray.length == 0) {
 		return [];
@@ -270,9 +265,11 @@ function formatMissingsArray(missingsArray) {
 }
 
 /**
+ * Convert hour range to full schedule object
  * ["1", "3"] to {1: false, 2: false, 3: false, 4: true}
  * 
- * @param {String[]} range 
+ * @param {[string, string]} range 
+ * @returns {{1: boolean, 2: boolean, 3: boolean, 4: boolean, 5: boolean, 6: boolean, 7: boolean, 8: boolean}}
  */
 function rangeToSchedule(range) {
 	// no range -> full 8 hours
@@ -326,11 +323,12 @@ function rangeToSchedule(range) {
 }
 
 /**
- * 
+ * Searches an array of objects for an object with a specified prop
  * Returns index if found
- * @param {any} arr 
- * @param {any} prop 
- * @returns 
+ * @param {Array} arr 
+ * @param {String} prop 
+ * @param {any} value
+ * @returns {number} Index of the desired object, -1 if not present
  */
 function includesObjectWithProp(arr, prop, value) {
 	for (var i = 0; i < arr.length; i++) {
@@ -364,11 +362,26 @@ function missingToTimetableRow(missing) {
 }
 
 /**
- * Removes control characters
+ * Removes control characters from a string
  * 
- * @param {any} s 
- * @returns 
+ * @param {String} s
+ * @returns {String}
  */
 function removeControlChars(s) {
 	return s.replace(/[\n\r\t]/g, '');
+}
+
+/**
+ * Disables user input
+ * Used for blocking user input until data is loadedk
+ * 
+ * @param {boolean} value
+ */
+function setInputsDisabled(value) {
+	let collection = $('#selector_filter').add('#selector_date');
+	if (value) {
+		collection.attr('disabled', true);
+	} else {
+		collection.removeAttr('disabled');
+	}
 }
