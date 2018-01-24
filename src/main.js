@@ -159,7 +159,7 @@ function getSelectedSuplovani() {
 	if (!currentSuplovani) {
 		return [];
 	}
-	let filter = getState().currentFilter;
+	let filter = getState().currentFilter.trim();
 	return filterSuplovani(currentSuplovani.suplovani, filter);
 }
 
