@@ -155,7 +155,7 @@ function getSelectedSuplovani() {
 	}
 
 	let filter = getState().currentFilter.trim();
-	return suplovani.filter((elem) => {
+	return currentSuplovani.suplovani.filter((elem) => {
 		return suplovaniRowContainsString(elem, filter);
 	});
 }
