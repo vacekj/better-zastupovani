@@ -174,7 +174,6 @@ function suplovaniRowContainsString(suplovaniRow, filter) {
 
 function SuplovaniRowToTrs(suplovaniRow) {
 	return suplovaniRow.map((element) => {
-		// Use String.raw to strip control chars such as /n or /t
 		return removeControlChars(`<tr>
 			<td>${element.hodina}</td>
 			<td>${element.trida}</td>

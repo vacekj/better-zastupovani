@@ -80,7 +80,7 @@ describe('Basic layout', () => {
 		});
 	});
 
-
+	// TODO: check if displayed data looks like classes, hours etc. (prevent the 'undefined' bug)
 });
 
 after(async (done) => {
