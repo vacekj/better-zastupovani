@@ -95,6 +95,24 @@ function render() {
 	renderDates();
 	renderSuplovani();
 	renderMissings();
+	renderNahradniUcebny();
+}
+
+function renderNahradniUcebny() {
+	// clear the table
+	$('#table_nahradniUcebny > tbody').empty();
+	let contentToAppend = '';
+	const noMissings = `<tr>
+	<td colspan="9">Žádní náhradní učebny</td>
+	</tr>
+	`;
+	let currentSupl = getSuplovaniForSelectedDate(getState().suplovani, getState().currentDate);
+	
+	let nahUcebny = currentSupl ? currentSupl.nahradniUcebny.map(nahradniUcebnaToRow) : [];
+
+	contentToAppend = nahUcebny.length ? nahUcebny : noMissings;
+
+	$('#table_nahradniUcebny > tbody').append(contentToAppend);
 }
 
 function renderMissings() {
@@ -106,7 +124,7 @@ function renderMissings() {
 	</tr>
 	`;
 
-	let missings = formatMissingsArray(getMissings().chybejici).map((missing) => missingToTimetableRow(missing));
+	let missings = formatMissingsArray(getMissings().chybejici).map(missingToTimetableRow);
 
 	contentToAppend = missings.length ? missings : noMissings;
 
@@ -160,7 +178,7 @@ function getSelectedSuplovani() {
 	});
 }
 
-function getSuplovaniForSelectedDate(suplovani, date) {
+function getSuplovaniForSelectedDate(suplovani = getState().suplovani, date = getState().currentDate) {
 	return suplovani.find((supl) => {
 		return dfnsIsEqual(dfnsFormat(supl.date, 'YYYY-MM-DD'), date);
 	});
@@ -358,6 +376,19 @@ function missingToTimetableRow(missing) {
 	`;
 
 	return removeControlChars(row);
+}
+
+function nahradniUcebnaToRow(nah) {
+		return removeControlChars(`<tr>
+			<td>${nah.hodina}</td>
+			<td>${nah.trida}</td>
+			<td>${nah.predmet}</td>
+			<td>${nah.chybucebna}</td>
+			<td>${nah.nahucebna}</td>
+			<td>${nah.vyuc}</td>
+			<td>${nah.pozn}</td>
+		</tr>
+		`);
 }
 
 /**
