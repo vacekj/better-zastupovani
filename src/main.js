@@ -64,7 +64,7 @@ function getState() {
 function getStateFromServer() {
 	return new Promise((resolve, reject) => {
 		fetch(API_URL).then((result) => {
-			result.text();
+			return result.json();
 		}).then((res) => {
 			resolve({
 				suplovani: res.suplovani
