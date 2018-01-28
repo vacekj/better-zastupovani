@@ -1,12 +1,14 @@
 // Bootstrap imports
 require('./bootstrap-md.min.css');
 
+// Parsing library
+const suplGetter = require('./supl_getter_browser');
+
 // Webpack imports
 require('./index.html');
 require('./style.css');
 require('./style.js');
 require('./favicon.png');
-
 
 const $ = require('cash-dom');
 const Cookies = require('js-cookie');
@@ -15,7 +17,6 @@ const dfnsFormat = require('date-fns/format');
 const dfnsIsEqual = require('date-fns/is_equal');
 const dfnsCompareAsc = require('date-fns/compare_asc');
 
-const API_URL = 'https://zastupovani.herokuapp.com/api';
 const COOKIE_FILTER = 'trida';
 
 // Create global state
@@ -64,12 +65,9 @@ function getState() {
 
 function getStateFromServer() {
 	return new Promise((resolve, reject) => {
-		fetch(API_URL + '/data')
-			.then((res) => {
-				res.json().then((data) => {
-					resolve({ suplovani: data.suplovani });
-				}, reject);
-			});
+		suplGetter.getSuplovaniForAllDates().then((supl) => {
+			resolve({ suplovani: supl });
+		});
 	});
 }
 

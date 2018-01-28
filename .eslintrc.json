@@ -1,12 +1,11 @@
 {
-    "env": {
+	"env": {
 		"es6": true,
-		"jquery": true,
 		"browser": true,
 		"mocha": true,
 		"commonjs": true,
 		"node": true
-    },
+	},
 	"extends": [
 		"google",
 		"eslint:recommended"
