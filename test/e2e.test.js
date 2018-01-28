@@ -57,28 +57,33 @@ describe('Basic layout', () => {
 		// });
 	});
 
-	describe('Filter textbot', () => {
-		it('should display filter textbox', async () => {
-			await page.waitForSelector(test('filterTextbox'));
-		});
+	// TODO: finish this when dateSelector is normal select
 
-		it('should display filtered data on filter change', async () => {
-			await page.waitForSelector(test('suplovaniTable') + '> tbody > tr');
-			let filterTextbox = await page.$(test('filterTextbox'));
+	// describe('Filter textbox', () => {
+	// 	it('should display filter textbox', async () => {
+	// 		await page.waitForSelector(test('filterTextbox'));
+	// 	});
 
-			let suplovaniTable = await page.$(test('suplovaniTable'));
-			let currentSuplovani = await suplovaniTable.getProperty('innerHTML');
-			let currentHash = sha(currentSuplovani);
+	// 	it('should display filtered data on filter change', async () => {
+	// 		while (await page.waitForSelector(test('suplovaniTable') + '> tbody > tr > td[colspan]')) {
+	// 			await nextDate();
+	// 		}
 
-			let randomFilter = await page.evaluate(() => document.querySelectorAll('[data-test="suplovaniTable"] > tbody > tr > td:nth-child(2)')[0].innerText);
-			await filterTextbox.type(randomFilter);
+	// 		let suplovaniTable = await page.$(test('suplovaniTable'));
+	// 		let currentSuplovani = await suplovaniTable.getProperty('innerHTML');
 
-			let newSuplovani = await suplovaniTable.getProperty('innerHTML');
-			let newHash = sha(newSuplovani);
-			expect(currentHash).to.not.equal(newHash);
-			// TODO: Check if all filtered rows contain the filtered phrase
-		});
-	});
+	// 		let filterTextbox = await page.$(test('filterTextbox'));
+	// 		let currentHash = sha(currentSuplovani);
+
+	// 		let randomFilter = await page.evaluate(() => document.querySelectorAll('[data-test="suplovaniTable"] > tbody > tr > td:nth-child(2)')[0].innerText);
+	// 		await filterTextbox.type(randomFilter);
+
+	// 		let newSuplovani = await suplovaniTable.getProperty('innerHTML');
+	// 		let newHash = sha(newSuplovani);
+	// 		expect(currentHash).to.not.equal(newHash);
+	// 		// TODO: Check if all filtered rows contain the filtered phrase
+	// 	});
+	// });
 
 	// TODO: check if displayed data looks like classes, hours etc. (prevent the 'undefined' bug)
 });
@@ -87,3 +92,10 @@ after(async (done) => {
 	await browser.close();
 	process.exit();
 });
+
+async function nextDate() {
+	const datePicker = await page.waitForSelector(test('datePicker'));
+	page.evaluate(() => {
+		document.querySelector('#selector_date').stepUp();
+	});
+}

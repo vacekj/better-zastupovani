@@ -6,4 +6,4 @@ node_modules
 npm-debug.log
 
 # Dist folder - for deploy purposes, it is built on TravisCI
-dist
+dist/

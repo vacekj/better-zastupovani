@@ -81,13 +81,13 @@ function registerEventHandlers() {
 		});
 		Cookies.set(COOKIE_FILTER, newValue);
 	});
-
-	$('#selector_date').on('change', function () {
+	const dateHandler = function () {
 		let newValue = this.value;
 		setState({
 			currentDate: newValue
 		});
-	});
+	};
+	$('#selector_date').on('change', dateHandler).on('input', dateHandler);
 }
 
 function render() {
@@ -107,7 +107,7 @@ function renderNahradniUcebny() {
 	</tr>
 	`;
 	let currentSupl = getSuplovaniForSelectedDate(getState().suplovani, getState().currentDate);
-	
+
 	let nahUcebny = currentSupl ? currentSupl.nahradniUcebny.map(nahradniUcebnaToRow) : [];
 
 	contentToAppend = nahUcebny.length ? nahUcebny : noMissings;
@@ -379,7 +379,7 @@ function missingToTimetableRow(missing) {
 }
 
 function nahradniUcebnaToRow(nah) {
-		return removeControlChars(`<tr>
+	return removeControlChars(`<tr>
 			<td>${nah.hodina}</td>
 			<td>${nah.trida}</td>
 			<td>${nah.predmet}</td>
