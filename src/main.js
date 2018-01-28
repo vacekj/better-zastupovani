@@ -249,6 +249,7 @@ function showLoadingIndicator() {
 
 	$('#table_suplovani > tbody').append(indicator(8));
 	$('#table_missings > tbody').append(indicator(9));
+	$('#table_nahradniUcebny > tbody').append(indicator(7));
 }
 
 /**
