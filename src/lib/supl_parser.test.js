@@ -1,5 +1,5 @@
-const suplGetter = require('../src/supl_getter_node');
-const suplParser = require('../src/supl_parser');
+const suplGetter = require('./supl_getter_node');
+const suplParser = require('./supl_parser');
 const expect = require('chai').expect;
 
 describe('Supl library - Unit tests', () => {
