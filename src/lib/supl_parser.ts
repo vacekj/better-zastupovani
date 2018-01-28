@@ -1,8 +1,8 @@
 const cheerio = require('cheerio');
-const dfnsFormat = require('date-fns/format');
+const dfnsFormatt = require('date-fns/format');
 const array2d = require('array2d');
 
-function parseClassesPage(classesPage) {
+function parseClassesPage(classesPage: string): Array<string> {
 	const $ = cheerio.load(classesPage);
 	let options = $('option');
 	let values = options.map((i, option) => {
@@ -12,19 +12,28 @@ function parseClassesPage(classesPage) {
 	return classes;
 }
 
-function parseDatesPage(datesPage) {
+type SuplovaniPageDate = {
+	url: string;
+	date: string;
+};
+
+function parseDatesPage(datesPage: string): [SuplovaniPageDate] {
 	const $ = cheerio.load(datesPage);
 	let options = $('option');
 	let data = options.map((i, option) => {
 		return {
 			url: $(option).attr('value'),
-			date: dfnsFormat($(option).attr('value').slice(7, 17), 'YYYY-MM-DD'),
+			date: dfnsFormatt($(option).attr('value').slice(7, 17), 'YYYY-MM-DD'),
 		};
 	});
 	return data.toArray();
 }
 
-function parseSuplovani(suplovaniPage) {
+function parseSuplovani(suplovaniPage): {
+	chybejici: Array<ChybejiciRow>,
+	suplovani: Array<SuplRow>,
+	nahradniUcebny: Array<NahradniUcebnyRow>
+} {
 	const $ = cheerio.load(suplovaniPage);
 
 	let result = {
@@ -74,6 +83,8 @@ function parseSuplovani(suplovaniPage) {
 }
 
 class ChybejiciRow {
+	kdo: string;
+	range: [string];
 	constructor(kdo, range) {
 		this.kdo = kdo;
 		this.range = range;
@@ -81,6 +92,15 @@ class ChybejiciRow {
 }
 
 class SuplRow {
+	hodina: string;
+	trida: string;
+	predmet: string;
+	ucebna: string;
+	nahucebna: string;
+	vyuc: string;
+	zastup: string;
+	pozn: string;
+
 	constructor(hodina, trida, predmet, ucebna, nahucebna, vyuc, zastup, pozn) {
 		this.hodina = hodina;
 		this.trida = trida;
@@ -94,6 +114,13 @@ class SuplRow {
 }
 
 class NahradniUcebnyRow {
+	hodina: string;
+	trida: string;
+	predmet: string;
+	chybucebna: string;
+	nahucebna: string;
+	vyuc: string;
+	pozn: string;
 	constructor(hodina, trida, predmet, chybucebna, nahucebna, vyuc, pozn) {
 		this.hodina = hodina;
 		this.trida = trida;
@@ -105,11 +132,7 @@ class NahradniUcebnyRow {
 	}
 }
 
-function parseTable($, context, dupCols, dupRows, textMode) {
-	if (dupCols === undefined) dupCols = false;
-	if (dupRows === undefined) dupRows = false;
-	if (textMode === undefined) textMode = false;
-
+function parseTable($, context, dupCols = false, dupRows = false, textMode = false): Array<Array<string>> {
 	var columns = [],
 		curr_x = 0,
 		curr_y = 0;
@@ -156,4 +179,4 @@ function parseTable($, context, dupCols, dupRows, textMode) {
 	return columns;
 }
 
-module.exports = { parseDatesPage, parseSuplovani, ChybejiciRow, SuplRow, NahradniUcebnyRow, parseClassesPage};
+module.exports = { parseDatesPage, parseSuplovani, ChybejiciRow, SuplRow, NahradniUcebnyRow, parseClassesPage };
