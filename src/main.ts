@@ -17,6 +17,17 @@ const dfnsCompareAsc = require('date-fns/compare_asc');
 const COOKIE_FILTER = 'trida';
 const API_URL = 'https://zastupovani.herokuapp.com/api/data';
 
+interface Window {
+	state: State;
+}
+
+type State = {
+	suplovani?: Array<any>,
+	classes?: Array<any>,
+	currentDate?: String
+	currentFilter?: String
+};
+
 // Create global state
 window.state = {
 	suplovani: [],
@@ -48,7 +59,7 @@ $(() => {
 	});
 });
 
-function setState(newState, overwrite) {
+function setState(newState: Partial<State>, overwrite = false): void {
 	if (overwrite) {
 		window.state = newState;
 	} else {
@@ -57,11 +68,11 @@ function setState(newState, overwrite) {
 	render();
 }
 
-function getState() {
+function getState(): State {
 	return window.state;
 }
 
-function getStateFromServer() {
+function getStateFromServer(): Promise<Partial<State>> {
 	return new Promise((resolve, reject) => {
 		fetch(API_URL).then((result) => {
 			return result.json();
@@ -73,7 +84,7 @@ function getStateFromServer() {
 	});
 }
 
-function registerEventHandlers() {
+function registerEventHandlers(): void {
 	$('#selector_filter').on('keyup', function () {
 		let newValue = this.value;
 		setState({
@@ -124,7 +135,9 @@ function renderMissings() {
 	</tr>
 	`;
 
-	let missings = formatMissingsArray(getMissings().chybejici).map(missingToTimetableRow);
+	let missings = formatMissingsArray(getMissings().chybejici).map(missingToTimetableRow).reduce((acc, row) => {
+		return acc + row;
+	}, '');
 
 	contentToAppend = missings.length ? missings : noMissings;
 
@@ -398,7 +411,7 @@ function nahradniUcebnaToRow(nah) {
  * @param {String} s
  * @returns {String}
  */
-function removeControlChars(s) {
+function removeControlChars(s: string) {
 	return s.replace(/[\n\r\t]/g, '');
 }
 
