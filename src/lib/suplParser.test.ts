@@ -1,8 +1,7 @@
-const suplGetter = require('./supl_getter_node');
-const suplParser = require('./supl_parser');
-const expect = require('chai').expect;
+import {  } from "./suplParser";
+import { expect } from "chai";
 
-describe('Supl library - Unit tests', () => {
+describe('suplParser - Integration Tests', () => {
 	it('Should get class list', (done) => {
 		suplGetter.getClasses()
 			.then((classesPage) => {
