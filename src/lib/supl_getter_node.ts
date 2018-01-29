@@ -1,10 +1,10 @@
+import { SuplGetter } from "./supl_getter";
+export class SuplGetterBrowser extends SuplGetter {
+
+}
+
 const request_ = require('request');
 const iconv = require('iconv-lite');
-const suplParser = require('./supl_parser');
-
-const URL_SUPL = 'http://suplovani.gytool.cz/';
-const URL_ROZVRH = 'http://rozvrh.gytool.cz/index_Trida_Menu.html';
-const URL_DATES = URL_SUPL + '!index_menu.html';
 
 function request(url, cb) {
 	request_({
@@ -49,23 +49,4 @@ function getSuplovani(date) {
 	});
 }
 
-function getSuplovaniForAllDates() {
-	return new Promise((resolve, reject) => {
-		getDatesPage().then(datesPage => {
-			const dates = suplParser.parseDatesPage(datesPage);
-
-			let promises = dates.map((date) => {
-				return getSuplovani(date);
-			});
-			let allPromises = Promise.all(promises);
-			allPromises.then((res) => {
-				let result = res.map((supl) => {
-					return Object.assign({}, supl.date, suplParser.parseSuplovani(supl));
-				});
-				resolve(result);
-			});
-		});
-	});
-}
-
-module.exports = { getClasses, getSuplovani, getDatesPage, getSuplovaniForAllDates };
+module.exports = { getClasses, getSuplovani, getDatesPage };

@@ -2,7 +2,13 @@ const cheerio = require('cheerio');
 const dfnsFormatt = require('date-fns/format');
 const array2d = require('array2d');
 
-function parseClassesPage(classesPage: string): Array<string> {
+/**
+ * Parses a classes page into an array of class strings
+ * 
+ * @param {string} classesPage 
+ * @returns {Array<string>} 
+ */
+export function parseClassesPage(classesPage: string): Array<string> {
 	const $ = cheerio.load(classesPage);
 	let options = $('option');
 	let values = options.map((i, option) => {
@@ -12,12 +18,22 @@ function parseClassesPage(classesPage: string): Array<string> {
 	return classes;
 }
 
-type SuplovaniPageDate = {
+export class DateWithUrl {
 	url: string;
 	date: string;
+	constructor(url: string, date: string) {
+		this.url = url;
+		this.date = date;
+	}
 };
 
-function parseDatesPage(datesPage: string): [SuplovaniPageDate] {
+/**
+ * Parses a dates page string into a SuplovaniPageDate array
+ * 
+ * @param {string} datesPage 
+ * @returns {[DateWithUrl]} 
+ */
+export function parseDatesPage(datesPage: string): [DateWithUrl] {
 	const $ = cheerio.load(datesPage);
 	let options = $('option');
 	let data = options.map((i, option) => {
@@ -35,8 +51,11 @@ function parseDatesPage(datesPage: string): [SuplovaniPageDate] {
  * @param {string} suplovaniPage 
  * @returns {SuplovaniPage} 
  */
-function parseSuplovani(suplovaniPage: string): SuplovaniPage {
+export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 	const $ = cheerio.load(suplovaniPage);
+
+	// Date
+	let date = $('.StyleZ3').first().text();
 
 	// Chybejici
 	let chybejiciRows = parseTable($, $('div:contains("Chybějící")').next())[0].slice(1);
@@ -80,21 +99,23 @@ function parseSuplovani(suplovaniPage: string): SuplovaniPage {
 		nahradniUcebnaRecords.push(new NahradniUcebnaRecord(row[0], row[1], row[2], row[3], row[4], row[5], row[6]));
 	});
 
-	return new SuplovaniPage(chybejiciTable, suplovaniRecords, nahradniUcebnaRecords);
+	return new SuplovaniPage(date, chybejiciTable, suplovaniRecords, nahradniUcebnaRecords);
 }
 
-class SuplovaniPage {
+export class SuplovaniPage {
 	chybejici: ChybejiciTable;
 	suplovani: Array<SuplovaniRecord>;
 	nahradniUcebny: Array<NahradniUcebnaRecord>;
-	constructor(chybejici: ChybejiciTable, suplovani: Array<SuplovaniRecord>, nahradniUcebny: Array<NahradniUcebnaRecord>) {
+	date: string
+	constructor(date: string, chybejici: ChybejiciTable, suplovani: Array<SuplovaniRecord>, nahradniUcebny: Array<NahradniUcebnaRecord>) {
 		this.chybejici = chybejici;
 		this.suplovani = suplovani;
 		this.nahradniUcebny = nahradniUcebny;
+		this.date = date;
 	}
 }
 
-class ChybejiciTable {
+export class ChybejiciTable {
 	ucitele: Array<ChybejiciRecord>;
 	tridy: Array<ChybejiciRecord>;
 	ucebny: Array<ChybejiciRecord>;
@@ -105,7 +126,7 @@ class ChybejiciTable {
 	}
 }
 
-class ChybejiciRecord {
+export class ChybejiciRecord {
 	kdo: string;
 	range: [string, string];
 	constructor(kdo: string, range: [string, string]) {
@@ -114,7 +135,7 @@ class ChybejiciRecord {
 	}
 }
 
-class SuplovaniRecord {
+export class SuplovaniRecord {
 	hodina: string;
 	trida: string;
 	predmet: string;
@@ -136,7 +157,7 @@ class SuplovaniRecord {
 	}
 }
 
-class NahradniUcebnaRecord {
+export class NahradniUcebnaRecord {
 	hodina: string;
 	trida: string;
 	predmet: string;
@@ -201,5 +222,3 @@ function parseTable($, context, dupCols = false, dupRows = false, textMode = fal
 
 	return columns;
 }
-
-module.exports = { parseDatesPage, parseSuplovani, ChybejiciRecord, SuplovaniRecord, NahradniUcebnaRecord, parseClassesPage };
