@@ -29,69 +29,92 @@ function parseDatesPage(datesPage: string): [SuplovaniPageDate] {
 	return data.toArray();
 }
 
-function parseSuplovani(suplovaniPage): {
-	chybejici: Array<ChybejiciRow>,
-	suplovani: Array<SuplRow>,
-	nahradniUcebny: Array<NahradniUcebnyRow>
-} {
+/**
+ * Parses a suplovani page string into a SuplovaniPage object
+ * 
+ * @param {string} suplovaniPage 
+ * @returns {SuplovaniPage} 
+ */
+function parseSuplovani(suplovaniPage: string): SuplovaniPage {
 	const $ = cheerio.load(suplovaniPage);
 
-	let result = {
-		chybejici: [],
-		suplovani: [],
-		nahradniUcebny: []
-	};
-
-	let correctedChybejiciArray = parseTable($, $('div:contains("Chybějící")').next())[0].slice(1);
-	correctedChybejiciArray.forEach((row) => {
-		// Parse the string
-		let parsedArray = row.split(', ');
-		parsedArray.some((elem) => {
+	// Chybejici
+	let chybejiciRows = parseTable($, $('div:contains("Chybějící")').next())[0].slice(1);
+	let chybejiciArray = chybejiciRows.map((row) => {
+		// split the row into individual missing records
+		let parsedRow = row.split(', ');
+		return parsedRow.map((elem) => {
 			let kdo = elem.split(' ')[0];
 			// check if range is present
 			if (!elem.includes(' ')) {
-				result.chybejici.push(new ChybejiciRow(kdo, null));
-				return true;
+				return new ChybejiciRecord(kdo, null);
 			}
-			let rangePart = elem.split(' ')[1];
-			let formatted = rangePart.replace('(', '').replace(')', '');
-			let range = Array(2);
+			// extract range part from string
+			let rangePart = elem.split(' ')[1].replace('(', '').replace(')', '');
+			let range: [string, string] = ['', ''];
 			// decide if range or only one hour: (1..2) or (2)
-			if (formatted.length == 1) {
+			if (rangePart.length == 1) {
 				// only one hour
-				range = [formatted, formatted];
+				range = [rangePart, rangePart];
 			} else {
 				// range of hours
-				let splitRange = formatted.split('..');
+				let splitRange = rangePart.split('..');
 				range = [splitRange[0], splitRange[1]];
 			}
-			result.chybejici.push(new ChybejiciRow(kdo, range));
+			return new ChybejiciRecord(kdo, range);
 		});
 	});
+	let chybejiciTable = new ChybejiciTable(chybejiciArray[0], chybejiciArray[1], chybejiciArray[2]);
 
+	// Suplovani
+	let suplovaniRecords: Array<SuplovaniRecord> = [];
 	let correctedSuplArray = array2d.transpose(parseTable($, $('div:contains("Suplování")').next())).slice(2);
 	array2d.eachRow(correctedSuplArray, (row) => {
-		result.suplovani.push(new SuplRow(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]));
+		suplovaniRecords.push(new SuplovaniRecord(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]));
 	});
 
+	// Nahradni ucebny
+	let nahradniUcebnaRecords: Array<NahradniUcebnaRecord> = [];
 	let correctedNahradniUcebnyArray = array2d.transpose(parseTable($, $('div:contains("Náhradní")').next())).slice(2);
 	array2d.eachRow(correctedNahradniUcebnyArray, (row) => {
-		result.nahradniUcebny.push(new NahradniUcebnyRow(row[0], row[1], row[2], row[3], row[4], row[5], row[6]));
+		nahradniUcebnaRecords.push(new NahradniUcebnaRecord(row[0], row[1], row[2], row[3], row[4], row[5], row[6]));
 	});
 
-	return result;
+	return new SuplovaniPage(chybejiciTable, suplovaniRecords, nahradniUcebnaRecords);
 }
 
-class ChybejiciRow {
+class SuplovaniPage {
+	chybejici: ChybejiciTable;
+	suplovani: Array<SuplovaniRecord>;
+	nahradniUcebny: Array<NahradniUcebnaRecord>;
+	constructor(chybejici: ChybejiciTable, suplovani: Array<SuplovaniRecord>, nahradniUcebny: Array<NahradniUcebnaRecord>) {
+		this.chybejici = chybejici;
+		this.suplovani = suplovani;
+		this.nahradniUcebny = nahradniUcebny;
+	}
+}
+
+class ChybejiciTable {
+	ucitele: Array<ChybejiciRecord>;
+	tridy: Array<ChybejiciRecord>;
+	ucebny: Array<ChybejiciRecord>;
+	constructor(ucitele: Array<ChybejiciRecord>, tridy: Array<ChybejiciRecord>, ucebny: Array<ChybejiciRecord>) {
+		this.ucitele = ucitele;
+		this.tridy = tridy;
+		this.ucebny = ucebny;
+	}
+}
+
+class ChybejiciRecord {
 	kdo: string;
-	range: [string];
-	constructor(kdo, range) {
+	range: [string, string];
+	constructor(kdo: string, range: [string, string]) {
 		this.kdo = kdo;
 		this.range = range;
 	}
 }
 
-class SuplRow {
+class SuplovaniRecord {
 	hodina: string;
 	trida: string;
 	predmet: string;
@@ -101,7 +124,7 @@ class SuplRow {
 	zastup: string;
 	pozn: string;
 
-	constructor(hodina, trida, predmet, ucebna, nahucebna, vyuc, zastup, pozn) {
+	constructor(hodina: string, trida: string, predmet: string, ucebna: string, nahucebna: string, vyuc: string, zastup: string, pozn: string) {
 		this.hodina = hodina;
 		this.trida = trida;
 		this.predmet = predmet;
@@ -113,7 +136,7 @@ class SuplRow {
 	}
 }
 
-class NahradniUcebnyRow {
+class NahradniUcebnaRecord {
 	hodina: string;
 	trida: string;
 	predmet: string;
@@ -121,7 +144,7 @@ class NahradniUcebnyRow {
 	nahucebna: string;
 	vyuc: string;
 	pozn: string;
-	constructor(hodina, trida, predmet, chybucebna, nahucebna, vyuc, pozn) {
+	constructor(hodina: string, trida: string, predmet: string, chybucebna: string, nahucebna: string, vyuc: string, pozn: string) {
 		this.hodina = hodina;
 		this.trida = trida;
 		this.predmet = predmet;
@@ -179,4 +202,4 @@ function parseTable($, context, dupCols = false, dupRows = false, textMode = fal
 	return columns;
 }
 
-module.exports = { parseDatesPage, parseSuplovani, ChybejiciRow, SuplRow, NahradniUcebnyRow, parseClassesPage };
+module.exports = { parseDatesPage, parseSuplovani, ChybejiciRecord, SuplovaniRecord, NahradniUcebnaRecord, parseClassesPage };
