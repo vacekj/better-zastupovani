@@ -11,6 +11,7 @@
 		"js-cookie": "^2.1.4"
 	},
 	"devDependencies": {
+		"@types/mocha": "^2.2.47",
 		"chai": "^4.1.2",
 		"clean-webpack-plugin": "^0.1.17",
 		"compression-webpack-plugin": "^1.0.0",

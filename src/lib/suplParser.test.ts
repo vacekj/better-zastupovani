@@ -1,9 +1,14 @@
-import {  } from "./suplParser";
+import * as suplParser from "./suplParser";
+import { SuplGetterNode } from "./suplGetterNode";
+
+import "mocha";
 import { expect } from "chai";
+
+const suplGetter = new SuplGetterNode();
 
 describe('suplParser - Integration Tests', () => {
 	it('Should get class list', (done) => {
-		suplGetter.getClasses()
+		suplGetter.getClassesPage()
 			.then((classesPage) => {
 				let classes = suplParser.parseClassesPage(classesPage);
 				expect(classes).to.be.an.instanceof(Array);
@@ -25,14 +30,16 @@ describe('suplParser - Integration Tests', () => {
 				done(err);
 			});
 	});
-
+	// TODO: rewrite this for typescript, make more assertions, split into subtests
 	it('Should get data (chybejici, suplovani, nahradni ucebny) and parse it succesfully', (done) => {
 		suplGetter
 			.getDatesPage().then((datesPage) => {
 				const dates = suplParser.parseDatesPage(datesPage);
 				let date = dates[0];
-				suplGetter.getSuplovani(date).then((suplovani) => {
-					let parsed = suplParser.parseSuplovani(suplovani);
+				suplGetter.getSuplovaniPage(date).then((suplovani) => {
+					let parsed = suplParser.parseSuplovaniPage(suplovani);
+					// Check for correct types using typeof & instanceof
+					// Check for class etc. format using regex
 					expect(parsed).to.have.keys(['chybejici', 'suplovani', 'nahradniUcebny']);
 					expect(parsed.chybejici).to.be.an.instanceof(Array);
 					expect(parsed.suplovani).to.be.an.instanceof(Array);
