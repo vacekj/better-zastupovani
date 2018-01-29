@@ -1,9 +1,9 @@
-import * as suplParser from "./suplParser";
-import { SuplGetterNode } from "./suplGetterNode";
-
 import "mocha";
 import { expect } from "chai";
+require('global-jsdom')();
 
+import * as suplParser from "./suplParser";
+import { SuplGetterNode } from "./suplGetterNode";
 const suplGetter = new SuplGetterNode();
 
 describe('suplParser - Integration Tests', () => {

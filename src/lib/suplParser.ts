@@ -2,6 +2,8 @@ const cheerio = require('cheerio');
 const dfnsFormatt = require('date-fns/format');
 const array2d = require('array2d');
 
+import { load } from "./parser";
+
 /**
  * Parses a classes page into an array of class strings
  * 
@@ -9,13 +11,12 @@ const array2d = require('array2d');
  * @returns {Array<string>} 
  */
 export function parseClassesPage(classesPage: string): Array<string> {
-	const $ = cheerio.load(classesPage);
+	const $ = load(classesPage);
 	let options = $('option');
-	let values = options.map((i, option) => {
-		return $(option).text();
+	let values = [...options].map((option) => {
+		return option.innerHTML;
 	});
-	let classes = values.toArray();
-	return classes;
+	return values;
 }
 
 export class DateWithUrl {
@@ -25,7 +26,7 @@ export class DateWithUrl {
 		this.url = url;
 		this.date = date;
 	}
-};
+}
 
 /**
  * Parses a dates page string into a SuplovaniPageDate array
@@ -33,16 +34,13 @@ export class DateWithUrl {
  * @param {string} datesPage 
  * @returns {[DateWithUrl]} 
  */
-export function parseDatesPage(datesPage: string): [DateWithUrl] {
-	const $ = cheerio.load(datesPage);
+export function parseDatesPage(datesPage: string): DateWithUrl[] {
+	const $ = load(datesPage);
 	let options = $('option');
-	let data = options.map((i, option) => {
-		return {
-			url: $(option).attr('value'),
-			date: dfnsFormatt($(option).attr('value').slice(7, 17), 'YYYY-MM-DD'),
-		};
+	let data = [...options].map((option) => {
+		return new DateWithUrl(option.getAttribute('value'), dfnsFormatt(option.getAttribute('value').slice(7, 17), 'YYYY-MM-DD'));
 	});
-	return data.toArray();
+	return data;
 }
 
 /**
@@ -52,13 +50,14 @@ export function parseDatesPage(datesPage: string): [DateWithUrl] {
  * @returns {SuplovaniPage} 
  */
 export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
-	const $ = cheerio.load(suplovaniPage);
+	const $ = load(suplovaniPage);
 
 	// Date
-	let date = $('.StyleZ3').first().text();
+	let date = $('.StyleZ3')[0].innerHTML;
 
 	// Chybejici
-	let chybejiciRows = parseTable($, $('div:contains("Chybějící")').next())[0].slice(1);
+	let table = $('table[width="683"]')[0];
+	let chybejiciRows = parseTable(table)[0].slice(1);
 	let chybejiciArray = chybejiciRows.map((row) => {
 		// split the row into individual missing records
 		let parsedRow = row.split(', ');
@@ -86,15 +85,15 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 	let chybejiciTable = new ChybejiciTable(chybejiciArray[0], chybejiciArray[1], chybejiciArray[2]);
 
 	// Suplovani
-	let suplovaniRecords: Array<SuplovaniRecord> = [];
-	let correctedSuplArray = array2d.transpose(parseTable($, $('div:contains("Suplování")').next())).slice(2);
+	let suplovaniRecords: Array<SuplovaniRecord> = []; // TODO: finish converting this to native DOM apis
+	let correctedSuplArray = array2d.transpose(parseTable($('div:contains("Suplování")').next())).slice(2);
 	array2d.eachRow(correctedSuplArray, (row) => {
 		suplovaniRecords.push(new SuplovaniRecord(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]));
 	});
 
 	// Nahradni ucebny
 	let nahradniUcebnaRecords: Array<NahradniUcebnaRecord> = [];
-	let correctedNahradniUcebnyArray = array2d.transpose(parseTable($, $('div:contains("Náhradní")').next())).slice(2);
+	let correctedNahradniUcebnyArray = array2d.transpose(parseTable($('div:contains("Náhradní")').next())).slice(2);
 	array2d.eachRow(correctedNahradniUcebnyArray, (row) => {
 		nahradniUcebnaRecords.push(new NahradniUcebnaRecord(row[0], row[1], row[2], row[3], row[4], row[5], row[6]));
 	});
@@ -106,7 +105,7 @@ export class SuplovaniPage {
 	chybejici: ChybejiciTable;
 	suplovani: Array<SuplovaniRecord>;
 	nahradniUcebny: Array<NahradniUcebnaRecord>;
-	date: string
+	date: string;
 	constructor(date: string, chybejici: ChybejiciTable, suplovani: Array<SuplovaniRecord>, nahradniUcebny: Array<NahradniUcebnaRecord>) {
 		this.chybejici = chybejici;
 		this.suplovani = suplovani;
@@ -176,22 +175,17 @@ export class NahradniUcebnaRecord {
 	}
 }
 
-function parseTable($, context, dupCols = false, dupRows = false, textMode = false): Array<Array<string>> {
+function parseTable(context: Element, dupCols = false, dupRows = false, textMode = false): Array<Array<string>> {
 	var columns = [],
 		curr_x = 0,
 		curr_y = 0;
 
-	$("tr", context).each(function (row_idx, row) {
+	[...$context('tr', context)].map(function (row, row_idx) {
 		curr_y = 0;
-		$("td, th", row).each(function (col_idx, col) {
-			var rowspan = $(col).attr('rowspan') || 1;
-			var colspan = $(col).attr('colspan') || 1;
-			var content;
-			if (textMode === true) {
-				content = $(col).text().trim() || "";
-			} else {
-				content = $(col).html() || "";
-			}
+		[...$context("td, th", row)].map(function (col, col_idx) {
+			var rowspan = col.getAttribute('rowspan') || 1;
+			var colspan = col.getAttribute('colspan') || 1;
+			var content = col.innerHTML || "";
 
 			var x = 0,
 				y = 0;
@@ -221,4 +215,8 @@ function parseTable($, context, dupCols = false, dupRows = false, textMode = fal
 	});
 
 	return columns;
+}
+
+function $context(selector: string, context: Element) {
+	return context.querySelectorAll(selector);
 }
