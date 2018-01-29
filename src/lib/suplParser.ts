@@ -86,7 +86,7 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 
 	// Suplovani
 	let suplovaniRecords: Array<SuplovaniRecord> = []; // TODO: finish converting this to native DOM apis
-	let correctedSuplArray = array2d.transpose(parseTable($('div:contains("Suplování")').next())).slice(2);
+	let correctedSuplArray = array2d.transpose(parseTable($('div:contains("Suplování")')[0].nextElementSibling)).slice(2);
 	array2d.eachRow(correctedSuplArray, (row) => {
 		suplovaniRecords.push(new SuplovaniRecord(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]));
 	});
