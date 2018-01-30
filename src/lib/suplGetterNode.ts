@@ -11,6 +11,9 @@ import { DateWithUrl } from './suplParser';
  * @extends {SuplGetter}
  */
 export class SuplGetterNode extends SuplGetter {
+	constructor() {
+		super();
+	}
 	public request(url, cb) {
 		request_({
 			url,
@@ -22,7 +25,7 @@ export class SuplGetterNode extends SuplGetter {
 	}
 
 	public async getClassesPage(): Promise<string> {
-		return new Promise((resolve, reject) => {
+		return new Promise<string>((resolve, reject) => {
 			this.request(this.URL_ROZVRH, (err, res, body) => {
 				if (err) {
 					reject(err);
@@ -33,7 +36,7 @@ export class SuplGetterNode extends SuplGetter {
 	}
 
 	public async getDatesPage(): Promise<string> {
-		return new Promise((resolve, reject) => {
+		return new Promise<string>((resolve, reject) => {
 			this.request(this.URL_DATES, (err, res, body) => {
 				if (err) {
 					reject(err);
@@ -44,7 +47,7 @@ export class SuplGetterNode extends SuplGetter {
 	}
 
 	public async getSuplovaniPage(date: DateWithUrl): Promise<string> {
-		return new Promise((resolve, reject) => {
+		return new Promise<string>((resolve, reject) => {
 			this.request(this.URL_SUPL + date.url, (err, res, body, $) => {
 				if (err) {
 					reject(err);

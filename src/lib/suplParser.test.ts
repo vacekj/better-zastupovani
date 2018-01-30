@@ -1,17 +1,12 @@
 import { expect } from 'chai';
-import * as globalJSDOM from 'global-jsdom';
 import 'mocha';
-globalJSDOM();
 
 import { SuplGetterNode } from './suplGetterNode';
 import * as suplParser from './suplParser';
 
-let suplGetter;
+const suplGetter = new SuplGetterNode();
 
 describe('suplParser - Integration Tests', () => {
-	before(() => {
-		suplGetter = new SuplGetterNode();
-	});
 	it('Should get class list', (done) => {
 		suplGetter.getClassesPage()
 			.then((classesPage) => {
@@ -35,14 +30,15 @@ describe('suplParser - Integration Tests', () => {
 				done(err);
 			});
 	});
+
 	// TODO: rewrite this for typescript, make more assertions, split into subtests
 	it('Should get data (chybejici, suplovani, nahradni ucebny) and parse it succesfully', (done) => {
 		suplGetter
 			.getDatesPage().then((datesPage) => {
 				const dates = suplParser.parseDatesPage(datesPage);
 				const date = dates[0];
-				suplGetter.getSuplovaniPage(date).then((suplovani) => {
-					const parsed = suplParser.parseSuplovaniPage(suplovani);
+				suplGetter.getSuplovaniPage(date).then((suplovaniPage) => {
+					const parsed = suplParser.parseSuplovaniPage(suplovaniPage);
 					// Check for correct types using typeof & instanceof
 					// Check for class etc. format using regex
 					expect(parsed).to.have.keys(['chybejici', 'suplovani', 'nahradniUcebny']);

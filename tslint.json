@@ -36,7 +36,8 @@
 		"no-http-string": false,
 		"no-unsafe-any": false,
 		"no-redundant-jsdoc": false,
-		"no-use-before-declare": false
+		"no-use-before-declare": false,
+		"mocha-no-side-effect-code": false
 	},
 	"extends": "tslint-microsoft-contrib"
 }

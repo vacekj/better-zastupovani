@@ -38,7 +38,7 @@ export abstract class SuplGetter {
  */
 export class SuplGetterBrowser extends SuplGetter {
 	public async request(url: string): Promise<string> {
-		return new Promise((resolve, reject) => {
+		return new Promise<string>((resolve, reject) => {
 			fetch(url)
 				.then(async (res) => {
 					if (!res.ok) {

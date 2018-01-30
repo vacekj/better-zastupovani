@@ -12,7 +12,7 @@ import * as Cookies from 'js-cookie';
 
 import { compareAsc, format, isEqual } from 'date-fns';
 
-const COOKIE_FILTER = 'trida';
+const COOKIE_FILTER = 'filter';
 const API_URL = 'https://zastupovani.herokuapp.com/api/data';
 
 type Window = {
@@ -297,7 +297,7 @@ function formatMissingsArray(missingsArray) {
 
 /**
  * Convert hour range to full schedule object
- * ["1", "3"] to {1: false, 2: false, 3: false, 4: true}
+ * ["1", "3"] to {1: false, 2: false, 3: false, 4: true, ...}
  */
 function rangeToSchedule(range) {
 	// no range -> full 8 hours

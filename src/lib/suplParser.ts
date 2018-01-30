@@ -96,7 +96,18 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 		nahradniUcebnaRecords.push(new NahradniUcebnaRecord(row[0], row[1], row[2], row[3], row[4], row[5], row[6]));
 	});
 
-	return new SuplovaniPage(date, chybejiciTable, suplovaniRecords, nahradniUcebnaRecords);
+	// Dozory
+	const dozoryTable = $('table[width="605"]')[0];
+	const dozorRows = parseTable(dozoryTable)[0].slice(1);
+	const dozorRecords: DozorRecord[] = [];
+	array2d.eachRow(dozorRows, (dozorRow) => {
+		dozorRecords.push(new DozorRecord(dozorRow[0], dozorRow[1], dozorRow[2], dozorRow[3], dozorRow[4], dozorRow[5]));
+	});
+
+	// Last updated
+	const lastUpdated = $('table[width=700] td.StyleZ5')[0].innerHTML;
+
+	return new SuplovaniPage(date, chybejiciTable, suplovaniRecords, nahradniUcebnaRecords, dozorRecords, lastUpdated);
 }
 
 /**
@@ -106,12 +117,18 @@ export class SuplovaniPage {
 	public chybejici: ChybejiciTable;
 	public suplovani: SuplovaniRecord[];
 	public nahradniUcebny: NahradniUcebnaRecord[];
+	public dozory: DozorRecord[];
 	public date: string;
-	constructor(date: string, chybejici: ChybejiciTable, suplovani: SuplovaniRecord[], nahradniUcebny: NahradniUcebnaRecord[]) {
+	public lastUpdated: string;
+	constructor(date: string, chybejici: ChybejiciTable, suplovani: SuplovaniRecord[], nahradniUcebny: NahradniUcebnaRecord[],
+		dozory: DozorRecord[], lastUpdated: string) {
+
 		this.chybejici = chybejici;
 		this.suplovani = suplovani;
 		this.nahradniUcebny = nahradniUcebny;
+		this.dozory = dozory;
 		this.date = date;
+		this.lastUpdated = lastUpdated;
 	}
 }
 
@@ -194,6 +211,26 @@ export class NahradniUcebnaRecord {
 		this.nahucebna = nahucebna;
 		this.vyuc = vyuc;
 		this.pozn = pozn;
+	}
+}
+
+/**
+ * Represents a single Dozor record
+ */
+class DozorRecord {
+	public timeStart: string;
+	public timeEnd: string;
+	public misto: string;
+	public chybejici: string;
+	public dozorujici: string;
+	public poznamka: string;
+	constructor(timeStart: string, timeEnd: string, misto: string, chybejici: string, dozorujici: string, poznamka: string) {
+		this.timeStart = timeStart;
+		this.timeEnd = timeEnd;
+		this.misto = misto;
+		this.chybejici = chybejici;
+		this.dozorujici = dozorujici;
+		this.poznamka = poznamka;
 	}
 }
 

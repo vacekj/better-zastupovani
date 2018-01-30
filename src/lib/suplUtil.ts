@@ -13,7 +13,7 @@ export class SuplUtil {
 		this.suplGetter = suplGetter;
 	}
 	public async getSuplovaniForAllDates(): Promise<SuplovaniPage[]> {
-		return new Promise((resolve, reject) => {
+		return new Promise<SuplovaniPage[]>((resolve, reject) => {
 			this.suplGetter.getDatesPage()
 				.then(datesPage => {
 					const dates = parseDatesPage(datesPage);
