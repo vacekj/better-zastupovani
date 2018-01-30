@@ -5,6 +5,28 @@
 		"no-bitwise": true,
 		"no-conditional-assignment": true,
 		"no-consecutive-blank-lines": true,
-		"semicolon": [true, "always"]
-	}
+		"semicolon": [
+			true,
+			"always"
+		],
+		"linebreak-style": [
+			true,
+			"CRLF"
+		],
+		"indent": [
+			true,
+			"tabs"
+		],
+		"typedef": false,
+		"function-name": false,
+		"missing-jsdoc": false,
+		"no-import-side-effect": false,
+		"no-relative-imports": false,
+		"no-invalid-this": false,
+		"no-multiline-string": false,
+		"align": false,
+		"no-increment-decrement": false,
+		"no-suspicious-comment": false
+	},
+	"extends": "tslint-microsoft-contrib"
 }

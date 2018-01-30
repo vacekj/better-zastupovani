@@ -2,7 +2,7 @@ const cheerio = require('cheerio');
 const dfnsFormatt = require('date-fns/format');
 const array2d = require('array2d');
 
-import { load } from "./parser";
+import { load, $context } from "./DOMUtils";
 
 /**
  * Parses a classes page into an array of class strings
@@ -215,8 +215,4 @@ function parseTable(context: Element, dupCols = false, dupRows = false, textMode
 	});
 
 	return columns;
-}
-
-function $context(selector: string, context: Element) {
-	return context.querySelectorAll(selector);
 }

@@ -1,5 +1,5 @@
 // Bootstrap imports
-require('./bootstrap-md.min.css');
+import './bootstrap-md.min.css';
 
 // Webpack imports
 require('./index.html');
@@ -17,15 +17,17 @@ const dfnsCompareAsc = require('date-fns/compare_asc');
 const COOKIE_FILTER = 'trida';
 const API_URL = 'https://zastupovani.herokuapp.com/api/data';
 
-interface Window {
+type Window = {
 	state: State;
-}
+};
+
+let window: Window;
 
 type State = {
-	suplovani?: Array<any>,
-	classes?: Array<any>,
-	currentDate?: String
-	currentFilter?: String
+	suplovani?: any[];
+	classes?: any[];
+	currentDate?: String;
+	currentFilter?: String;
 };
 
 // Create global state
@@ -41,7 +43,7 @@ $(() => {
 	registerEventHandlers();
 
 	// Remember filter
-	let filterCookie = Cookies.get(COOKIE_FILTER);
+	const filterCookie = Cookies.get(COOKIE_FILTER);
 	if (filterCookie !== undefined && filterCookie !== '') {
 		setState({
 			currentFilter: filterCookie
@@ -80,20 +82,20 @@ function getStateFromServer(): Promise<Partial<State>> {
 			resolve({
 				suplovani: res.suplovani
 			});
-		}).catch(err => reject(err));
+		}).catch(reject);
 	});
 }
 
 function registerEventHandlers(): void {
 	$('#selector_filter').on('keyup', function () {
-		let newValue = this.value;
+		const newValue = this.value;
 		setState({
 			currentFilter: newValue
 		});
 		Cookies.set(COOKIE_FILTER, newValue);
 	});
 	const dateHandler = function () {
-		let newValue = this.value;
+		const newValue = this.value;
 		setState({
 			currentDate: newValue
 		});
@@ -117,9 +119,9 @@ function renderNahradniUcebny() {
 	<td colspan="9">Žádní náhradní učebny</td>
 	</tr>
 	`;
-	let currentSupl = getSuplovaniForSelectedDate(getState().suplovani, getState().currentDate);
+	const currentSupl = getSuplovaniForSelectedDate(getState().suplovani, getState().currentDate);
 
-	let nahUcebny = currentSupl ? currentSupl.nahradniUcebny.map(nahradniUcebnaToRow) : [];
+	const nahUcebny = currentSupl ? currentSupl.nahradniUcebny.map(nahradniUcebnaToRow) : [];
 
 	contentToAppend = nahUcebny.length ? nahUcebny : noMissings;
 
@@ -135,7 +137,7 @@ function renderMissings() {
 	</tr>
 	`;
 
-	let missings = formatMissingsArray(getMissings().chybejici).map(missingToTimetableRow).reduce((acc, row) => {
+	const missings = formatMissingsArray(getMissings().chybejici).map(missingToTimetableRow).reduce((acc, row) => {
 		return acc + row;
 	}, '');
 
@@ -145,11 +147,11 @@ function renderMissings() {
 }
 
 function getMissings() {
-	let suplovani = getState().suplovani;
+	const suplovani = getState().suplovani;
 	if (!suplovani) {
 		return [];
 	}
-	let currentSuplovani = getSuplovaniForSelectedDate(getState().suplovani, getState().currentDate);
+	const currentSuplovani = getSuplovaniForSelectedDate(getState().suplovani, getState().currentDate);
 	if (!currentSuplovani) {
 		return [];
 	}
@@ -167,25 +169,26 @@ function renderSuplovani() {
 	</tr>
 	`;
 
-	let selectedSuplovani = getSelectedSuplovani();
+	const selectedSuplovani = getSelectedSuplovani();
 	contentToAppend = selectedSuplovani.length ? SuplovaniRowToTrs(selectedSuplovani) : noSupl;
 
 	$('#table_suplovani > tbody').append(contentToAppend);
 }
 
 function getSelectedSuplovani() {
-	let suplovani = getState().suplovani;
+	const suplovani = getState().suplovani;
 
 	if (!suplovani) {
 		return [];
 	}
 
-	let currentSuplovani = getSuplovaniForSelectedDate(getState().suplovani, getState().currentDate);
+	const currentSuplovani = getSuplovaniForSelectedDate(getState().suplovani, getState().currentDate);
 	if (!currentSuplovani) {
 		return [];
 	}
 
-	let filter = getState().currentFilter.trim();
+	const filter = getState().currentFilter.trim();
+
 	return currentSuplovani.suplovani.filter((elem) => {
 		return suplovaniRowContainsString(elem, filter);
 	});
@@ -221,7 +224,7 @@ function SuplovaniRowToTrs(suplovaniRow) {
 
 function renderDates() {
 	// Extract dates from context
-	let dates = getState().suplovani.map((suplovani) => {
+	const dates = getState().suplovani.map((suplovani) => {
 		return suplovani.date;
 	});
 
@@ -233,16 +236,16 @@ function renderDates() {
 	$('#selector_date').val(getState().currentDate);
 
 	// Sort dates ascending
-	let sorted = dates.sort(function (a, b) {
+	const sorted = dates.sort((a, b) => {
 		return dfnsCompareAsc(a, b);
 	});
 
 	// Set Max and Min value
-	let min = sorted[0];
-	let max = sorted[sorted.length - 1];
+	const min = sorted[0];
+	const max = sorted[sorted.length - 1];
 	$('#selector_date').prop({
-		"max": dfnsFormat(max, 'YYYY-MM-DD'),
-		"min": dfnsFormat(min, 'YYYY-MM-DD'),
+		max: dfnsFormat(max, 'YYYY-MM-DD'),
+		min: dfnsFormat(min, 'YYYY-MM-DD')
 	});
 }
 
@@ -252,7 +255,7 @@ function renderFilter() {
 
 // Loading indicator
 function showLoadingIndicator() {
-	let indicator = (colspan) => `
+	const indicator = (colspan) => `
 	<tr data-test="loadingIndicator">
 		<td colspan="${colspan}">
 			<svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
@@ -268,21 +271,20 @@ function showLoadingIndicator() {
 /**
  * Dedupe and format missings array
  * TODO: move this to parser
- * @param {Array} missingsArray 
- * @returns 
  */
 function formatMissingsArray(missingsArray) {
-	let dedupedArray = [];
-	if (!missingsArray || missingsArray.length == 0) {
+	const dedupedArray = [];
+	if (!missingsArray || missingsArray.length === 0) {
 		return [];
 	}
 	missingsArray.map((missing) => {
-		let index = includesObjectWithProp(dedupedArray, 'kdo', missing.kdo);
+		const index = includesObjectWithProp(dedupedArray, 'kdo', missing.kdo);
 		if (index !== -1) {
-			let originalObject = dedupedArray[index];
-			dedupedArray[index] = Object.assign(originalObject, {
-				schedule: Object.assign(originalObject.schedule, rangeToSchedule(missing.range))
-			});
+			const originalObject = dedupedArray[index];
+			dedupedArray[index] = {
+				...originalObject,
+				schedule: { ...originalObject.schedule, ...rangeToSchedule(missing.range) }
+			};
 
 		} else {
 			dedupedArray.push({
@@ -298,9 +300,6 @@ function formatMissingsArray(missingsArray) {
 /**
  * Convert hour range to full schedule object
  * ["1", "3"] to {1: false, 2: false, 3: false, 4: true}
- * 
- * @param {[string, string]} range 
- * @returns {{1: boolean, 2: boolean, 3: boolean, 4: boolean, 5: boolean, 6: boolean, 7: boolean, 8: boolean}}
  */
 function rangeToSchedule(range) {
 	// no range -> full 8 hours
@@ -318,8 +317,8 @@ function rangeToSchedule(range) {
 	}
 
 	// single hour
-	if ((range.length == 1) || (range[0] == range[1])) {
-		let defaultObject = {
+	if ((range.length === 1) || (range[0] === range[1])) {
+		const defaultObject = {
 			1: true,
 			2: true,
 			3: true,
@@ -330,10 +329,10 @@ function rangeToSchedule(range) {
 			8: true
 		};
 		defaultObject[range[0]] = false;
+
 		return defaultObject;
-	}
-	else { //first and last hour of absence
-		var obj = {};
+	} else { //first and last hour of absence
+		const obj = {};
 		// until first hour of absence
 		for (let hour = 1; hour < range[0]; hour++) {
 			obj[hour] = true;
@@ -345,7 +344,7 @@ function rangeToSchedule(range) {
 		}
 
 		// after absence
-		for (let hour = parseInt(range[1]) + 1; hour <= 8; hour++) {
+		for (let hour = parseInt(range[1], 10) + 1; hour <= 8; hour++) {
 			obj[hour] = true;
 		}
 
@@ -356,33 +355,29 @@ function rangeToSchedule(range) {
 /**
  * Searches an array of objects for an object with a specified prop
  * Returns index if found
- * @param {Array} arr 
- * @param {String} prop 
- * @param {any} value
- * @returns {number} Index of the desired object, -1 if not present
  */
 function includesObjectWithProp(arr, prop, value) {
-	for (var i = 0; i < arr.length; i++) {
-		if (arr[i][prop] == value) {
+	for (let i = 0; i < arr.length; i++) {
+		if (arr[i][prop] === value) {
 			return i;
 		}
 	}
+
 	return -1;
 }
 
 /**
- * 
- * 
- * @param {Object} missing 
+ *
+ *
  */
 function missingToTimetableRow(missing) {
-	let cells = [];
+	const cells = [];
 
 	for (const hour in missing.schedule) {
 		cells.push(`<td class="${missing.schedule[hour] ? 'present' : 'absent'}">${hour}</td>`);
 	}
 
-	let row = `
+	const row = `
 		<tr>
 			<td>${missing.kdo}</td>
 			${cells.join('')}
@@ -407,9 +402,7 @@ function nahradniUcebnaToRow(nah) {
 
 /**
  * Removes control characters from a string
- * 
- * @param {String} s
- * @returns {String}
+ *
  */
 function removeControlChars(s: string) {
 	return s.replace(/[\n\r\t]/g, '');
@@ -418,11 +411,10 @@ function removeControlChars(s: string) {
 /**
  * Disables user input
  * Used for blocking user input until data is loadedk
- * 
- * @param {boolean} value
+ *
  */
 function setInputsDisabled(value) {
-	let collection = $('#selector_filter').add('#selector_date');
+	const collection = $('#selector_filter').add('#selector_date');
 	if (value) {
 		collection.attr('disabled', true);
 	} else {

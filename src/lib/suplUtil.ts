@@ -1,5 +1,5 @@
-import { SuplGetter } from "./supl_getter";
-import { parseDatesPage, parseSuplovaniPage, SuplovaniPage } from "./supl_parser";
+import { SuplGetter } from "./suplGetter";
+import { parseDatesPage, parseSuplovaniPage, SuplovaniPage } from "./suplParser";
 export class SuplUtil {
 	suplGetter: SuplGetter;
 	constructor(suplGetter: SuplGetter) {
