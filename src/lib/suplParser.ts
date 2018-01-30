@@ -52,13 +52,13 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 	const date = $('.StyleZ3')[0].innerHTML;
 
 	// Chybejici
-	const table = $('table[width="683"]')[0];
+	const table = $('table')[0];
 	const chybejiciRows = parseTable(table)[0].slice(1);
 	const chybejiciArray = chybejiciRows.map((row) => {
 		// split the row into individual missing records
 		const parsedRow = row.split(', ');
 
-		return parsedRow.map((elem) => {
+		return parsedRow.map((elem) => { // TODO: handle empty row
 			const kdo = elem.split(' ')[0];
 			// check if range is present
 			if (!elem.includes(' ')) {
@@ -83,7 +83,7 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 	const chybejiciTable = new ChybejiciTable(chybejiciArray[0], chybejiciArray[1], chybejiciArray[2]);
 
 	// Suplovani
-	const suplovaniRecords: SuplovaniRecord[] = []; // TODO: finish converting this to native DOM apis
+	const suplovaniRecords: SuplovaniRecord[] = []; // TODO: finish converting this to native DOM apis (no contains)
 	const correctedSuplArray = array2d.transpose(parseTable($('div:contains("Suplování")')[0].nextElementSibling)).slice(2);
 	array2d.eachRow(correctedSuplArray, (row) => {
 		suplovaniRecords.push(new SuplovaniRecord(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]));

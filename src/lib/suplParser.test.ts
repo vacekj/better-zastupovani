@@ -4,9 +4,15 @@ import 'mocha';
 import { SuplGetterNode } from './suplGetterNode';
 import * as suplParser from './suplParser';
 
+import * as JSDom from 'global-jsdom';
+let jsdom;
+
 const suplGetter = new SuplGetterNode();
 
 describe('suplParser - Integration Tests', () => {
+	before(() => {
+		jsdom = JSDom();
+	});
 	it('Should get class list', (done) => {
 		suplGetter.getClassesPage()
 			.then((classesPage) => {
@@ -50,5 +56,9 @@ describe('suplParser - Integration Tests', () => {
 					done(err);
 				});
 			}, done);
+	});
+
+	after(() => {
+		jsdom();
 	});
 });

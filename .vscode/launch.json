@@ -15,7 +15,7 @@
 				"--timeout",
 				"999999",
 				"--colors",
-				"${workspaceFolder}/test"
+				"${workspaceFolder}/src/**/*.test.ts"
 			],
 			"internalConsoleOptions": "openOnSessionStart"
 		},

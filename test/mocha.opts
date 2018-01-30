@@ -1,1 +1,1 @@
-./src/**/*.test.{ts,js} ./test -r jsdom-global/register -r ts-node/register --timeout 30000 
+-r node_modules/ts-node/register/index.js --timeout 30000 ./src/**/*.test.ts
