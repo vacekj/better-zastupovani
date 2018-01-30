@@ -2,17 +2,15 @@
 import './bootstrap-md.min.css';
 
 // Webpack imports
-require('./index.html');
-require('./style.css');
-require('./style.js');
-require('./favicon.png');
+import './favicon.png';
+import './index.html';
+import './style.css';
+import './style.js';
 
-const $ = require('cash-dom');
-const Cookies = require('js-cookie');
+import * as $ from 'jquery';
+import * as Cookies from 'js-cookie';
 
-const dfnsFormat = require('date-fns/format');
-const dfnsIsEqual = require('date-fns/is_equal');
-const dfnsCompareAsc = require('date-fns/compare_asc');
+import { compareAsc, format, isEqual } from 'date-fns';
 
 const COOKIE_FILTER = 'trida';
 const API_URL = 'https://zastupovani.herokuapp.com/api/data';
@@ -24,22 +22,22 @@ type Window = {
 let window: Window;
 
 type State = {
-	suplovani?: any[];
-	classes?: any[];
-	currentDate?: String;
-	currentFilter?: String;
+	suplovani?: {}[];
+	classes?: {}[];
+	currentDate?: string;
+	currentFilter?: string;
 };
 
 // Create global state
 window.state = {
 	suplovani: [],
 	classes: [],
-	currentDate: dfnsFormat(new Date(), 'YYYY-MM-DD'),
+	currentDate: format(new Date(), 'YYYY-MM-DD'),
 	currentFilter: ''
 };
 
 // MAIN ENTRY POINT
-$(() => {
+$(document).ready(() => {
 	registerEventHandlers();
 
 	// Remember filter
@@ -54,8 +52,8 @@ $(() => {
 	showLoadingIndicator();
 	setInputsDisabled(true);
 	getStateFromServer().then((state) => {
-		setState(state);
 		setInputsDisabled(false);
+		setState(state);
 	}).catch((err) => {
 		console.log(err);
 	});
@@ -196,7 +194,7 @@ function getSelectedSuplovani() {
 
 function getSuplovaniForSelectedDate(suplovani = getState().suplovani, date = getState().currentDate) {
 	return suplovani.find((supl) => {
-		return dfnsIsEqual(dfnsFormat(supl.date, 'YYYY-MM-DD'), date);
+		return isEqual(format(supl.date, 'YYYY-MM-DD'), date);
 	});
 }
 
@@ -237,15 +235,15 @@ function renderDates() {
 
 	// Sort dates ascending
 	const sorted = dates.sort((a, b) => {
-		return dfnsCompareAsc(a, b);
+		return compareAsc(a, b);
 	});
 
 	// Set Max and Min value
 	const min = sorted[0];
 	const max = sorted[sorted.length - 1];
 	$('#selector_date').prop({
-		max: dfnsFormat(max, 'YYYY-MM-DD'),
-		min: dfnsFormat(min, 'YYYY-MM-DD')
+		max: format(max, 'YYYY-MM-DD'),
+		min: format(min, 'YYYY-MM-DD')
 	});
 }
 
@@ -371,11 +369,9 @@ function includesObjectWithProp(arr, prop, value) {
  *
  */
 function missingToTimetableRow(missing) {
-	const cells = [];
-
-	for (const hour in missing.schedule) {
-		cells.push(`<td class="${missing.schedule[hour] ? 'present' : 'absent'}">${hour}</td>`);
-	}
+	const cells = Object.keys(missing.schedule).map((hour) => {
+		return `<td class="${missing.schedule[hour] ? 'present' : 'absent'}">${hour}</td>`;
+	});
 
 	const row = `
 		<tr>

@@ -21,6 +21,7 @@
 		"exports-loader": "^0.6.4",
 		"extract-text-webpack-plugin": "^3.0.2",
 		"file-loader": "^0.11.2",
+		"global-jsdom": "^4.2.0",
 		"iconv-lite": "^0.4.19",
 		"imports-loader": "^0.7.1",
 		"jsdom": "11.6.1",
@@ -48,8 +49,8 @@
 		"build": "webpack --config webpack.prod.js",
 		"dev": "webpack-dev-server --open --config webpack.dev.js",
 		"test": "npm run build && mocha ./**/*.test.js",
-		"prepush": "CI=true npm run test",
-		"precommit": "tslint src/*.ts"
+		"prepush": "lint && CI=true npm run test",
+		"lint": "tslint src/**/*.ts --project tsconfig.json --fix"
 	},
 	"repository": {
 		"type": "git",

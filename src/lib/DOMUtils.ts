@@ -1,15 +1,3 @@
-export class Parser {
-	public document: Document;
-	constructor(html: string) {
-		const domParser = new DOMParser();
-		this.document = domParser.parseFromString(html, 'text/html');
-	}
-
-	public $(selector: string): NodeList {
-		return this.document.querySelectorAll.bind(this.document);
-	}
-}
-
 export function load(html: string) {
 	const domParser = new DOMParser();
 	const document = domParser.parseFromString(html.trim(), 'text/html');

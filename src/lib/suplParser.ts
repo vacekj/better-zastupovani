@@ -1,27 +1,28 @@
-const cheerio = require('cheerio');
-const dfnsFormatt = require('date-fns/format');
-const array2d = require('array2d');
+import * as array2d from 'array2d';
+import { format } from 'date-fns';
 
-import { load, $context } from "./DOMUtils";
+import { $context, load } from './DOMUtils';
 
 /**
  * Parses a classes page into an array of class strings
- * 
- * @param {string} classesPage 
- * @returns {Array<string>} 
+ *
  */
-export function parseClassesPage(classesPage: string): Array<string> {
+export function parseClassesPage(classesPage: string): string[] {
 	const $ = load(classesPage);
-	let options = $('option');
-	let values = [...options].map((option) => {
+	const options = $('option');
+
+	return [...options].map((option) => {
 		return option.innerHTML;
 	});
-	return values;
 }
 
+/**
+ * Helper class for Dates and URLs pointing to suplovaniPages
+ *
+ */
 export class DateWithUrl {
-	url: string;
-	date: string;
+	public url: string;
+	public date: string;
 	constructor(url: string, date: string) {
 		this.url = url;
 		this.date = date;
@@ -30,70 +31,67 @@ export class DateWithUrl {
 
 /**
  * Parses a dates page string into a SuplovaniPageDate array
- * 
- * @param {string} datesPage 
- * @returns {[DateWithUrl]} 
+ *
  */
 export function parseDatesPage(datesPage: string): DateWithUrl[] {
 	const $ = load(datesPage);
-	let options = $('option');
-	let data = [...options].map((option) => {
-		return new DateWithUrl(option.getAttribute('value'), dfnsFormatt(option.getAttribute('value').slice(7, 17), 'YYYY-MM-DD'));
+	const options = $('option');
+
+	return [...options].map((option) => {
+		return new DateWithUrl(option.getAttribute('value'), format(option.getAttribute('value').slice(7, 17), 'YYYY-MM-DD'));
 	});
-	return data;
 }
 
 /**
  * Parses a suplovani page string into a SuplovaniPage object
- * 
- * @param {string} suplovaniPage 
- * @returns {SuplovaniPage} 
  */
 export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 	const $ = load(suplovaniPage);
 
 	// Date
-	let date = $('.StyleZ3')[0].innerHTML;
+	const date = $('.StyleZ3')[0].innerHTML;
 
 	// Chybejici
-	let table = $('table[width="683"]')[0];
-	let chybejiciRows = parseTable(table)[0].slice(1);
-	let chybejiciArray = chybejiciRows.map((row) => {
+	const table = $('table[width="683"]')[0];
+	const chybejiciRows = parseTable(table)[0].slice(1);
+	const chybejiciArray = chybejiciRows.map((row) => {
 		// split the row into individual missing records
-		let parsedRow = row.split(', ');
+		const parsedRow = row.split(', ');
+
 		return parsedRow.map((elem) => {
-			let kdo = elem.split(' ')[0];
+			const kdo = elem.split(' ')[0];
 			// check if range is present
 			if (!elem.includes(' ')) {
 				return new ChybejiciRecord(kdo, null);
 			}
 			// extract range part from string
-			let rangePart = elem.split(' ')[1].replace('(', '').replace(')', '');
+			const rangePart = elem.split(' ')[1].replace('(', '').replace(')', '');
 			let range: [string, string] = ['', ''];
 			// decide if range or only one hour: (1..2) or (2)
-			if (rangePart.length == 1) {
+			if (rangePart.length === 1) {
 				// only one hour
 				range = [rangePart, rangePart];
 			} else {
 				// range of hours
-				let splitRange = rangePart.split('..');
+				const splitRange = rangePart.split('..');
 				range = [splitRange[0], splitRange[1]];
 			}
+
 			return new ChybejiciRecord(kdo, range);
 		});
 	});
-	let chybejiciTable = new ChybejiciTable(chybejiciArray[0], chybejiciArray[1], chybejiciArray[2]);
+	const chybejiciTable = new ChybejiciTable(chybejiciArray[0], chybejiciArray[1], chybejiciArray[2]);
 
 	// Suplovani
-	let suplovaniRecords: Array<SuplovaniRecord> = []; // TODO: finish converting this to native DOM apis
-	let correctedSuplArray = array2d.transpose(parseTable($('div:contains("Suplování")')[0].nextElementSibling)).slice(2);
+	const suplovaniRecords: SuplovaniRecord[] = []; // TODO: finish converting this to native DOM apis
+	const correctedSuplArray = array2d.transpose(parseTable($('div:contains("Suplování")')[0].nextElementSibling)).slice(2);
 	array2d.eachRow(correctedSuplArray, (row) => {
 		suplovaniRecords.push(new SuplovaniRecord(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]));
 	});
 
 	// Nahradni ucebny
-	let nahradniUcebnaRecords: Array<NahradniUcebnaRecord> = [];
-	let correctedNahradniUcebnyArray = array2d.transpose(parseTable($('div:contains("Náhradní")').next())).slice(2);
+	const nahradniUcebnaRecords: NahradniUcebnaRecord[] = [];
+	const correctedNahradniUcebnyArray = array2d.transpose(parseTable($('div:contains("Náhradní")')[0].nextElementSibling)).slice(2);
 	array2d.eachRow(correctedNahradniUcebnyArray, (row) => {
 		nahradniUcebnaRecords.push(new NahradniUcebnaRecord(row[0], row[1], row[2], row[3], row[4], row[5], row[6]));
 	});
@@ -101,12 +99,15 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 	return new SuplovaniPage(date, chybejiciTable, suplovaniRecords, nahradniUcebnaRecords);
 }
 
+/**
+ * Represents of a single suplovani page for a specified date
+ */
 export class SuplovaniPage {
-	chybejici: ChybejiciTable;
-	suplovani: Array<SuplovaniRecord>;
-	nahradniUcebny: Array<NahradniUcebnaRecord>;
-	date: string;
-	constructor(date: string, chybejici: ChybejiciTable, suplovani: Array<SuplovaniRecord>, nahradniUcebny: Array<NahradniUcebnaRecord>) {
+	public chybejici: ChybejiciTable;
+	public suplovani: SuplovaniRecord[];
+	public nahradniUcebny: NahradniUcebnaRecord[];
+	public date: string;
+	constructor(date: string, chybejici: ChybejiciTable, suplovani: SuplovaniRecord[], nahradniUcebny: NahradniUcebnaRecord[]) {
 		this.chybejici = chybejici;
 		this.suplovani = suplovani;
 		this.nahradniUcebny = nahradniUcebny;
@@ -114,37 +115,52 @@ export class SuplovaniPage {
 	}
 }
 
+/**
+ * Represents a single Chybejici table, grouped by type
+ */
 export class ChybejiciTable {
-	ucitele: Array<ChybejiciRecord>;
-	tridy: Array<ChybejiciRecord>;
-	ucebny: Array<ChybejiciRecord>;
-	constructor(ucitele: Array<ChybejiciRecord>, tridy: Array<ChybejiciRecord>, ucebny: Array<ChybejiciRecord>) {
+	public ucitele: ChybejiciRecord[];
+	public tridy: ChybejiciRecord[];
+	public ucebny: ChybejiciRecord[];
+	constructor(ucitele: ChybejiciRecord[], tridy: ChybejiciRecord[], ucebny: ChybejiciRecord[]) {
 		this.ucitele = ucitele;
 		this.tridy = tridy;
 		this.ucebny = ucebny;
 	}
 }
 
+/**
+ * Represents a single Chybejici record
+ *
+ * E.g.: Petr (1..6)
+ */
 export class ChybejiciRecord {
-	kdo: string;
-	range: [string, string];
+	public kdo: string;
+	public range: [string, string];
 	constructor(kdo: string, range: [string, string]) {
 		this.kdo = kdo;
 		this.range = range;
 	}
 }
 
+/**
+ * Represents a single suplovani record
+ *
+ * @export
+ * @class SuplovaniRecord
+ */
 export class SuplovaniRecord {
-	hodina: string;
-	trida: string;
-	predmet: string;
-	ucebna: string;
-	nahucebna: string;
-	vyuc: string;
-	zastup: string;
-	pozn: string;
+	public hodina: string;
+	public trida: string;
+	public predmet: string;
+	public ucebna: string;
+	public nahucebna: string;
+	public vyuc: string;
+	public zastup: string;
+	public pozn: string;
 
-	constructor(hodina: string, trida: string, predmet: string, ucebna: string, nahucebna: string, vyuc: string, zastup: string, pozn: string) {
+	constructor(hodina: string, trida: string,
+		predmet: string, ucebna: string, nahucebna: string, vyuc: string, zastup: string, pozn: string) {
 		this.hodina = hodina;
 		this.trida = trida;
 		this.predmet = predmet;
@@ -156,14 +172,20 @@ export class SuplovaniRecord {
 	}
 }
 
+/**
+ * Represents a single NahradniUcebna record
+ *
+ * @export
+ * @class NahradniUcebnaRecord
+ */
 export class NahradniUcebnaRecord {
-	hodina: string;
-	trida: string;
-	predmet: string;
-	chybucebna: string;
-	nahucebna: string;
-	vyuc: string;
-	pozn: string;
+	public hodina: string;
+	public trida: string;
+	public predmet: string;
+	public chybucebna: string;
+	public nahucebna: string;
+	public vyuc: string;
+	public pozn: string;
 	constructor(hodina: string, trida: string, predmet: string, chybucebna: string, nahucebna: string, vyuc: string, pozn: string) {
 		this.hodina = hodina;
 		this.trida = trida;
@@ -175,43 +197,43 @@ export class NahradniUcebnaRecord {
 	}
 }
 
-function parseTable(context: Element, dupCols = false, dupRows = false, textMode = false): Array<Array<string>> {
-	var columns = [],
-		curr_x = 0,
-		curr_y = 0;
+function parseTable(context: Element, dupCols = false, dupRows = false, textMode = false): string[][] {
+	const columns = [];
+	let currX = 0;
+	let currY = 0;
 
-	[...$context('tr', context)].map(function (row, row_idx) {
-		curr_y = 0;
-		[...$context("td, th", row)].map(function (col, col_idx) {
-			var rowspan = col.getAttribute('rowspan') || 1;
-			var colspan = col.getAttribute('colspan') || 1;
-			var content = col.innerHTML || "";
+	[...$context('tr', context)].map((row, rowIDX) => {
+		currY = 0;
+		[...$context('td, th', row)].map((col, colIDX) => {
+			const rowspan = col.getAttribute('rowspan') || 1;
+			const colspan = col.getAttribute('colspan') || 1;
+			const content = col.innerHTML || '';
 
-			var x = 0,
-				y = 0;
+			let x = 0;
+			let y = 0;
 			for (x = 0; x < rowspan; x++) {
 				for (y = 0; y < colspan; y++) {
-					if (columns[curr_y + y] === undefined) {
-						columns[curr_y + y] = [];
+					if (columns[currY + y] === undefined) {
+						columns[currY + y] = [];
 					}
 
-					while (columns[curr_y + y][curr_x + x] !== undefined) {
-						curr_y += 1;
-						if (columns[curr_y + y] === undefined) {
-							columns[curr_y + y] = [];
+					while (columns[currY + y][currX + x] !== undefined) {
+						currY += 1;
+						if (columns[currY + y] === undefined) {
+							columns[currY + y] = [];
 						}
 					}
 
 					if ((x === 0 || dupRows) && (y === 0 || dupCols)) {
-						columns[curr_y + y][curr_x + x] = content;
+						columns[currY + y][currX + x] = content;
 					} else {
-						columns[curr_y + y][curr_x + x] = "";
+						columns[currY + y][currX + x] = '';
 					}
 				}
 			}
-			curr_y += 1;
+			currY += 1;
 		});
-		curr_x += 1;
+		currX += 1;
 	});
 
 	return columns;

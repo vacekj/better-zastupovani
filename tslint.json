@@ -1,4 +1,5 @@
 {
+	"rulesDirectory": "node_modules/tslint-microsoft-contrib",
 	"rules": {
 		"new-parens": true,
 		"no-arg": true,
@@ -26,7 +27,16 @@
 		"no-multiline-string": false,
 		"align": false,
 		"no-increment-decrement": false,
-		"no-suspicious-comment": false
+		"no-suspicious-comment": false,
+		"max-classes-per-file": false,
+		"no-implicit-dependencies": [
+			true,
+			"dev"
+		],
+		"no-http-string": false,
+		"no-unsafe-any": false,
+		"no-redundant-jsdoc": false,
+		"no-use-before-declare": false
 	},
 	"extends": "tslint-microsoft-contrib"
 }

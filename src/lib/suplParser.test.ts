@@ -1,16 +1,21 @@
-import "mocha";
-import { expect } from "chai";
-require('global-jsdom')();
+import { expect } from 'chai';
+import * as globalJSDOM from 'global-jsdom';
+import 'mocha';
+globalJSDOM();
 
-import * as suplParser from "./suplParser";
-import { SuplGetterNode } from "./suplGetterNode";
-const suplGetter = new SuplGetterNode();
+import { SuplGetterNode } from './suplGetterNode';
+import * as suplParser from './suplParser';
+
+let suplGetter;
 
 describe('suplParser - Integration Tests', () => {
+	before(() => {
+		suplGetter = new SuplGetterNode();
+	});
 	it('Should get class list', (done) => {
 		suplGetter.getClassesPage()
 			.then((classesPage) => {
-				let classes = suplParser.parseClassesPage(classesPage);
+				const classes = suplParser.parseClassesPage(classesPage);
 				expect(classes).to.be.an.instanceof(Array);
 				expect(classes[0]).to.equal('I.A8');
 				done();
@@ -35,9 +40,9 @@ describe('suplParser - Integration Tests', () => {
 		suplGetter
 			.getDatesPage().then((datesPage) => {
 				const dates = suplParser.parseDatesPage(datesPage);
-				let date = dates[0];
+				const date = dates[0];
 				suplGetter.getSuplovaniPage(date).then((suplovani) => {
-					let parsed = suplParser.parseSuplovaniPage(suplovani);
+					const parsed = suplParser.parseSuplovaniPage(suplovani);
 					// Check for correct types using typeof & instanceof
 					// Check for class etc. format using regex
 					expect(parsed).to.have.keys(['chybejici', 'suplovani', 'nahradniUcebny']);

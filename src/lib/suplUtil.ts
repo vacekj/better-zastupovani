@@ -1,27 +1,36 @@
-import { SuplGetter } from "./suplGetter";
-import { parseDatesPage, parseSuplovaniPage, SuplovaniPage } from "./suplParser";
+import { SuplGetter } from './suplGetter';
+import { parseDatesPage, parseSuplovaniPage, SuplovaniPage } from './suplParser';
+
+/**
+ * A utility class containing methods that do not fit anywhere else
+ *
+ * @export
+ * @class SuplUtil
+ */
 export class SuplUtil {
-	suplGetter: SuplGetter;
+	public suplGetter: SuplGetter;
 	constructor(suplGetter: SuplGetter) {
 		this.suplGetter = suplGetter;
 	}
-	getSuplovaniForAllDates(): Promise<SuplovaniPage[]> {
+	public async getSuplovaniForAllDates(): Promise<SuplovaniPage[]> {
 		return new Promise((resolve, reject) => {
-			this.suplGetter.getDatesPage().then(datesPage => {
-				const dates = parseDatesPage(datesPage);
+			this.suplGetter.getDatesPage()
+				.then(datesPage => {
+					const dates = parseDatesPage(datesPage);
 
-				let promises = dates.map((date) => {
-					return this.suplGetter.getSuplovaniPage(date);
-				});
-
-				let allPromises = Promise.all(promises);
-				allPromises.then((res) => {
-					let suplovaniPages = res.map((suplovaniPageString) => {
-						return parseSuplovaniPage(suplovaniPageString);
+					const promises = dates.map(async (date) => {
+						return this.suplGetter.getSuplovaniPage(date);
 					});
-					resolve(suplovaniPages);
-				});
-			});
+
+					const allPromises = Promise.all(promises);
+					allPromises.then((res) => {
+						const suplovaniPages = res.map((suplovaniPageString) => {
+							return parseSuplovaniPage(suplovaniPageString);
+						});
+						resolve(suplovaniPages);
+					}).catch();
+				})
+				.catch();
 		});
 	}
 }

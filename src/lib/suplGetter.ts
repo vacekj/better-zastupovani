@@ -1,9 +1,16 @@
-import { DateWithUrl } from "./suplParser";
+import { DateWithUrl } from './suplParser';
+/**
+ * Base abstract class with common functionality and members for all SuplGetters
+ *
+ * @export
+ * @abstract
+ * @class SuplGetter
+ */
 export abstract class SuplGetter {
 	public URL_SUPL = 'http://suplovani.gytool.cz/';
 	public URL_ROZVRH = 'http://rozvrh.gytool.cz/index_Trida_Menu.html';
 	public get URL_DATES(): string {
-		return this.URL_SUPL + '!index_menu.html';
+		return `${this.URL_SUPL}/!index_menu.html`;
 	}
 	/**
 	 * getClasses
@@ -21,29 +28,41 @@ export abstract class SuplGetter {
 	public abstract getDatesPage(): Promise<string>;
 }
 
+/**
+ * A SuplGetter that works in browser environment
+ *
+ * Uses only native browser APIs
+ * Handles decoding of the responses
+ * @class SuplGetterNode
+ * @extends {SuplGetter}
+ */
 export class SuplGetterBrowser extends SuplGetter {
-	request(url: string): Promise<string> {
+	public async request(url: string): Promise<string> {
 		return new Promise((resolve, reject) => {
-			fetch(url).then((res) => {
-				if (!res.ok) {
-					reject({ error: 'res not ok' });
-				}
-				return res.text();
-			}).then((body) => {
-				resolve(body);
-			});
+			fetch(url)
+				.then(async (res) => {
+					if (!res.ok) {
+						reject({ error: 'res not ok' });
+					}
+
+					return res.text();
+				})
+				.then((body) => {
+					resolve(body);
+				})
+				.catch(reject);
 		});
 	}
 
-	getClassesPage(): Promise<string> {
+	public async getClassesPage(): Promise<string> {
 		return this.request(this.URL_ROZVRH);
 	}
 
-	getDatesPage(): Promise<string> {
+	public async getDatesPage(): Promise<string> {
 		return this.request(this.URL_DATES);
 	}
 
-	getSuplovaniPage(date: DateWithUrl): Promise<string> {
+	public async getSuplovaniPage(date: DateWithUrl): Promise<string> {
 		return this.request(this.URL_SUPL + date.url);
 	}
 }
