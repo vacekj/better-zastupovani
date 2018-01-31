@@ -2,55 +2,58 @@ import { expect } from 'chai';
 import 'mocha';
 
 import { SuplGetterNode } from './suplGetterNode';
-import * as suplParser from './suplParser';
+
+import { DateWithUrl, parseDatesPage } from './DatesParser';
+import { NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from './suplParser';
 
 import * as JSDom from 'global-jsdom';
 let jsdom;
 
 const suplGetter = new SuplGetterNode();
 
-describe('suplParser - Integration Tests', () => {
+describe('suplParser', () => {
 	before(() => {
 		jsdom = JSDom();
 	});
-	it('Should get class list', (done) => {
+
+	it('should parse classes page', (done) => {
 		suplGetter.getClassesPage()
 			.then((classesPage) => {
-				const classes = suplParser.parseClassesPage(classesPage);
+				const classes = parseClassesPage(classesPage);
 				expect(classes).to.be.an.instanceof(Array);
 				expect(classes[0]).to.equal('I.A8');
+				expect(classes).to.include.members(['I.A6', 'I.A']);
 				done();
 			}).catch((err) => {
 				done(err);
 			});
 	});
 
-	it('Should get current dates list', (done) => {
+	it('should parse dates page', (done) => {
 		suplGetter.getDatesPage()
 			.then((datesPage) => {
-				const dates = suplParser.parseDatesPage(datesPage);
+				const dates = parseDatesPage(datesPage);
 				expect(dates).to.be.an.instanceof(Array);
-				expect(typeof dates[0].url).to.equal('string');
+				expect(dates[0]).to.be.an.instanceof(DateWithUrl);
+				expect(dates[0].date).to.be.an.instanceOf(Date);
+				const containsDate = new RegExp('pondělí|úterý|středa|čtvrtek|pátek');
+				expect(dates[0].dateString).to.match(containsDate);
 				done();
 			}).catch((err) => {
 				done(err);
 			});
 	});
 
-	// TODO: rewrite this for typescript, make more assertions, split into subtests
-	it('Should get data (chybejici, suplovani, nahradni ucebny) and parse it succesfully', (done) => {
+	it('should parse suplovani page', (done) => {
 		suplGetter
 			.getDatesPage().then((datesPage) => {
-				const dates = suplParser.parseDatesPage(datesPage);
+				const dates = parseDatesPage(datesPage);
 				const date = dates[0];
 				suplGetter.getSuplovaniPage(date).then((suplovaniPage) => {
-					const parsed = suplParser.parseSuplovaniPage(suplovaniPage);
-					// Check for correct types using typeof & instanceof
+					const parsedSuplovaniPage = parseSuplovaniPage(suplovaniPage);
 					// Check for class etc. format using regex
-					expect(parsed).to.have.keys(['chybejici', 'suplovani', 'nahradniUcebny']);
-					expect(parsed.chybejici).to.be.an.instanceof(Array);
-					expect(parsed.suplovani).to.be.an.instanceof(Array);
-					expect(parsed.nahradniUcebny).to.be.an.instanceof(Array);
+					expect(parsedSuplovaniPage).to.be.an.instanceOf(SuplovaniPage);
+					expect(parsedSuplovaniPage).to.not.satisfy(containsNullOrUndefined);
 					done();
 				}).catch((err) => {
 					done(err);
@@ -62,3 +65,28 @@ describe('suplParser - Integration Tests', () => {
 		jsdom();
 	});
 });
+
+function arrayContainsNullOrUndefined(objects: Object[]): boolean {
+	return objects.some(containsNullOrUndefined);
+}
+
+function containsNullOrUndefined(object: Object): boolean {
+	Object.keys(object).map((key) => {
+		if (object.hasOwnProperty(key)) {
+			const element = object[key];
+			if (typeof object[key] === 'object' && object[key] !== null) {
+				containsNullOrUndefined(object[key]);
+			} else if (Array.isArray(object[key]) && object[key].length) {
+				arrayContainsNullOrUndefined(object[key]);
+			} else if (!isReal(element)) {
+				return true;
+			}
+		}
+	});
+
+	return false;
+}
+
+function isReal(value): boolean {
+	return value && value !== 'undefined' && value !== 'null';
+}

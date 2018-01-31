@@ -1,7 +1,9 @@
 import * as array2d from 'array2d';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 
-import { $context, load } from './DOMUtils';
+import { $context, load, parseTable } from './DOMUtils';
+
+import { ChybejiciTable, parseChybejiciTable } from './ChybejiciParser';
 
 /**
  * Parses a classes page into an array of class strings
@@ -17,32 +19,6 @@ export function parseClassesPage(classesPage: string): string[] {
 }
 
 /**
- * Helper class for Dates and URLs pointing to suplovaniPages
- *
- */
-export class DateWithUrl {
-	public url: string;
-	public date: string;
-	constructor(url: string, date: string) {
-		this.url = url;
-		this.date = date;
-	}
-}
-
-/**
- * Parses a dates page string into a SuplovaniPageDate array
- *
- */
-export function parseDatesPage(datesPage: string): DateWithUrl[] {
-	const $ = load(datesPage);
-	const options = $('option');
-
-	return [...options].map((option) => {
-		return new DateWithUrl(option.getAttribute('value'), format(option.getAttribute('value').slice(7, 17), 'YYYY-MM-DD'));
-	});
-}
-
-/**
  * Parses a suplovani page string into a SuplovaniPage object
  */
 export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
@@ -52,46 +28,21 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 	const date = $('.StyleZ3')[0].innerHTML;
 
 	// Chybejici
-	const table = $('table')[0];
-	const chybejiciRows = parseTable(table)[0].slice(1);
-	const chybejiciArray = chybejiciRows.map((row) => {
-		// split the row into individual missing records
-		const parsedRow = row.split(', ');
-
-		return parsedRow.map((elem) => { // TODO: handle empty row
-			const kdo = elem.split(' ')[0];
-			// check if range is present
-			if (!elem.includes(' ')) {
-				return new ChybejiciRecord(kdo, null);
-			}
-			// extract range part from string
-			const rangePart = elem.split(' ')[1].replace('(', '').replace(')', '');
-			let range: [string, string] = ['', ''];
-			// decide if range or only one hour: (1..2) or (2)
-			if (rangePart.length === 1) {
-				// only one hour
-				range = [rangePart, rangePart];
-			} else {
-				// range of hours
-				const splitRange = rangePart.split('..');
-				range = [splitRange[0], splitRange[1]];
-			}
-
-			return new ChybejiciRecord(kdo, range);
-		});
-	});
-	const chybejiciTable = new ChybejiciTable(chybejiciArray[0], chybejiciArray[1], chybejiciArray[2]);
+	const chybejiciTableElement = $('table')[0];
+	const chybejiciTable = parseChybejiciTable(chybejiciTableElement);
 
 	// Suplovani
-	const suplovaniRecords: SuplovaniRecord[] = []; // TODO: finish converting this to native DOM apis (no contains)
-	const correctedSuplArray = array2d.transpose(parseTable($('div:contains("Suplování")')[0].nextElementSibling)).slice(2);
+	const suplovaniRecords: SuplovaniRecord[] = [];
+	const suplovaniTable = $('td.StyleC3')[0].parentElement.parentElement.parentElement;
+	const correctedSuplArray = array2d.transpose(parseTable(suplovaniTable)).slice(2);
 	array2d.eachRow(correctedSuplArray, (row) => {
 		suplovaniRecords.push(new SuplovaniRecord(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]));
 	});
 
 	// Nahradni ucebny
 	const nahradniUcebnaRecords: NahradniUcebnaRecord[] = [];
-	const correctedNahradniUcebnyArray = array2d.transpose(parseTable($('div:contains("Náhradní")')[0].nextElementSibling)).slice(2);
+	const nahradniUCebnaTable = $('td.StyleD3')[0].parentElement.parentElement.parentElement;
+	const correctedNahradniUcebnyArray = array2d.transpose(parseTable(nahradniUCebnaTable)).slice(2);
 	array2d.eachRow(correctedNahradniUcebnyArray, (row) => {
 		nahradniUcebnaRecords.push(new NahradniUcebnaRecord(row[0], row[1], row[2], row[3], row[4], row[5], row[6]));
 	});
@@ -105,7 +56,7 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 	});
 
 	// Last updated
-	const lastUpdated = $('table[width=700] td.StyleZ5')[0].innerHTML;
+	const lastUpdated = $('table[width="700"] td.StyleZ5')[0].innerHTML;
 
 	return new SuplovaniPage(date, chybejiciTable, suplovaniRecords, nahradniUcebnaRecords, dozorRecords, lastUpdated);
 }
@@ -129,34 +80,6 @@ export class SuplovaniPage {
 		this.dozory = dozory;
 		this.date = date;
 		this.lastUpdated = lastUpdated;
-	}
-}
-
-/**
- * Represents a single Chybejici table, grouped by type
- */
-export class ChybejiciTable {
-	public ucitele: ChybejiciRecord[];
-	public tridy: ChybejiciRecord[];
-	public ucebny: ChybejiciRecord[];
-	constructor(ucitele: ChybejiciRecord[], tridy: ChybejiciRecord[], ucebny: ChybejiciRecord[]) {
-		this.ucitele = ucitele;
-		this.tridy = tridy;
-		this.ucebny = ucebny;
-	}
-}
-
-/**
- * Represents a single Chybejici record
- *
- * E.g.: Petr (1..6)
- */
-export class ChybejiciRecord {
-	public kdo: string;
-	public range: [string, string];
-	constructor(kdo: string, range: [string, string]) {
-		this.kdo = kdo;
-		this.range = range;
 	}
 }
 
@@ -232,46 +155,4 @@ class DozorRecord {
 		this.dozorujici = dozorujici;
 		this.poznamka = poznamka;
 	}
-}
-
-function parseTable(context: Element, dupCols = false, dupRows = false, textMode = false): string[][] {
-	const columns = [];
-	let currX = 0;
-	let currY = 0;
-
-	[...$context('tr', context)].map((row, rowIDX) => {
-		currY = 0;
-		[...$context('td, th', row)].map((col, colIDX) => {
-			const rowspan = col.getAttribute('rowspan') || 1;
-			const colspan = col.getAttribute('colspan') || 1;
-			const content = col.innerHTML || '';
-
-			let x = 0;
-			let y = 0;
-			for (x = 0; x < rowspan; x++) {
-				for (y = 0; y < colspan; y++) {
-					if (columns[currY + y] === undefined) {
-						columns[currY + y] = [];
-					}
-
-					while (columns[currY + y][currX + x] !== undefined) {
-						currY += 1;
-						if (columns[currY + y] === undefined) {
-							columns[currY + y] = [];
-						}
-					}
-
-					if ((x === 0 || dupRows) && (y === 0 || dupCols)) {
-						columns[currY + y][currX + x] = content;
-					} else {
-						columns[currY + y][currX + x] = '';
-					}
-				}
-			}
-			currY += 1;
-		});
-		currX += 1;
-	});
-
-	return columns;
 }
