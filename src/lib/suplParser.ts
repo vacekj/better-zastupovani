@@ -49,7 +49,7 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 
 	// Dozory
 	const dozoryTable = $('table[width="605"]')[0];
-	const dozorRows = parseTable(dozoryTable)[0].slice(1);
+	const dozorRows = array2d.transpose(parseTable(dozoryTable)).slice(2);
 	const dozorRecords: DozorRecord[] = [];
 	array2d.eachRow(dozorRows, (dozorRow) => {
 		dozorRecords.push(new DozorRecord(dozorRow[0], dozorRow[1], dozorRow[2], dozorRow[3], dozorRow[4], dozorRow[5]));
@@ -59,6 +59,16 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 	const lastUpdated = $('table[width="700"] td.StyleZ5')[0].innerHTML;
 
 	return new SuplovaniPage(date, chybejiciTable, suplovaniRecords, nahradniUcebnaRecords, dozorRecords, lastUpdated);
+}
+
+class Record {
+	public removeNbsp() {
+		Object.keys(this).map(key => {
+			if (typeof this[key] === 'string') {
+				this[key] = this[key].replace('&nbsp;', '');
+			}
+		});
+	}
 }
 
 /**
@@ -73,7 +83,6 @@ export class SuplovaniPage {
 	public lastUpdated: string;
 	constructor(date: string, chybejici: ChybejiciTable, suplovani: SuplovaniRecord[], nahradniUcebny: NahradniUcebnaRecord[],
 		dozory: DozorRecord[], lastUpdated: string) {
-
 		this.chybejici = chybejici;
 		this.suplovani = suplovani;
 		this.nahradniUcebny = nahradniUcebny;
@@ -89,7 +98,7 @@ export class SuplovaniPage {
  * @export
  * @class SuplovaniRecord
  */
-export class SuplovaniRecord {
+export class SuplovaniRecord extends Record {
 	public hodina: string;
 	public trida: string;
 	public predmet: string;
@@ -101,6 +110,7 @@ export class SuplovaniRecord {
 
 	constructor(hodina: string, trida: string,
 		predmet: string, ucebna: string, nahucebna: string, vyuc: string, zastup: string, pozn: string) {
+		super();
 		this.hodina = hodina;
 		this.trida = trida;
 		this.predmet = predmet;
@@ -109,6 +119,7 @@ export class SuplovaniRecord {
 		this.vyuc = vyuc;
 		this.zastup = zastup;
 		this.pozn = pozn;
+		this.removeNbsp();
 	}
 }
 
@@ -118,7 +129,7 @@ export class SuplovaniRecord {
  * @export
  * @class NahradniUcebnaRecord
  */
-export class NahradniUcebnaRecord {
+export class NahradniUcebnaRecord extends Record {
 	public hodina: string;
 	public trida: string;
 	public predmet: string;
@@ -127,6 +138,7 @@ export class NahradniUcebnaRecord {
 	public vyuc: string;
 	public pozn: string;
 	constructor(hodina: string, trida: string, predmet: string, chybucebna: string, nahucebna: string, vyuc: string, pozn: string) {
+		super();
 		this.hodina = hodina;
 		this.trida = trida;
 		this.predmet = predmet;
@@ -134,13 +146,14 @@ export class NahradniUcebnaRecord {
 		this.nahucebna = nahucebna;
 		this.vyuc = vyuc;
 		this.pozn = pozn;
+		this.removeNbsp();
 	}
 }
 
 /**
  * Represents a single Dozor record
  */
-class DozorRecord {
+class DozorRecord extends Record {
 	public timeStart: string;
 	public timeEnd: string;
 	public misto: string;
@@ -148,11 +161,13 @@ class DozorRecord {
 	public dozorujici: string;
 	public poznamka: string;
 	constructor(timeStart: string, timeEnd: string, misto: string, chybejici: string, dozorujici: string, poznamka: string) {
+		super();
 		this.timeStart = timeStart;
 		this.timeEnd = timeEnd;
 		this.misto = misto;
 		this.chybejici = chybejici;
 		this.dozorujici = dozorujici;
 		this.poznamka = poznamka;
+		this.removeNbsp();
 	}
 }

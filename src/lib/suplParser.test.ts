@@ -70,23 +70,14 @@ function arrayContainsNullOrUndefined(objects: Object[]): boolean {
 	return objects.some(containsNullOrUndefined);
 }
 
-function containsNullOrUndefined(object: Object): boolean {
-	Object.keys(object).map((key) => {
-		if (object.hasOwnProperty(key)) {
-			const element = object[key];
-			if (typeof object[key] === 'object' && object[key] !== null) {
-				containsNullOrUndefined(object[key]);
-			} else if (Array.isArray(object[key]) && object[key].length) {
-				arrayContainsNullOrUndefined(object[key]);
-			} else if (!isReal(element)) {
-				return true;
-			}
+function containsNullOrUndefined(obj: Object): boolean {
+	return Object.values(obj).reduce((acc, value) => {
+		if (value === undefined || value == null) {
+			return true;
+		} else if (typeof value === 'object' && value !== null) {
+			containsNullOrUndefined(value);
+		} else if (Array.isArray(value) && value.length) {
+			arrayContainsNullOrUndefined(value);
 		}
-	});
-
-	return false;
-}
-
-function isReal(value): boolean {
-	return value && value !== 'undefined' && value !== 'null';
+	}, false);
 }
