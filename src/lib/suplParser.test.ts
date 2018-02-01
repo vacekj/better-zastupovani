@@ -54,6 +54,12 @@ describe('suplParser', () => {
 					// Check for class etc. format using regex
 					expect(parsedSuplovaniPage).to.be.an.instanceOf(SuplovaniPage);
 					expect(parsedSuplovaniPage).to.not.satisfy(containsNullOrUndefined);
+					expect(parsedSuplovaniPage.chybejici.tridy.map((record) => record.kdo)).to.satisfy((array) => {
+						return arrayMatchesRegex(array, regexes.trida);
+					});
+					expect(parsedSuplovaniPage.chybejici.ucebny.map((record) => record.kdo)).to.satisfy((array) => {
+						return arrayMatchesRegex(array, regexes.ucebna);
+					});
 					done();
 				}).catch((err) => {
 					done(err);
@@ -65,6 +71,12 @@ describe('suplParser', () => {
 		jsdom();
 	});
 });
+
+function arrayMatchesRegex(array: string[], regex: RegExp): boolean {
+	return array.every((elem) => {
+		return regex.test(elem);
+	});
+}
 
 function arrayContainsNullOrUndefined(objects: Object[]): boolean {
 	return objects.some(containsNullOrUndefined);
@@ -81,3 +93,8 @@ function containsNullOrUndefined(obj: Object): boolean {
 		}
 	}, false);
 }
+
+const regexes = {
+	trida: new RegExp('[IX|IV|V?I{0,3}]\.[A-C][1-8]?'),
+	ucebna: new RegExp('[1-8]\.[A-C][1-8]?d?|[ABC].{3}d?')
+};
