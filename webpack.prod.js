@@ -18,7 +18,7 @@ module.exports = merge(common, {
 		new CleanWebpackPlugin(['dist/']),
 		new ClosureCompilerPlugin({
 			compiler: {
-				language_in: 'ECMASCRIPT6',
+				language_in: 'ECMASCRIPT_NEXT',
 				language_out: 'ECMASCRIPT5'
 			},
 			concurrency: 3,

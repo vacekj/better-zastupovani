@@ -20,7 +20,7 @@ export class SuplUtil {
 					const dates = parseDatesPage(datesPage);
 
 					const promises = dates.map(async (date) => {
-						return this.suplGetter.getSuplovaniPage(date);
+						return this.suplGetter.getSuplovaniPage(date.url);
 					});
 
 					const allPromises = Promise.all(promises);

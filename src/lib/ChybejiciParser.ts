@@ -55,11 +55,12 @@ function formatMissingsArray(chybejiciArray: ChybejiciRecord[]) {
 		const index = includesObjectWithProp(dedupedArray, 'kdo', missing.kdo);
 		if (index !== -1) {
 			const originalObject = dedupedArray[index];
-			dedupedArray[index] = {
-				...originalObject,
-				schedule: { ...originalObject.schedule, ...missing.schedule }
-			};
-
+			// dedupedArray[index] = {
+			// 	...originalObject,
+			// 	schedule: { ...originalObject.schedule, ...missing.schedule }
+			// };
+			// tslint:disable-next-line:prefer-object-spread
+			dedupedArray[index] = Object.assign(originalObject, { schedule: missing.schedule });
 		} else {
 			dedupedArray.push(missing);
 		}

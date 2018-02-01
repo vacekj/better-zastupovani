@@ -8,12 +8,15 @@ module.exports = {
 		filename: 'bundle.js',
 		path: path.resolve(__dirname, 'dist')
 	},
+	resolve: {
+		extensions: ['.ts', '.js', '.json']
+	},
 	module: {
 		rules: [
 			{
 				test: /\.tsx?$/,
 				use: 'ts-loader',
-				exclude: /node_modules/
+				exclude: [/node_modules/]
 			},
 			{
 				test: /\.(html)$/,

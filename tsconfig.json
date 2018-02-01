@@ -9,5 +9,8 @@
 		"module": "commonjs",
 		"target": "esnext",
 		"allowJs": true
+	},
+	"typeAcquisition": {
+		"enable": true
 	}
 }

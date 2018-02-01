@@ -6,14 +6,14 @@ import { SuplGetterNode } from './suplGetterNode';
 import { DateWithUrl, parseDatesPage } from './DatesParser';
 import { NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from './suplParser';
 
-import * as JSDom from 'global-jsdom';
+import globalJsdom from 'global-jsdom';
 let jsdom;
 
 const suplGetter = new SuplGetterNode();
 
 describe('suplParser', () => {
 	before(() => {
-		jsdom = JSDom();
+		jsdom = globalJsdom();
 	});
 
 	it('should parse classes page', (done) => {

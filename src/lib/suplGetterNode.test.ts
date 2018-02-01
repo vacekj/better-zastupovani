@@ -5,12 +5,12 @@ import { parseDatesPage } from './DatesParser';
 import { SuplGetterNode } from './suplGetterNode';
 const suplGetter = new SuplGetterNode();
 
-import * as JSDom from 'global-jsdom';
+import globalJsdom from 'global-jsdom';
 let jsdom;
 
 describe('suplGetter', () => {
 	before(() => {
-		jsdom = JSDom();
+		jsdom = globalJsdom();
 	});
 
 	it('should get classes page', (done) => {
