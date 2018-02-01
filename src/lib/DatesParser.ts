@@ -1,12 +1,24 @@
 import { parse } from 'date-fns';
 import { load } from './DOMUtils';
 /**
- * Helper class for Dates and URLs pointing to suplovaniPages
+ * Date information corresponding to one suplovaniPage
  *
  */
 export class DateWithUrl {
 	public url: string;
+	/**
+	 * Used for sorting
+	 *
+	 * @type {Date}
+	 * @memberof DateWithUrl
+	 */
 	public date: Date;
+	/**
+	 * Used as display value
+	 *
+	 * @type {string}
+	 * @memberof DateWithUrl
+	 */
 	public dateString: string;
 	constructor(url: string, dateString: string) {
 		this.url = url;
@@ -17,7 +29,7 @@ export class DateWithUrl {
 }
 
 /**
- * Parses a dates page string into a SuplovaniPageDate array
+ * Parses a dates page string into a DateWithUrl array
  *
  */
 export function parseDatesPage(datesPage: string): DateWithUrl[] {

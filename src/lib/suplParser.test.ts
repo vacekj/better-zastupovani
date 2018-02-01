@@ -49,7 +49,7 @@ describe('suplParser', () => {
 			.getDatesPage().then((datesPage) => {
 				const dates = parseDatesPage(datesPage);
 				const date = dates[0];
-				suplGetter.getSuplovaniPage(date).then((suplovaniPage) => {
+				suplGetter.getSuplovaniPage(date.url).then((suplovaniPage) => {
 					const parsedSuplovaniPage = parseSuplovaniPage(suplovaniPage);
 					// Check for class etc. format using regex
 					expect(parsedSuplovaniPage).to.be.an.instanceOf(SuplovaniPage);

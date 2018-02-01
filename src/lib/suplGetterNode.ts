@@ -1,7 +1,7 @@
 import * as iconv from 'iconv-lite';
 import * as request_ from 'request';
+import { DateWithUrl } from './DatesParser';
 import { SuplGetter } from './suplGetter';
-import { DateWithUrl } from './suplParser';
 
 /**
  * A SuplGetter that works in Node environment
@@ -10,6 +10,7 @@ import { DateWithUrl } from './suplParser';
  * @class SuplGetterNode
  * @extends {SuplGetter}
  */
+// tslint:disable-next-line:export-name
 export class SuplGetterNode extends SuplGetter {
 	constructor() {
 		super();
@@ -46,9 +47,9 @@ export class SuplGetterNode extends SuplGetter {
 		});
 	}
 
-	public async getSuplovaniPage(date: DateWithUrl): Promise<string> {
+	public async getSuplovaniPage(dateUrl: string): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
-			this.request(this.URL_SUPL + date.url, (err, res, body, $) => {
+			this.request(this.URL_SUPL + dateUrl, (err, res, body, $) => {
 				if (err) {
 					reject(err);
 				}

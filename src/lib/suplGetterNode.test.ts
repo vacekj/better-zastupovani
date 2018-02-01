@@ -38,7 +38,7 @@ describe('suplGetter', () => {
 			.getDatesPage().then((datesPage) => {
 				const dates = parseDatesPage(datesPage);
 				const date = dates[0];
-				suplGetter.getSuplovaniPage(date).then((suplovaniPage) => {
+				suplGetter.getSuplovaniPage(date.url).then((suplovaniPage) => {
 					expect(suplovaniPage).to.be.a('string');
 					done();
 				}).catch((err) => {

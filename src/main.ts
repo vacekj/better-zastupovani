@@ -5,7 +5,6 @@ import './bootstrap-md.min.css';
 import './favicon.png';
 import './index.html';
 import './style.css';
-import './style.js';
 
 import * as $ from 'jquery';
 import * as Cookies from 'js-cookie';

@@ -1,4 +1,4 @@
-import { DateWithUrl } from './suplParser';
+import { DateWithUrl } from './DatesParser';
 /**
  * Base abstract class with common functionality and members for all SuplGetters
  *
@@ -20,7 +20,7 @@ export abstract class SuplGetter {
 	/**
 	 * getSuplovani
 	 */
-	public abstract getSuplovaniPage(date: DateWithUrl): Promise<string>;
+	public abstract getSuplovaniPage(dateUrl: string): Promise<string>;
 
 	/**
 	 * getDatesPage
@@ -62,7 +62,7 @@ export class SuplGetterBrowser extends SuplGetter {
 		return this.request(this.URL_DATES);
 	}
 
-	public async getSuplovaniPage(date: DateWithUrl): Promise<string> {
-		return this.request(this.URL_SUPL + date.url);
+	public async getSuplovaniPage(dateUrl: string): Promise<string> {
+		return this.request(this.URL_SUPL + dateUrl);
 	}
 }
