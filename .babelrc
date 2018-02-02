@@ -9,7 +9,10 @@
 						"safari >= 7"
 					]
 				},
-				"modules": false
+				"modules": false,
+				"presets": [
+					"@babel/preset-minify"
+				]
 			}
 		]
 	]
