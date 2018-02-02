@@ -39,7 +39,8 @@
 		"no-use-before-declare": false,
 		"mocha-no-side-effect-code": false,
 		"strict-boolean-expressions": false,
-		"no-useless-files": false
+		"no-useless-files": false,
+		"no-require-imports": false
 	},
 	"extends": "tslint-microsoft-contrib"
 }
