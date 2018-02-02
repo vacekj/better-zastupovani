@@ -6,7 +6,7 @@ import { SuplGetterNode } from './suplGetterNode';
 import { DateWithUrl, parseDatesPage } from './DatesParser';
 import { NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from './suplParser';
 
-import * as globalJsdom from 'global-jsdom';
+import globalJsdom from 'global-jsdom';
 let jsdom;
 
 const suplGetter = new SuplGetterNode();

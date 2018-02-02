@@ -5,7 +5,7 @@ import { parseDatesPage } from './DatesParser';
 import { SuplGetterNode } from './suplGetterNode';
 const suplGetter = new SuplGetterNode();
 
-import * as globalJsdom from 'global-jsdom';
+import globalJsdom from 'global-jsdom';
 let jsdom;
 
 describe('suplGetter', () => {
