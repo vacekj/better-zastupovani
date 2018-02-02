@@ -61,6 +61,11 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 	return new SuplovaniPage(date, chybejiciTable, suplovaniRecords, nahradniUcebnaRecords, dozorRecords, lastUpdated);
 }
 
+/**
+ * Helper class for removing nbsp
+ *
+ * @class Record
+ */
 class Record {
 	public removeNbsp() {
 		Object.keys(this).map(key => {

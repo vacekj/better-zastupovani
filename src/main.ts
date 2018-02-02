@@ -13,4 +13,4 @@ import { compareAsc, format, isEqual } from 'date-fns';
 import { SuplGetterBrowser } from './lib/suplGetter';
 import { SuplUtil } from './lib/SuplUtil';
 
-let suplUtil = new SuplUtil(new SuplGetterBrowser());
+const suplUtil = new SuplUtil(new SuplGetterBrowser());

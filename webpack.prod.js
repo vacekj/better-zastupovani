@@ -2,7 +2,6 @@ const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = merge(common, {
 	module: {
@@ -16,7 +15,6 @@ module.exports = merge(common, {
 	},
 	plugins: [
 		new CleanWebpackPlugin(['dist/']),
-		new ExtractTextPlugin('style.css'),
-		new BundleAnalyzerPlugin()
+		new ExtractTextPlugin('style.css')
 	]
 });

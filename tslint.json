@@ -37,7 +37,9 @@
 		"no-unsafe-any": false,
 		"no-redundant-jsdoc": false,
 		"no-use-before-declare": false,
-		"mocha-no-side-effect-code": false
+		"mocha-no-side-effect-code": false,
+		"strict-boolean-expressions": false,
+		"no-useless-files": false
 	},
 	"extends": "tslint-microsoft-contrib"
 }
