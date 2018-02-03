@@ -104,7 +104,7 @@ function rangeToSchedule(range: [string, string]): Schedule {
 
 		return defaultObject;
 	} else {
-		//first and last hour of absence
+		// first and last hour of absence
 		const obj: Schedule = {
 			1: undefined,
 			2: undefined,

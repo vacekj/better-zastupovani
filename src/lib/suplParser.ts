@@ -44,7 +44,15 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 	const nahradniUCebnaTable = $('td.StyleD3')[0].parentElement.parentElement.parentElement;
 	const correctedNahradniUcebnyArray = array2d.transpose(parseTable(nahradniUCebnaTable)).slice(2);
 	array2d.eachRow(correctedNahradniUcebnyArray, (row) => {
-		nahradniUcebnaRecords.push(new NahradniUcebnaRecord(row[0], row[1], row[2], row[3], row[4], row[5], row[6]));
+		nahradniUcebnaRecords.push(new NahradniUcebnaRecord({
+			hodina: row[0],
+			trida: row[1],
+			predmet: row[2],
+			chybucebna: row[3],
+			nahucebna: row[4],
+			vyuc: row[5],
+			pozn: row[6]
+		}));
 	});
 
 	// Dozory
@@ -52,7 +60,14 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 	const dozorRows = array2d.transpose(parseTable(dozoryTable)).slice(2);
 	const dozorRecords: DozorRecord[] = [];
 	array2d.eachRow(dozorRows, (dozorRow) => {
-		dozorRecords.push(new DozorRecord(dozorRow[0], dozorRow[1], dozorRow[2], dozorRow[3], dozorRow[4], dozorRow[5]));
+		dozorRecords.push(new DozorRecord({
+			timeStart: dozorRow[0],
+			timeEnd: dozorRow[1],
+			misto: dozorRow[2],
+			chybejici: dozorRow[3],
+			dozorujici: dozorRow[4],
+			poznamka: dozorRow[5]
+		}));
 	});
 
 	// Last updated
@@ -68,7 +83,7 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
  */
 class Record {
 	public removeNbsp() {
-		Object.keys(this).map(key => {
+		Object.keys(this).map((key) => {
 			if (typeof this[key] === 'string') {
 				this[key] = this[key].replace('&nbsp;', '');
 			}
@@ -142,15 +157,9 @@ export class NahradniUcebnaRecord extends Record {
 	public nahucebna: string;
 	public vyuc: string;
 	public pozn: string;
-	constructor(hodina: string, trida: string, predmet: string, chybucebna: string, nahucebna: string, vyuc: string, pozn: string) {
+	constructor(options: Partial<NahradniUcebnaRecord>) {
 		super();
-		this.hodina = hodina;
-		this.trida = trida;
-		this.predmet = predmet;
-		this.chybucebna = chybucebna;
-		this.nahucebna = nahucebna;
-		this.vyuc = vyuc;
-		this.pozn = pozn;
+		Object.assign(this, options);
 		this.removeNbsp();
 	}
 }
@@ -165,14 +174,9 @@ class DozorRecord extends Record {
 	public chybejici: string;
 	public dozorujici: string;
 	public poznamka: string;
-	constructor(timeStart: string, timeEnd: string, misto: string, chybejici: string, dozorujici: string, poznamka: string) {
+	constructor(options: Partial<DozorRecord>) {
 		super();
-		this.timeStart = timeStart;
-		this.timeEnd = timeEnd;
-		this.misto = misto;
-		this.chybejici = chybejici;
-		this.dozorujici = dozorujici;
-		this.poznamka = poznamka;
+		Object.assign(this, options);
 		this.removeNbsp();
 	}
 }

@@ -52,13 +52,13 @@ describe('suplParser', () => {
 				const date = dates[0];
 				suplGetter.getSuplovaniPage(date.url).then((suplovaniPage) => {
 					const parsedSuplovaniPage = parseSuplovaniPage(suplovaniPage);
-					// Check for class etc. format using regex
+					// check for class etc. format using regex
 					expect(parsedSuplovaniPage).to.be.an.instanceOf(SuplovaniPage);
 					expect(parsedSuplovaniPage).to.not.satisfy(containsNullOrUndefined);
-					expect(parsedSuplovaniPage.chybejici.tridy.map((record) => record.kdo)).to.satisfy((array) => {
+					expect(parsedSuplovaniPage.chybejici.tridy.map(record => record.kdo)).to.satisfy((array) => {
 						return arrayMatchesRegex(array, regexes.trida);
 					});
-					expect(parsedSuplovaniPage.chybejici.ucebny.map((record) => record.kdo)).to.satisfy((array) => {
+					expect(parsedSuplovaniPage.chybejici.ucebny.map(record => record.kdo)).to.satisfy((array) => {
 						return arrayMatchesRegex(array, regexes.ucebna);
 					});
 					done();
@@ -97,5 +97,5 @@ function containsNullOrUndefined(obj: Object): boolean {
 
 const regexes = {
 	trida: new RegExp('[IX|IV|V?I{0,3}]\.[A-C][1-8]?'),
-	ucebna: new RegExp('[1-8]\.[A-C][1-8]?d?|[ABC].{3}d?')
+	ucebna: new RegExp('[1-8]\.[A-C][1-8]?d?|[ABC].{3}d?'),
 };
