@@ -7,7 +7,14 @@
 		"sourceMap": true,
 		"noImplicitAny": false,
 		"target": "esnext",
-		"allowJs": true
+		"allowJs": true,
+		"lib": [
+			"dom",
+			"webworker",
+			"esnext",
+			"dom.iterable",
+			"es7"
+		]
 	},
 	"typeAcquisition": {
 		"enable": true

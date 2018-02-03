@@ -1,5 +1,4 @@
 {
-	"rulesDirectory": "node_modules/tslint-microsoft-contrib",
 	"rules": {
 		"new-parens": true,
 		"no-arg": true,
@@ -16,31 +15,29 @@
 		],
 		"indent": [
 			true,
-			"tabs"
+			"tabs",
+			2
 		],
 		"typedef": false,
-		"function-name": false,
-		"missing-jsdoc": false,
 		"no-import-side-effect": false,
-		"no-relative-imports": false,
 		"no-invalid-this": false,
-		"no-multiline-string": false,
 		"align": false,
-		"no-increment-decrement": false,
-		"no-suspicious-comment": false,
 		"max-classes-per-file": false,
-		"no-implicit-dependencies": [
-			true,
-			"dev"
-		],
-		"no-http-string": false,
 		"no-unsafe-any": false,
-		"no-redundant-jsdoc": false,
 		"no-use-before-declare": false,
-		"mocha-no-side-effect-code": false,
 		"strict-boolean-expressions": false,
-		"no-useless-files": false,
-		"no-require-imports": false
-	},
-	"extends": "tslint-microsoft-contrib"
+		"no-require-imports": false,
+		"comment-format": [
+			true,
+			"check-space",
+			{
+				"ignore-words": [
+					"TODO",
+					"HACK"
+				]
+			}
+		],
+		"trailing-comma": false,
+		"max-line-length": false
+	}
 }
