@@ -18,7 +18,7 @@ before((done) => {
 	server.listen(8000, async () => {
 		browser = await puppeteer.launch(
 			process.env.CI
-				? {}
+				? { args: ['--no-sandbox'] }
 				: {
 					headless: false,
 					slowMo: 100,
@@ -93,6 +93,7 @@ describe('E2E Tests', () => {
 });
 
 after(async (done) => {
+	await page.close();
 	await browser.close();
 	process.exit();
 });
