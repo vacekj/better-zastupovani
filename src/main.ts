@@ -12,7 +12,7 @@ import * as Cookies from 'js-cookie';
 import { compareAsc, format, isEqual, isToday } from 'date-fns';
 import { DateWithUrl, parseDatesPage } from './lib/DatesParser';
 import { SuplGetterBrowser } from './lib/suplGetter';
-import { parseSuplovaniPage, SuplovaniPage, SuplovaniRecord, DozorRecord, Record, NahradniUcebnaRecord } from './lib/suplParser';
+import { parseSuplovaniPage, SuplovaniPage, SuplovaniRecord, DozorRecord, Record, NahradniUcebnaRecord, parseClassesPage } from './lib/suplParser';
 import { ChybejiciTable, ChybejiciRecord } from 'src/lib/ChybejiciParser';
 const suplGetter = new SuplGetterBrowser();
 
@@ -30,6 +30,14 @@ function bootstrap() {
 	// populate date selector
 	registerEventHandlers();
 	showLoadingIndicator();
+	suplGetter.getClassesPage()
+		.then(parseClassesPage)
+		.then((classes) => {
+			const options = classes.map((_class) => {
+				return `<option value="${_class}">`;
+			}).reduce((acc, el) => acc + el);
+			$('datalist#filterSuggestions').append(options);
+		});
 	suplGetter.getDatesPage()
 		.then(parseDatesPage)
 		.then((dates) => {

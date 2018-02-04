@@ -38,7 +38,10 @@
 			</fieldset>
 			<fieldset class="col-md-8 form-group">
 				<label for="selector_filter" class="bmd-label-floating">Filtr</label>
-				<input type="text" class="form-control" name="selector_filter" id="selector_filter" placeholder="Třída, učitel..." data-test="filterTextbox">
+				<input type="text" class="form-control" name="selector_filter" id="selector_filter" placeholder="Třída, učitel..." list="filterSuggestions"
+				 data-test="filterTextbox">
+				<datalist id="filterSuggestions">
+				</datalist>
 			</fieldset>
 		</div>
 		<div class="row">
