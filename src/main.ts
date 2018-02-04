@@ -6,6 +6,10 @@ import './favicon.png';
 import './index.html';
 import './style.css';
 
+// svgs
+import './svg/code.svg';
+import './svg/heart.svg';
+
 import * as $ from 'jquery';
 import * as Cookies from 'js-cookie';
 

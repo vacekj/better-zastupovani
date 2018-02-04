@@ -28,14 +28,14 @@ module.exports = {
 				}]
 			},
 			{
-				test: /\.(png|jpg|gif)$/,
+				test: /\.(png|jpg|gif|svg)$/,
 				use: [
 					{
 						loader: 'file-loader',
 						options: {
 							context: path.resolve(__dirname, 'src'),
 							outputPath: '',
-							name: '[name].[ext]'
+							name: '[path][name].[ext]'
 						}
 					}
 				]
