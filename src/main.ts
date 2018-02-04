@@ -9,7 +9,7 @@ import './style.css';
 import * as $ from 'jquery';
 import * as Cookies from 'js-cookie';
 
-import { compareAsc, format, isEqual, isToday } from 'date-fns';
+import { format, isEqual, compareDesc, closestIndexTo, closestTo } from 'date-fns';
 import { DateWithUrl, parseDatesPage } from './lib/DatesParser';
 import { SuplGetterBrowser } from './lib/suplGetter';
 import { parseSuplovaniPage, SuplovaniPage, SuplovaniRecord, DozorRecord, Record, NahradniUcebnaRecord, parseClassesPage, parseVyucujiciPage } from './lib/suplParser';
@@ -42,7 +42,7 @@ function bootstrap() {
 		.then((dates) => {
 			// sort dates by descending
 			const sortedDates = dates.sort((a, b) => {
-				return compareAsc(a.date, b.date);
+				return compareDesc(a.date, b.date);
 			});
 
 			// get options
@@ -54,10 +54,9 @@ function bootstrap() {
 			const dateSelector = $('#selector_date')[0];
 			$(dateSelector).append(datesOptions);
 
-			// get and select today's date
-			const today = sortedDates.find((dateWithUrl) => {
-				return isToday(dateWithUrl.date);
-			});
+			// get and select closest day to today
+			const closestDay = closestTo(new Date(), sortedDates.map((date) => date.date));
+			const today = sortedDates.find((date) => date.date == closestDay);
 			if (today) {
 				$(dateSelector).children(`[url="${today.url}"]`).attr('selected', 'true');
 			}
