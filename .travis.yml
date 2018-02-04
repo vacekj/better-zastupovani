@@ -3,7 +3,7 @@ node_js:
 - 'stable'
 
 script:
-- npm run build
+- npm run build && npm run test && npm run lint
 
 deploy:
   provider: pages
