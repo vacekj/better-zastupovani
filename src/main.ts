@@ -58,15 +58,15 @@ function bootstrap() {
 			const dateSelector = $('#selector_date')[0];
 			$(dateSelector).append(datesOptions);
 
-			// get and select closest day to today
-			const closestDay = closestTo(new Date(), sortedDates.map((date) => date.date));
-			const today = sortedDates.find((date) => date.date == closestDay);
-			if (today) {
-				$(dateSelector).children(`[url="${today.url}"]`).attr('selected', 'true');
-			}
-
 			// trigger first render
 			dateSelector.dispatchEvent(new Event('change'));
+
+			// get and select closest day to today
+			const closestDay = closestTo(new Date(), sortedDates.map((date) => date.date));
+			const today = sortedDates.find((date) => isEqual(date.date, closestDay));
+			if (today) {
+				(<HTMLSelectElement>dateSelector).selectedIndex = sortedDates.indexOf(today);
+			}
 		}).catch(console.log);
 }
 
