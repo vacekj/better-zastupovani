@@ -167,7 +167,7 @@ export class ChybejiciTable {
  *
  * E.g.: Petr (1..6)
  */
-class ChybejiciRecord {
+export class ChybejiciRecord {
 	public kdo: string;
 	public schedule: Schedule;
 	constructor(kdo: string, schedule: Schedule) {

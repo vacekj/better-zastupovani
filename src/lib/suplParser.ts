@@ -81,7 +81,7 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
  *
  * @class Record
  */
-class Record {
+export class Record {
 	public removeNbsp() {
 		Object.keys(this).map((key) => {
 			if (typeof this[key] === 'string') {
@@ -167,7 +167,7 @@ export class NahradniUcebnaRecord extends Record {
 /**
  * Represents a single Dozor record
  */
-class DozorRecord extends Record {
+export class DozorRecord extends Record {
 	public timeStart: string;
 	public timeEnd: string;
 	public misto: string;
