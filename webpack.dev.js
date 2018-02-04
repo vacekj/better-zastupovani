@@ -5,7 +5,7 @@ module.exports = merge(common, {
 		contentBase: './dist',
 		host: '192.168.1.200'
 	},
-	devtool: 'eval-source-map',
+	devtool: 'inline-source-map',
 	module: {
 		rules: [{
 			test: /\.css$/,

@@ -1,0 +1,43 @@
+{
+	"rules": {
+		"new-parens": true,
+		"no-arg": true,
+		"no-bitwise": true,
+		"no-conditional-assignment": true,
+		"no-consecutive-blank-lines": true,
+		"semicolon": [
+			true,
+			"always"
+		],
+		"linebreak-style": [
+			true,
+			"CRLF"
+		],
+		"indent": [
+			true,
+			"tabs",
+			2
+		],
+		"typedef": false,
+		"no-import-side-effect": false,
+		"no-invalid-this": false,
+		"align": false,
+		"max-classes-per-file": false,
+		"no-unsafe-any": false,
+		"no-use-before-declare": false,
+		"strict-boolean-expressions": false,
+		"no-require-imports": false,
+		"comment-format": [
+			true,
+			"check-space",
+			{
+				"ignore-words": [
+					"TODO",
+					"HACK"
+				]
+			}
+		],
+		"trailing-comma": false,
+		"max-line-length": false
+	}
+}

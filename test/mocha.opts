@@ -1,1 +1,1 @@
-./src/**/*.test.js ./test --timeout 30000 
+-r node_modules/ts-node/register/index.js --timeout 30000 ./src/**/*.test.ts
