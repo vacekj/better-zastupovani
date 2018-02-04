@@ -18,6 +18,15 @@ export function parseClassesPage(classesPage: string): string[] {
 	});
 }
 
+export function parseVyucujiciPage(vyucujiciPage: string): string[] {
+	const $ = load(vyucujiciPage);
+	const options = $('option');
+
+	return [...options].map((option) => {
+		return option.innerHTML.split(' &nbsp;&nbsp;')[0];
+	});
+}
+
 /**
  * Parses a suplovani page string into a SuplovaniPage object
  */

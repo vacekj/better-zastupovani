@@ -12,7 +12,7 @@ import * as Cookies from 'js-cookie';
 import { compareAsc, format, isEqual, isToday } from 'date-fns';
 import { DateWithUrl, parseDatesPage } from './lib/DatesParser';
 import { SuplGetterBrowser } from './lib/suplGetter';
-import { parseSuplovaniPage, SuplovaniPage, SuplovaniRecord, DozorRecord, Record, NahradniUcebnaRecord, parseClassesPage } from './lib/suplParser';
+import { parseSuplovaniPage, SuplovaniPage, SuplovaniRecord, DozorRecord, Record, NahradniUcebnaRecord, parseClassesPage, parseVyucujiciPage } from './lib/suplParser';
 import { ChybejiciTable, ChybejiciRecord } from 'src/lib/ChybejiciParser';
 const suplGetter = new SuplGetterBrowser();
 
@@ -30,14 +30,13 @@ function bootstrap() {
 	// populate date selector
 	registerEventHandlers();
 	showLoadingIndicator();
-	suplGetter.getClassesPage()
-		.then(parseClassesPage)
-		.then((classes) => {
-			const options = classes.map((_class) => {
-				return `<option value="${_class}">`;
-			}).reduce((acc, el) => acc + el);
-			$('datalist#filterSuggestions').append(options);
-		});
+	const suggestionPromises = Promise.all([suplGetter.getClassesPage().then(parseClassesPage), suplGetter.getVyucujiciPage().then(parseVyucujiciPage)]);
+	suggestionPromises.then((suggestions) => {
+		const options = suggestions[0].concat(suggestions[1]).map((suggestion) => {
+			return `<option value="${suggestion}">`;
+		}).reduce((acc, el) => acc + el);
+		$('datalist#filterSuggestions').append(options);
+	});
 	suplGetter.getDatesPage()
 		.then(parseDatesPage)
 		.then((dates) => {
@@ -74,7 +73,7 @@ function dateWithUrlToOption(dateWithUrl: DateWithUrl) {
 
 function registerEventHandlers() {
 	$('#selector_date').on('change', onDateChange);
-	$('#selector_filter').on('keyup', onFilterChange);
+	$('#selector_filter').on('keyup input', onFilterChange);
 }
 
 function onFilterChange() {
@@ -142,7 +141,7 @@ function renderSuplovani(suplovaniRecords: SuplovaniRecord[]) {
 
 function objectContainsString<T>(object: T, filter: string) {
 	return Object.values(object).some((value) => {
-		return value.toLowerCase().includes(filter.toLowerCase());
+		return value.includes(filter);
 	});
 }
 

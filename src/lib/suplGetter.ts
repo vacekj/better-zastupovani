@@ -10,6 +10,7 @@ import { decode } from './decode';
 export abstract class SuplGetter {
 	public URL_SUPL = 'http://suplovani.gytool.cz/';
 	public URL_ROZVRH = 'http://rozvrh.gytool.cz/index_Trida_Menu.html';
+	public URL_VYUCUJICI = 'http://rozvrh.gytool.cz/index_Vyucujici_Menu.html';
 	public get URL_DATES(): string {
 		return `${this.URL_SUPL}/!index_menu.html`;
 	}
@@ -27,6 +28,11 @@ export abstract class SuplGetter {
 	 * getDatesPage
 	 */
 	public abstract getDatesPage(): Promise<string>;
+
+	/**
+	 * getVyucujiciPage
+	 */
+	public abstract getVyucujiciPage(): Promise<string>;
 }
 
 /**
@@ -54,7 +60,6 @@ export class SuplGetterBrowser extends SuplGetter {
 				})
 				.then((arrayBuffer) => {
 					return this.textDecoder.decode(arrayBuffer);
-					// return decode(arrayBuffer);
 				})
 				.then((body) => {
 					resolve(body);
@@ -73,5 +78,9 @@ export class SuplGetterBrowser extends SuplGetter {
 
 	public async getSuplovaniPage(dateUrl: string): Promise<string> {
 		return this.request(this.URL_SUPL + dateUrl);
+	}
+
+	public async getVyucujiciPage(): Promise<string> {
+		return this.request(this.URL_VYUCUJICI);
 	}
 }

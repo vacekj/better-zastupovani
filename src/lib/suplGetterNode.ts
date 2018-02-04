@@ -49,7 +49,18 @@ export class SuplGetterNode extends SuplGetter {
 
 	public async getSuplovaniPage(dateUrl: string): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
-			this.request(this.URL_SUPL + dateUrl, (err, res, body, $) => {
+			this.request(this.URL_SUPL + dateUrl, (err, res, body) => {
+				if (err) {
+					reject(err);
+				}
+				resolve(body);
+			});
+		});
+	}
+
+	public async getVyucujiciPage(): Promise<string> {
+		return new Promise<string>((resolve, reject) => {
+			this.request(this.URL_VYUCUJICI, (err, res, body) => {
 				if (err) {
 					reject(err);
 				}
