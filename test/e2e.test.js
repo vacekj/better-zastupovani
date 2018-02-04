@@ -30,6 +30,7 @@ before((done) => {
 		done();
 	});
 });
+
 describe('E2E Tests', () => {
 	describe('Basic layout', () => {
 		describe('Date picker', () => {
