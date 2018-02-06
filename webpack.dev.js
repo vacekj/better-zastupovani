@@ -2,8 +2,7 @@ const merge = require("webpack-merge");
 const common = require("./webpack.common.js");
 module.exports = merge(common, {
 	devServer: {
-		host: "192.168.1.200",
-		https: true
+		host: "192.168.1.200"
 	},
 	devtool: "inline-source-map",
 	module: {
