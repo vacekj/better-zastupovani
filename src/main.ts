@@ -150,8 +150,8 @@ function renderSuplovani(suplovaniRecords: SuplovaniRecord[]) {
 }
 
 function objectContainsString<T>(object: T, filter: string) {
-	return Object.values(object).some((value) => {
-		return value.includes(filter);
+	return Object.values(object).some((value: string) => {
+		return value.toLowerCase().includes(filter.toLowerCase());
 	});
 }
 
