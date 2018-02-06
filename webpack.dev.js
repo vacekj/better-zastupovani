@@ -1,11 +1,11 @@
-const merge = require('webpack-merge');
-const common = require('./webpack.common.js');
+const merge = require("webpack-merge");
+const common = require("./webpack.common.js");
 module.exports = merge(common, {
 	devServer: {
-		contentBase: './dist',
-		host: '192.168.1.200'
+		contentBase: "./dist",
+		host: "192.168.1.200"
 	},
-	devtool: 'inline-source-map',
+	devtool: "inline-source-map",
 	module: {
 		rules: [{
 			test: /\.css$/,
