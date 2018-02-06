@@ -99,6 +99,7 @@ function onFilterChange() {
 }
 
 function onDateChange() {
+	showLoadingIndicator();
 	const newDateUrl: string = (<HTMLSelectElement>this).selectedOptions[0].getAttribute('url');
 
 	const suplovaniPage = suplGetter.getSuplovaniPage(newDateUrl)
@@ -273,8 +274,8 @@ function showLoadingIndicator() {
 		</td>
 	</tr>`;
 
-	$('#table_suplovani > tbody').append(indicator(8));
-	$('#table_dozory > tbody').append(indicator(6));
-	$('#table_chybejici > tbody').append(indicator(9));
-	$('#table_nahradniUcebny > tbody').append(indicator(7));
+	$('#table_suplovani > tbody').html(indicator(8));
+	$('#table_dozory > tbody').html(indicator(6));
+	$('#table_chybejici > tbody').html(indicator(9));
+	$('#table_nahradniUcebny > tbody').html(indicator(7));
 }
