@@ -1,5 +1,9 @@
 {
+	"extends": "tslint:recommended",
 	"rules": {
+		"object-literal-sort-keys": false,
+		"no-inferrable-types": true,
+		"no-reference": true,
 		"new-parens": true,
 		"no-arg": true,
 		"no-bitwise": true,

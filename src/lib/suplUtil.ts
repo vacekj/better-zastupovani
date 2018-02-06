@@ -1,6 +1,6 @@
-import { parseDatesPage } from './DatesParser';
-import { SuplGetter } from './suplGetter';
-import { parseSuplovaniPage, SuplovaniPage } from './suplParser';
+import { parseDatesPage } from "./DatesParser";
+import { SuplGetter } from "./suplGetter";
+import { parseSuplovaniPage, SuplovaniPage } from "./suplParser";
 
 /**
  * A utility class containing methods that do not fit anywhere else

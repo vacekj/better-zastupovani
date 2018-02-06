@@ -1,9 +1,9 @@
-import * as array2d from 'array2d';
-import { format, parse } from 'date-fns';
+import * as array2d from "array2d";
+import { format, parse } from "date-fns";
 
-import { $context, load, parseTable } from './DOMUtils';
+import { $context, load, parseTable } from "./DOMUtils";
 
-import { ChybejiciTable, parseChybejiciTable } from './ChybejiciParser';
+import { ChybejiciTable, parseChybejiciTable } from "./ChybejiciParser";
 
 /**
  * Parses a classes page into an array of class strings
@@ -11,7 +11,7 @@ import { ChybejiciTable, parseChybejiciTable } from './ChybejiciParser';
  */
 export function parseClassesPage(classesPage: string): string[] {
 	const $ = load(classesPage);
-	const options = $('option');
+	const options = $("option");
 
 	return [...options].map((option) => {
 		return option.innerHTML;
@@ -20,10 +20,10 @@ export function parseClassesPage(classesPage: string): string[] {
 
 export function parseVyucujiciPage(vyucujiciPage: string): string[] {
 	const $ = load(vyucujiciPage);
-	const options = $('option');
+	const options = $("option");
 
 	return [...options].map((option) => {
-		return option.innerHTML.split(' &nbsp;&nbsp;')[0];
+		return option.innerHTML.split(" &nbsp;&nbsp;")[0];
 	});
 }
 
@@ -34,15 +34,15 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 	const $ = load(suplovaniPage);
 
 	// Date
-	const date = $('.StyleZ3')[0].innerHTML;
+	const date = $(".StyleZ3")[0].innerHTML;
 
 	// Chybejici
-	const chybejiciTableElement = $('table')[0];
+	const chybejiciTableElement = $("table")[0];
 	const chybejiciTable = parseChybejiciTable(chybejiciTableElement);
 
 	// Suplovani
 	const suplovaniRecords: SuplovaniRecord[] = [];
-	const suplovaniTable = $('td.StyleC3')[0].parentElement.parentElement.parentElement;
+	const suplovaniTable = $("td.StyleC3")[0].parentElement.parentElement.parentElement;
 	const correctedSuplArray = array2d.transpose(parseTable(suplovaniTable)).slice(2);
 	array2d.eachRow(correctedSuplArray, (row) => {
 		suplovaniRecords.push(new SuplovaniRecord(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]));
@@ -50,7 +50,7 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 
 	// Nahradni ucebny
 	const nahradniUcebnaRecords: NahradniUcebnaRecord[] = [];
-	const nahradniUCebnaTable = $('td.StyleD3')[0].parentElement.parentElement.parentElement;
+	const nahradniUCebnaTable = $("td.StyleD3")[0].parentElement.parentElement.parentElement;
 	const correctedNahradniUcebnyArray = array2d.transpose(parseTable(nahradniUCebnaTable)).slice(2);
 	array2d.eachRow(correctedNahradniUcebnyArray, (row) => {
 		nahradniUcebnaRecords.push(new NahradniUcebnaRecord({
@@ -93,8 +93,8 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 export class Record {
 	public removeNbsp() {
 		Object.keys(this).map((key) => {
-			if (typeof this[key] === 'string') {
-				this[key] = this[key].replace('&nbsp;', '');
+			if (typeof this[key] === "string") {
+				this[key] = this[key].replace("&nbsp;", "");
 			}
 		});
 	}

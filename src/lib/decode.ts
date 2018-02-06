@@ -3,10 +3,10 @@ const hasOwnProperty = object.hasOwnProperty;
 const stringFromCharCode = String.fromCharCode;
 
 function error(codePoint, mode) {
-	if (mode === 'replacement') {
-		return '\uFFFD';
+	if (mode === "replacement") {
+		return "\uFFFD";
 	}
-	if (codePoint != null && mode === 'html') {
+	if (codePoint != null && mode === "html") {
 		return `&#${codePoint};`;
 	}
 	// else, `mode == 'fatal'`.
@@ -20,14 +20,14 @@ export function decode(input, options?) {
 	}
 	// “An error mode […] is either `replacement` (default) or `fatal` for a
 	// decoder.”
-	if (mode !== 'replacement' && mode !== 'fatal') {
-		mode = 'replacement';
+	if (mode !== "replacement" && mode !== "fatal") {
+		mode = "replacement";
 	}
 	const length = input.length;
 	let index = -1;
 	let byteValue;
 	let pointer;
-	let result = '';
+	let result = "";
 	while (++index < length) {
 		byteValue = input.charCodeAt(index);
 		// “If `byte` is in the range `0x00` to `0x7F`, return a code point whose

@@ -1,16 +1,16 @@
-import { parseTable } from './DOMUtils';
+import { parseTable } from "./DOMUtils";
 export function parseChybejiciTable(chybejiciTable: Element): ChybejiciTable {
 	const chybejiciRows = parseTable(chybejiciTable)[0].slice(1);
 	const chybejiciArray = chybejiciRows.map((row) => {
-		if (!row || row === '&nbsp;') {
+		if (!row || row === "&nbsp;") {
 			return [];
 		}
 
 		// split the row into individual missing records
-		const parsedRow = row.split(', ');
+		const parsedRow = row.split(", ");
 
 		return parsedRow.map((elem) => {
-			const kdo = elem.split(' ')[0];
+			const kdo = elem.split(" ")[0];
 			const range = extractRange(elem);
 
 			return new ChybejiciRecord(kdo, rangeToSchedule(range));
@@ -22,20 +22,20 @@ export function parseChybejiciTable(chybejiciTable: Element): ChybejiciTable {
 
 function extractRange(elem: string): [string, string] | null {
 	// no range
-	if (!elem.includes(' ')) {
+	if (!elem.includes(" ")) {
 		return null;
 	}
 
 	// extract range part from string
-	const rangePart = elem.split(' ')[1].replace('(', '').replace(')', '');
-	let range: [string, string] = ['', ''];
+	const rangePart = elem.split(" ")[1].replace("(", "").replace(")", "");
+	let range: [string, string] = ["", ""];
 	// decide if range or only one hour: (1..2) or (2)
 	if (rangePart.length === 1) {
 		// only one hour
 		range = [rangePart, rangePart];
 	} else {
 		// range of hours
-		const splitRange = rangePart.split('..');
+		const splitRange = rangePart.split("..");
 		range = [splitRange[0], splitRange[1]];
 	}
 
@@ -52,7 +52,7 @@ function formatMissingsArray(chybejiciArray: ChybejiciRecord[]) {
 	}
 
 	chybejiciArray.map((missing) => {
-		const index = includesObjectWithProp(dedupedArray, 'kdo', missing.kdo);
+		const index = includesObjectWithProp(dedupedArray, "kdo", missing.kdo);
 		if (index !== -1) {
 			const originalObject = dedupedArray[index];
 			// dedupedArray[index] = {
@@ -73,7 +73,7 @@ function formatMissingsArray(chybejiciArray: ChybejiciRecord[]) {
  * Convert hour range to full schedule object
  * ["1", "3"] to {1: false, 2: false, 3: false, 4: true, ...}
  */
-function rangeToSchedule(range: [string, string]): Schedule {
+function rangeToSchedule(range: [string, string]): ISchedule {
 	// no range -> full 8 hours
 	if (range === null) {
 		return {
@@ -105,7 +105,7 @@ function rangeToSchedule(range: [string, string]): Schedule {
 		return defaultObject;
 	} else {
 		// first and last hour of absence
-		const obj: Schedule = {
+		const obj: ISchedule = {
 			1: undefined,
 			2: undefined,
 			3: undefined,
@@ -169,14 +169,14 @@ export class ChybejiciTable {
  */
 export class ChybejiciRecord {
 	public kdo: string;
-	public schedule: Schedule;
-	constructor(kdo: string, schedule: Schedule) {
+	public schedule: ISchedule;
+	constructor(kdo: string, schedule: ISchedule) {
 		this.kdo = kdo;
 		this.schedule = schedule;
 	}
 }
 
-type Schedule = {
+interface ISchedule {
 	1: boolean;
 	2: boolean;
 	3: boolean;
@@ -185,4 +185,4 @@ type Schedule = {
 	6: boolean;
 	7: boolean;
 	8: boolean;
-};
+}

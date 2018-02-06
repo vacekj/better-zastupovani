@@ -1,44 +1,44 @@
 // Bootstrap imports
-import './bootstrap-md.min.css';
+import "./bootstrap-md.min.css";
 
 // Webpack imports
-import './favicon.png';
-import './index.html';
-import './style.css';
+import "./favicon.png";
+import "./index.html";
+import "./style.css";
 
 // images
-import './svg/code.svg';
-import './svg/heart.svg';
-import './gh.png';
-import './pecet.jpg';
+import "./gh.png";
+import "./pecet.jpg";
+import "./svg/code.svg";
+import "./svg/heart.svg";
 
-import * as $ from 'jquery';
-import * as Cookies from 'js-cookie';
+import * as $ from "jquery";
+import * as Cookies from "js-cookie";
 
-import { format, isEqual, compareDesc, closestIndexTo, closestTo } from 'date-fns';
-import { DateWithUrl, parseDatesPage } from './lib/DatesParser';
-import { SuplGetterBrowser } from './lib/suplGetter';
-import { parseSuplovaniPage, SuplovaniPage, SuplovaniRecord, DozorRecord, Record, NahradniUcebnaRecord, parseClassesPage, parseVyucujiciPage } from './lib/suplParser';
-import { ChybejiciTable, ChybejiciRecord } from './lib/ChybejiciParser';
-import { addBackToTop } from './lib/backToTop';
+import { closestIndexTo, closestTo, compareDesc, format, isEqual } from "date-fns";
+import { addBackToTop } from "./lib/backToTop";
+import { ChybejiciRecord, ChybejiciTable } from "./lib/ChybejiciParser";
+import { DateWithUrl, parseDatesPage } from "./lib/DatesParser";
+import { SuplGetterBrowser } from "./lib/suplGetter";
+import { DozorRecord, NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, parseVyucujiciPage, Record, SuplovaniPage, SuplovaniRecord } from "./lib/suplParser";
 const suplGetter = new SuplGetterBrowser();
 
-var state: {
+const state: {
 	currentSuplovaniPage: SuplovaniPage
 } = {
 		currentSuplovaniPage: null
 	};
 
-const COOKIE_FILTER = 'filter';
+const COOKIE_FILTER = "filter";
 
 $(document).ready(bootstrap);
 
 function bootstrap() {
 	addBackToTop({
+		backgroundColor: " #2d548d",
 		diameter: 56,
-		backgroundColor: ' #2d548d',
-		textColor: '#fff',
-		showWhenScrollTopIs: 300
+		showWhenScrollTopIs: 300,
+		textColor: "#fff"
 	});
 	showLoadingIndicator();
 	registerEventHandlers();
@@ -49,7 +49,7 @@ function bootstrap() {
 		const options = suggestions[0].concat(suggestions[1]).map((suggestion) => {
 			return `<option value="${suggestion}">`;
 		}).reduce((acc, el) => acc + el);
-		$('datalist#filterSuggestions').append(options);
+		$("datalist#filterSuggestions").append(options);
 	});
 
 	// populate date selector
@@ -67,18 +67,18 @@ function bootstrap() {
 			});
 
 			// append options to date selector
-			const dateSelector = $('#selector_date')[0];
+			const dateSelector = $("#selector_date")[0];
 			$(dateSelector).append(datesOptions);
 
 			// trigger first render
-			dateSelector.dispatchEvent(new Event('change'));
+			dateSelector.dispatchEvent(new Event("change"));
 
 			// get and select closest day to today
 			const closestDay = closestTo(new Date(), sortedDates.map((date) => date.date));
 			const today = sortedDates.find((date) => isEqual(date.date, closestDay));
 			if (today) {
-				(<HTMLSelectElement>dateSelector).selectedIndex = sortedDates.indexOf(today);
-				dateSelector.dispatchEvent(new Event('change'));
+				(dateSelector as HTMLSelectElement).selectedIndex = sortedDates.indexOf(today);
+				dateSelector.dispatchEvent(new Event("change"));
 			}
 		}).catch(console.log);
 }
@@ -88,12 +88,12 @@ function dateWithUrlToOption(dateWithUrl: DateWithUrl) {
 }
 
 function registerEventHandlers() {
-	$('#selector_date').on('change', onDateChange);
-	$('#selector_filter').on('keyup input', onFilterChange);
+	$("#selector_date").on("change", onDateChange);
+	$("#selector_filter").on("keyup input", onFilterChange);
 }
 
 function onFilterChange() {
-	const value = (<HTMLInputElement>this).value.trim();
+	const value = (this as HTMLInputElement).value.trim();
 	if (value && value.length) {
 		render(undefined, value);
 	} else {
@@ -106,9 +106,9 @@ function onFilterChange() {
 
 function onDateChange() {
 	showLoadingIndicator();
-	const newDateUrl: string = (<HTMLSelectElement>this).selectedOptions[0].getAttribute('url');
+	const newDateUrl: string = (this as HTMLSelectElement).selectedOptions[0].getAttribute("url");
 
-	const suplovaniPage = suplGetter.getSuplovaniPage(newDateUrl)
+	suplGetter.getSuplovaniPage(newDateUrl)
 		.then(parseSuplovaniPage)
 		.then((suplovaniPage) => {
 			state.currentSuplovaniPage = suplovaniPage;
@@ -119,17 +119,17 @@ function onDateChange() {
 			render(suplovaniPage);
 			// filter cookie
 			if (Cookies.get(COOKIE_FILTER)) {
-				$('#selector_filter').val(Cookies.get(COOKIE_FILTER));
-				$('#selector_filter')[0].dispatchEvent(new Event('keyup'));
+				$("#selector_filter").val(Cookies.get(COOKIE_FILTER));
+				$("#selector_filter")[0].dispatchEvent(new Event("keyup"));
 			}
 		}).catch(console.log);
 }
 
 function render(suplovaniPage: SuplovaniPage, filter?: string) {
 	if (filter) {
-		const filterRecords = <T>(records: T[], filter: string) => {
+		const filterRecords = <T>(records: T[], filterString: string) => {
 			return records.filter((record) => {
-				return objectContainsString(record, filter);
+				return objectContainsString(record, filterString);
 			});
 		};
 
@@ -147,12 +147,12 @@ function render(suplovaniPage: SuplovaniPage, filter?: string) {
 }
 
 function renderSuplovani(suplovaniRecords: SuplovaniRecord[]) {
-	const suplovaniTable = $('#table_suplovani > tbody');
+	const suplovaniTable = $("#table_suplovani > tbody");
 	suplovaniTable.empty();
 
-	let contentToAppend = suplovaniRecords.length
+	const contentToAppend = suplovaniRecords.length
 		? suplovaniRecords.map(suplovaniRecordToTr).reduce((acc, tr) => acc + tr)
-		: rowHeader('Žádné suplování', 8);
+		: rowHeader("Žádné suplování", 8);
 
 	suplovaniTable.append(contentToAppend);
 }
@@ -178,12 +178,12 @@ function suplovaniRecordToTr(suplovaniRecord: SuplovaniRecord): string {
 }
 
 function renderDozory(dozorRecords: DozorRecord[]) {
-	const dozorTable = $('#table_dozory > tbody');
+	const dozorTable = $("#table_dozory > tbody");
 	dozorTable.empty();
 
-	let contentToAppend = dozorRecords.length
+	const contentToAppend = dozorRecords.length
 		? dozorRecords.map(dozorRecordToTr).reduce((acc, tr) => acc + tr)
-		: rowHeader('Žádné dozory', 6);
+		: rowHeader("Žádné dozory", 6);
 
 	dozorTable.append(contentToAppend);
 }
@@ -200,21 +200,21 @@ function dozorRecordToTr(dozorRecord: DozorRecord): string {
 }
 
 function renderChybejici(chybejici: ChybejiciTable) {
-	const chybejiciTable = $('#table_chybejici > tbody');
+	const chybejiciTable = $("#table_chybejici > tbody");
 	chybejiciTable.empty();
 
-	const noChybejici = rowHeader('Žádní chybějící', 9);
+	const noChybejici = rowHeader("Žádní chybějící", 9);
 
 	const ucitele = chybejici.ucitele.map(chybejiciRecordToTr).reduce((acc, el) => acc + el);
 	const tridy = chybejici.tridy.map(chybejiciRecordToTr).reduce((acc, el) => acc + el);
 	const ucebny = chybejici.ucebny.map(chybejiciRecordToTr).reduce((acc, el) => acc + el);
 
 	const contentToAppend = `
-	${rowHeader('Učitelé', 9)}
+	${rowHeader("Učitelé", 9)}
 	${ucitele.length ? ucitele : noChybejici}
-	${rowHeader('Třídy', 9)}
+	${rowHeader("Třídy", 9)}
 	${tridy.length ? tridy : noChybejici}
-	${rowHeader('Učebny', 9)}
+	${rowHeader("Učebny", 9)}
 	${ucebny.length ? ucebny : noChybejici}
 	`;
 
@@ -223,13 +223,13 @@ function renderChybejici(chybejici: ChybejiciTable) {
 
 function chybejiciRecordToTr(chybejiciRecord: ChybejiciRecord) {
 	const cells = Object.keys(chybejiciRecord.schedule).map((hour) => {
-		return `<td class="${chybejiciRecord.schedule[hour] ? 'present' : 'absent'}">${hour}</td>`;
+		return `<td class="${chybejiciRecord.schedule[hour] ? "present" : "absent"}">${hour}</td>`;
 	});
 
 	const row = `
 		<tr>
 			<td>${chybejiciRecord.kdo}</td>
-			${cells.join('')}
+			${cells.join("")}
 		</tr >
 	`;
 
@@ -237,12 +237,12 @@ function chybejiciRecordToTr(chybejiciRecord: ChybejiciRecord) {
 }
 
 function renderNahradniUcebny(nahradniUcebnyRecords: NahradniUcebnaRecord[]) {
-	const nahradniUcebnyTable = $('#table_nahradniUcebny > tbody');
+	const nahradniUcebnyTable = $("#table_nahradniUcebny > tbody");
 	nahradniUcebnyTable.empty();
 
-	let contentToAppend = nahradniUcebnyRecords.length
+	const contentToAppend = nahradniUcebnyRecords.length
 		? nahradniUcebnyRecords.map(nahradniUcebnaRecordToTr).reduce((acc, tr) => acc + tr)
-		: rowHeader('Žádné náhradní učebny', 8);
+		: rowHeader("Žádné náhradní učebny", 8);
 
 	nahradniUcebnyTable.append(contentToAppend);
 }
@@ -268,7 +268,7 @@ function rowHeader(text: string, colspan: number) {
  *
  */
 function removeControlChars(s: string) {
-	return s.replace(/[\n\r\t]/g, '');
+	return s.replace(/[\n\r\t]/g, "");
 }
 
 function showLoadingIndicator() {
@@ -280,8 +280,8 @@ function showLoadingIndicator() {
 		</td>
 	</tr>`;
 
-	$('#table_suplovani > tbody').html(indicator(8));
-	$('#table_dozory > tbody').html(indicator(6));
-	$('#table_chybejici > tbody').html(indicator(9));
-	$('#table_nahradniUcebny > tbody').html(indicator(7));
+	$("#table_suplovani > tbody").html(indicator(8));
+	$("#table_dozory > tbody").html(indicator(6));
+	$("#table_chybejici > tbody").html(indicator(9));
+	$("#table_nahradniUcebny > tbody").html(indicator(7));
 }

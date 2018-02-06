@@ -1,43 +1,43 @@
-import { expect } from 'chai';
-import 'mocha';
+import { expect } from "chai";
+import "mocha";
 
-import { SuplGetterNode } from './suplGetterNode';
+import { SuplGetterNode } from "./suplGetterNode";
 
-import { DateWithUrl, parseDatesPage } from './DatesParser';
-import { NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from './suplParser';
+import { DateWithUrl, parseDatesPage } from "./DatesParser";
+import { NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from "./suplParser";
 
-import * as globalJsdom from 'global-jsdom';
+import * as globalJsdom from "global-jsdom";
 let jsdom;
 
 const suplGetter = new SuplGetterNode();
 
-describe('suplParser', () => {
+describe("suplParser", () => {
 	before(() => {
 		// tslint:disable-next-line:no-any
-		jsdom = (<any>globalJsdom)();
+		jsdom = (globalJsdom as any)();
 	});
 
-	it('should parse classes page', (done) => {
+	it("should parse classes page", (done) => {
 		suplGetter.getClassesPage()
 			.then((classesPage) => {
 				const classes = parseClassesPage(classesPage);
 				expect(classes).to.be.an.instanceof(Array);
-				expect(classes[0]).to.equal('I.A8');
-				expect(classes).to.include.members(['I.A6', 'I.A']);
+				expect(classes[0]).to.equal("I.A8");
+				expect(classes).to.include.members(["I.A6", "I.A"]);
 				done();
 			}).catch((err) => {
 				done(err);
 			});
 	});
 
-	it('should parse dates page', (done) => {
+	it("should parse dates page", (done) => {
 		suplGetter.getDatesPage()
 			.then((datesPage) => {
 				const dates = parseDatesPage(datesPage);
 				expect(dates).to.be.an.instanceof(Array);
 				expect(dates[0]).to.be.an.instanceof(DateWithUrl);
 				expect(dates[0].date).to.be.an.instanceOf(Date);
-				const containsDate = new RegExp('pondělí|úterý|středa|čtvrtek|pátek');
+				const containsDate = new RegExp("pondělí|úterý|středa|čtvrtek|pátek");
 				expect(dates[0].dateString).to.match(containsDate);
 				done();
 			}).catch((err) => {
@@ -45,7 +45,7 @@ describe('suplParser', () => {
 			});
 	});
 
-	it('should parse suplovani page', (done) => {
+	it("should parse suplovani page", (done) => {
 		suplGetter
 			.getDatesPage().then((datesPage) => {
 				const dates = parseDatesPage(datesPage);
@@ -55,10 +55,10 @@ describe('suplParser', () => {
 					// check for class etc. format using regex
 					expect(parsedSuplovaniPage).to.be.an.instanceOf(SuplovaniPage);
 					expect(parsedSuplovaniPage).to.not.satisfy(containsNullOrUndefined);
-					expect(parsedSuplovaniPage.chybejici.tridy.map(record => record.kdo)).to.satisfy((array) => {
+					expect(parsedSuplovaniPage.chybejici.tridy.map((record) => record.kdo)).to.satisfy((array) => {
 						return arrayMatchesRegex(array, regexes.trida);
 					});
-					expect(parsedSuplovaniPage.chybejici.ucebny.map(record => record.kdo)).to.satisfy((array) => {
+					expect(parsedSuplovaniPage.chybejici.ucebny.map((record) => record.kdo)).to.satisfy((array) => {
 						return arrayMatchesRegex(array, regexes.ucebna);
 					});
 					done();
@@ -79,15 +79,15 @@ function arrayMatchesRegex(array: string[], regex: RegExp): boolean {
 	});
 }
 
-function arrayContainsNullOrUndefined(objects: Object[]): boolean {
+function arrayContainsNullOrUndefined(objects: object[]): boolean {
 	return objects.some(containsNullOrUndefined);
 }
 
-function containsNullOrUndefined(obj: Object): boolean {
+function containsNullOrUndefined(obj: object): boolean {
 	return Object.values(obj).reduce((acc, value) => {
 		if (value === undefined || value == null) {
 			return true;
-		} else if (typeof value === 'object' && value !== null) {
+		} else if (typeof value === "object" && value !== null) {
 			containsNullOrUndefined(value);
 		} else if (Array.isArray(value) && value.length) {
 			arrayContainsNullOrUndefined(value);
@@ -96,6 +96,6 @@ function containsNullOrUndefined(obj: Object): boolean {
 }
 
 const regexes = {
-	trida: new RegExp('[IX|IV|V?I{0,3}]\.[A-C][1-8]?'),
-	ucebna: new RegExp('[1-8]\.[A-C][1-8]?d?|[ABC].{3}d?'),
+	trida: new RegExp("[IX|IV|V?I{0,3}]\.[A-C][1-8]?"),
+	ucebna: new RegExp("[1-8]\.[A-C][1-8]?d?|[ABC].{3}d?"),
 };

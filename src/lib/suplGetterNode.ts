@@ -1,7 +1,7 @@
-import * as iconv from 'iconv-lite';
-import * as request_ from 'request';
-import { DateWithUrl } from './DatesParser';
-import { SuplGetter } from './suplGetter';
+import * as iconv from "iconv-lite";
+import * as request_ from "request";
+import { DateWithUrl } from "./DatesParser";
+import { SuplGetter } from "./suplGetter";
 
 /**
  * A SuplGetter that works in Node environment
@@ -17,10 +17,10 @@ export class SuplGetterNode extends SuplGetter {
 	}
 	public request(url, cb) {
 		request_({
-			url,
-			encoding: null
+			encoding: null,
+			url
 		}, (err, res, body) => {
-			const decodedBody = iconv.decode(body, 'win1250');
+			const decodedBody = iconv.decode(body, "win1250");
 			cb(err, res, decodedBody);
 		});
 	}

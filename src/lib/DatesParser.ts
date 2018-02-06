@@ -1,5 +1,5 @@
-import { parse } from 'date-fns';
-import { load } from './DOMUtils';
+import { parse } from "date-fns";
+import { load } from "./DOMUtils";
 /**
  * Date information corresponding to one suplovaniPage
  *
@@ -22,7 +22,7 @@ export class DateWithUrl {
 	public dateString: string;
 	constructor(url: string, dateString: string) {
 		this.url = url;
-		const extractedDate = url.slice(7, 17).replace('_', '-').replace('_', '-');
+		const extractedDate = url.slice(7, 17).replace("_", "-").replace("_", "-");
 		this.date = parse(extractedDate);
 		this.dateString = dateString;
 	}
@@ -34,9 +34,9 @@ export class DateWithUrl {
  */
 export function parseDatesPage(datesPage: string): DateWithUrl[] {
 	const $ = load(datesPage);
-	const options = $('option');
+	const options = $("option");
 
 	return [...options].map((option) => {
-		return new DateWithUrl(option.getAttribute('value'), option.innerHTML);
+		return new DateWithUrl(option.getAttribute("value"), option.innerHTML);
 	});
 }

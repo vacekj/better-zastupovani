@@ -1,5 +1,5 @@
-import { DateWithUrl } from './DatesParser';
-import { decode } from './decode';
+import { DateWithUrl } from "./DatesParser";
+import { decode } from "./decode";
 /**
  * Base abstract class with common functionality and members for all SuplGetters
  *
@@ -8,9 +8,9 @@ import { decode } from './decode';
  * @class SuplGetter
  */
 export abstract class SuplGetter {
-	public URL_SUPL = 'https://suplovani.gytool.cz/';
-	public URL_ROZVRH = 'https://rozvrh.gytool.cz/index_Trida_Menu.html';
-	public URL_VYUCUJICI = 'https://rozvrh.gytool.cz/index_Vyucujici_Menu.html';
+	public URL_SUPL = "https://suplovani.gytool.cz/";
+	public URL_ROZVRH = "https://rozvrh.gytool.cz/index_Trida_Menu.html";
+	public URL_VYUCUJICI = "https://rozvrh.gytool.cz/index_Vyucujici_Menu.html";
 	public get URL_DATES(): string {
 		return `${this.URL_SUPL}/!index_menu.html`;
 	}
@@ -44,16 +44,16 @@ export abstract class SuplGetter {
  * @extends {SuplGetter}
  */
 export class SuplGetterBrowser extends SuplGetter {
-	private textDecoder: TextDecoder = new TextDecoder('cp1250');
+	private textDecoder: TextDecoder = new TextDecoder("cp1250");
 	public async request(url: string): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			const myInit: RequestInit = {
-				method: 'GET'
+				method: "GET"
 			};
 			fetch(url, myInit)
 				.then(async (res) => {
 					if (!res.ok) {
-						reject({ error: 'res not ok' });
+						reject({ error: "res not ok" });
 					}
 
 					return res.arrayBuffer();
