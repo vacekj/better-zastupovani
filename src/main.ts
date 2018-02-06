@@ -36,6 +36,8 @@ function bootstrap() {
 	// populate date selector
 	registerEventHandlers();
 	showLoadingIndicator();
+
+	// Filter suggestions
 	const suggestionPromises = Promise.all([suplGetter.getClassesPage().then(parseClassesPage), suplGetter.getVyucujiciPage().then(parseVyucujiciPage)]);
 	suggestionPromises.then((suggestions) => {
 		const options = suggestions[0].concat(suggestions[1]).map((suggestion) => {
@@ -43,6 +45,8 @@ function bootstrap() {
 		}).reduce((acc, el) => acc + el);
 		$('datalist#filterSuggestions').append(options);
 	});
+
+	// Main load
 	suplGetter.getDatesPage()
 		.then(parseDatesPage)
 		.then((dates) => {
@@ -68,6 +72,7 @@ function bootstrap() {
 			const today = sortedDates.find((date) => isEqual(date.date, closestDay));
 			if (today) {
 				(<HTMLSelectElement>dateSelector).selectedIndex = sortedDates.indexOf(today);
+				dateSelector.dispatchEvent(new Event('change'));
 			}
 		}).catch(console.log);
 }
