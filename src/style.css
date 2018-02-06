@@ -69,7 +69,7 @@ table tr {
 }
 
 .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
-	background-color: red;
+	background-color: rgba(51, 82, 139, 0.267);
  }
 
 table td:last-child() {
