@@ -33,6 +33,12 @@ body>* {
 
 .logo {
 	font-family: 'Open Sans', sans-serif;
+	margin: 0;
+	color: #33528B;
+}
+
+a {
+	color: #33528B;
 }
 
 .form-control {
