@@ -68,6 +68,11 @@ table tr {
 	white-space: nowrap;
 }
 
+tr:hover td {
+	background: rgb(99, 99, 99);
+	color: white;
+}
+
 table td:last-child() {
 	width: 100%;
 }
@@ -79,7 +84,6 @@ table td:last-child() {
 
 .present {
 	background-color: #2d548d;
-
 }
 
 .absent {
