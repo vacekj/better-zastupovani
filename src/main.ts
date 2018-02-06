@@ -19,7 +19,8 @@ import { format, isEqual, compareDesc, closestIndexTo, closestTo } from 'date-fn
 import { DateWithUrl, parseDatesPage } from './lib/DatesParser';
 import { SuplGetterBrowser } from './lib/suplGetter';
 import { parseSuplovaniPage, SuplovaniPage, SuplovaniRecord, DozorRecord, Record, NahradniUcebnaRecord, parseClassesPage, parseVyucujiciPage } from './lib/suplParser';
-import { ChybejiciTable, ChybejiciRecord } from 'src/lib/ChybejiciParser';
+import { ChybejiciTable, ChybejiciRecord } from './lib/ChybejiciParser';
+import { addBackToTop } from './lib/backToTop';
 const suplGetter = new SuplGetterBrowser();
 
 var state: {
@@ -33,9 +34,14 @@ const COOKIE_FILTER = 'filter';
 $(document).ready(bootstrap);
 
 function bootstrap() {
-	// populate date selector
-	registerEventHandlers();
+	addBackToTop({
+		diameter: 56,
+		backgroundColor: ' #2d548d',
+		textColor: '#fff',
+		showWhenScrollTopIs: 300
+	});
 	showLoadingIndicator();
+	registerEventHandlers();
 
 	// Filter suggestions
 	const suggestionPromises = Promise.all([suplGetter.getClassesPage().then(parseClassesPage), suplGetter.getVyucujiciPage().then(parseVyucujiciPage)]);
@@ -46,7 +52,7 @@ function bootstrap() {
 		$('datalist#filterSuggestions').append(options);
 	});
 
-	// Main load
+	// populate date selector
 	suplGetter.getDatesPage()
 		.then(parseDatesPage)
 		.then((dates) => {
