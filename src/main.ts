@@ -128,13 +128,14 @@ function render(suplovaniPage: SuplovaniPage, filter?: string) {
 
 		renderSuplovani(filterRecords(state.currentSuplovaniPage.suplovani, filter));
 		renderDozory(filterRecords(state.currentSuplovaniPage.dozory, filter));
+		renderNahradniUcebny(filterRecords(state.currentSuplovaniPage.nahradniUcebny, filter));
 	} else {
 		renderSuplovani(suplovaniPage.suplovani);
 		renderDozory(suplovaniPage.dozory);
+		renderNahradniUcebny(suplovaniPage.nahradniUcebny);
 
 		// non-filtered
 		renderChybejici(suplovaniPage.chybejici);
-		renderNahradniUcebny(suplovaniPage.nahradniUcebny);
 	}
 }
 
