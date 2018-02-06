@@ -20,6 +20,7 @@ body {
 
 body>* {
 	background-color: white;
+	font-size: 14px;
 }
 
 .container {
@@ -59,8 +60,8 @@ table th {
 }
 
 table td {
-	text-align: center;
-	padding: 0.1rem !important;
+	padding: 0.2rem !important;
+	text-align: left;
 }
 
 table tr {
@@ -93,6 +94,11 @@ table td:last-child() {
 
 .glyph {
 	width: 15px;
+}
+
+table#table_chybejici td {
+	font-size: smaller;
+	text-align: center;
 }
 
 /* 
