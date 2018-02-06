@@ -68,10 +68,9 @@ table tr {
 	white-space: nowrap;
 }
 
-tr:hover td {
-	background: rgb(99, 99, 99);
-	color: white;
-}
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+	background-color: red;
+ }
 
 table td:last-child() {
 	width: 100%;
