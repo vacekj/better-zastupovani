@@ -102,7 +102,7 @@ table:not(#table_chybejici).table-striped>tbody>tr:nth-child(2n+1)>td:not(.noCel
 }
 
 table#table_chybejici td {
-	font-size: smaller;
+	font-size: small;
 	text-align: center;
 }
 
