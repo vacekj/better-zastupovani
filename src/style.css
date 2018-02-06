@@ -82,7 +82,7 @@ table:not(#table_chybejici) td:last-child {
 
 /* Table stripes */
 
-table:not(#table_chybejici).table-striped>tbody>tr:nth-child(2n+1)>td:not(.loading), .table-striped>tbody>tr:nth-child(2n+1)>th {
+table:not(#table_chybejici).table-striped>tbody>tr:nth-child(2n+1)>td:not(.noCellBg), .table-striped>tbody>tr:nth-child(2n+1)>th {
 	background-color: rgba(51, 82, 139, 0.267);
 }
 

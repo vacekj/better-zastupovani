@@ -50,7 +50,7 @@
 		"dev": "webpack-dev-server --open --config webpack.dev.js",
 		"test": "mocha",
 		"e2e": "npm run build && mocha ./test/*.test.js",
-		"prepush": "npm run lint && set CI=true && npm run test",
+		"prepush": "npm run lint && npm run test",
 		"lint": "tslint src/**/*.ts --project tsconfig.json --fix"
 	},
 	"repository": {
