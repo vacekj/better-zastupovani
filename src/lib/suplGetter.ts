@@ -8,9 +8,9 @@ import { decode } from './decode';
  * @class SuplGetter
  */
 export abstract class SuplGetter {
-	public URL_SUPL = 'http://suplovani.gytool.cz/';
-	public URL_ROZVRH = 'http://rozvrh.gytool.cz/index_Trida_Menu.html';
-	public URL_VYUCUJICI = 'http://rozvrh.gytool.cz/index_Vyucujici_Menu.html';
+	public URL_SUPL = 'https://suplovani.gytool.cz/';
+	public URL_ROZVRH = 'https://rozvrh.gytool.cz/index_Trida_Menu.html';
+	public URL_VYUCUJICI = 'https://rozvrh.gytool.cz/index_Vyucujici_Menu.html';
 	public get URL_DATES(): string {
 		return `${this.URL_SUPL}/!index_menu.html`;
 	}
