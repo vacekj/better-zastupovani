@@ -6,7 +6,7 @@ export function parseChybejiciTable(chybejiciTable: Element): ChybejiciTable {
 			return [];
 		}
 
-		// split the row into individual missing records
+		// Split the row into individual missing records
 		const parsedRow = row.split(", ");
 
 		return parsedRow.map((elem) => {
@@ -21,20 +21,20 @@ export function parseChybejiciTable(chybejiciTable: Element): ChybejiciTable {
 }
 
 function extractRange(elem: string): [string, string] | null {
-	// no range
+	// No range
 	if (!elem.includes(" ")) {
 		return null;
 	}
 
-	// extract range part from string
+	// Extract range part from string
 	const rangePart = elem.split(" ")[1].replace("(", "").replace(")", "");
 	let range: [string, string] = ["", ""];
-	// decide if range or only one hour: (1..2) or (2)
+	// Decide if range or only one hour: (1..2) or (2)
 	if (rangePart.length === 1) {
-		// only one hour
+		// Only one hour
 		range = [rangePart, rangePart];
 	} else {
-		// range of hours
+		// Range of hours
 		const splitRange = rangePart.split("..");
 		range = [splitRange[0], splitRange[1]];
 	}
@@ -55,11 +55,6 @@ function formatMissingsArray(chybejiciArray: ChybejiciRecord[]) {
 		const index = includesObjectWithProp(dedupedArray, "kdo", missing.kdo);
 		if (index !== -1) {
 			const originalObject = dedupedArray[index];
-			// dedupedArray[index] = {
-			// 	...originalObject,
-			// 	schedule: { ...originalObject.schedule, ...missing.schedule }
-			// };
-			// tslint:disable-next-line:prefer-object-spread
 			dedupedArray[index] = Object.assign(originalObject, { schedule: missing.schedule });
 		} else {
 			dedupedArray.push(missing);
@@ -74,7 +69,7 @@ function formatMissingsArray(chybejiciArray: ChybejiciRecord[]) {
  * ["1", "3"] to {1: false, 2: false, 3: false, 4: true, ...}
  */
 function rangeToSchedule(range: [string, string]): ISchedule {
-	// no range -> full 8 hours
+	// No range -> full 8 hours
 	if (range === null) {
 		return {
 			1: false,
@@ -88,7 +83,7 @@ function rangeToSchedule(range: [string, string]): ISchedule {
 		};
 	}
 
-	// single hour
+	// Single hour
 	if ((range.length === 1) || (range[0] === range[1])) {
 		const defaultObject = {
 			1: true,
@@ -104,7 +99,7 @@ function rangeToSchedule(range: [string, string]): ISchedule {
 
 		return defaultObject;
 	} else {
-		// first and last hour of absence
+		// First and last hour of absence
 		const obj: ISchedule = {
 			1: undefined,
 			2: undefined,
@@ -115,17 +110,17 @@ function rangeToSchedule(range: [string, string]): ISchedule {
 			7: undefined,
 			8: undefined
 		};
-		// until first hour of absence
+		// Until first hour of absence
 		for (let hour = 1; hour < parseInt(range[0], 10); hour++) {
 			obj[hour] = true;
 		}
 
-		// absence hours
+		// Absence hours
 		for (let hour = parseInt(range[0], 10); hour <= parseInt(range[1], 10); hour++) {
 			obj[hour] = false;
 		}
 
-		// after absence
+		// After absence
 		for (let hour = parseInt(range[1], 10) + 1; hour <= 8; hour++) {
 			obj[hour] = true;
 		}

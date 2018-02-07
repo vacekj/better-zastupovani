@@ -1,3 +1,4 @@
+/* tslint:disable */
 const object = {};
 const hasOwnProperty = object.hasOwnProperty;
 const stringFromCharCode = String.fromCharCode;

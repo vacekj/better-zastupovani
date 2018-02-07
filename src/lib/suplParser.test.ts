@@ -52,7 +52,7 @@ describe("suplParser", () => {
 				const date = dates[0];
 				suplGetter.getSuplovaniPage(date.url).then((suplovaniPage) => {
 					const parsedSuplovaniPage = parseSuplovaniPage(suplovaniPage);
-					// check for class etc. format using regex
+					// Check for class etc. format using regex
 					expect(parsedSuplovaniPage).to.be.an.instanceOf(SuplovaniPage);
 					expect(parsedSuplovaniPage).to.not.satisfy(containsNullOrUndefined);
 					expect(parsedSuplovaniPage.chybejici.tridy.map((record) => record.kdo)).to.satisfy((array) => {

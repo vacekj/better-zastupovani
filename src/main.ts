@@ -6,7 +6,7 @@ import "./favicon.png";
 import "./index.html";
 import "./style.css";
 
-// images
+// Images
 import "./gh.png";
 import "./pecet.jpg";
 import "./svg/code.svg";
@@ -52,33 +52,33 @@ function bootstrap() {
 		$("datalist#filterSuggestions").append(options);
 	});
 
-	// populate date selector
+	// Populate date selector
 	suplGetter.getDatesPage()
 		.then(parseDatesPage)
 		.then((dates) => {
-			// sort dates by descending
+			// Sort dates by descending
 			const sortedDates = dates.sort((a, b) => {
 				return compareDesc(a.date, b.date);
 			});
 
-			// get options
+			// Get options
 			const datesOptions = sortedDates.map(dateWithUrlToOption).reduce((acc, curr) => {
 				return acc + curr;
 			});
 
-			// append options to date selector
+			// Append options to date selector
 			const dateSelector = $("#selector_date")[0];
 			$(dateSelector).append(datesOptions);
 
-			// trigger first render
+			// Trigger first render
 			dateSelector.dispatchEvent(new Event("change"));
 
-			// get and select closest day to today
+			// Get and select closest day to today
 			const closestDay = closestTo(new Date(), sortedDates.map((date) => date.date));
 			const today = sortedDates.find((date) => isEqual(date.date, closestDay));
 			if (today) {
 				(dateSelector as HTMLSelectElement).selectedIndex = sortedDates.indexOf(today);
-				// need to manually trigger render again
+				// Need to manually trigger render again
 				dateSelector.dispatchEvent(new Event("change"));
 			}
 		}).catch(console.log);
@@ -101,7 +101,7 @@ function onFilterChange() {
 		render(state.currentSuplovaniPage);
 	}
 
-	// save filter to cookie
+	// Save filter to cookie
 	Cookies.set(COOKIE_FILTER, value);
 }
 
@@ -117,7 +117,7 @@ function onDateChange() {
 		})
 		.then((suplovaniPage) => {
 			render(suplovaniPage);
-			// filter cookie
+			// Filter cookie
 			if (Cookies.get(COOKIE_FILTER)) {
 				$("#selector_filter").val(Cookies.get(COOKIE_FILTER));
 				$("#selector_filter")[0].dispatchEvent(new Event("keyup"));
@@ -141,7 +141,7 @@ function render(suplovaniPage: SuplovaniPage, filter?: string) {
 		renderDozory(suplovaniPage.dozory);
 		renderNahradniUcebny(suplovaniPage.nahradniUcebny);
 
-		// non-filtered
+		// Non-filtered
 		renderChybejici(suplovaniPage.chybejici);
 	}
 }
