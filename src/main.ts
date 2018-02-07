@@ -35,7 +35,7 @@ $(document).ready(bootstrap);
 
 function bootstrap() {
 	addBackToTop({
-		backgroundColor: " #2d548d",
+		backgroundColor: "#002c5f",
 		diameter: 56,
 		showWhenScrollTopIs: 300,
 		textColor: "#fff"
@@ -78,6 +78,7 @@ function bootstrap() {
 			const today = sortedDates.find((date) => isEqual(date.date, closestDay));
 			if (today) {
 				(dateSelector as HTMLSelectElement).selectedIndex = sortedDates.indexOf(today);
+				// need to manually trigger render again
 				dateSelector.dispatchEvent(new Event("change"));
 			}
 		}).catch(console.log);
@@ -114,7 +115,6 @@ function onDateChange() {
 			state.currentSuplovaniPage = suplovaniPage;
 			return suplovaniPage;
 		})
-		.then()
 		.then((suplovaniPage) => {
 			render(suplovaniPage);
 			// filter cookie
