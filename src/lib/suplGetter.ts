@@ -44,7 +44,6 @@ export abstract class SuplGetter {
  * @extends {SuplGetter}
  */
 export class SuplGetterBrowser extends SuplGetter {
-	private textDecoder: TextDecoder = new TextDecoder("cp1250");
 	public async request(url: string): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			const myInit: RequestInit = {
@@ -59,8 +58,8 @@ export class SuplGetterBrowser extends SuplGetter {
 					return res.arrayBuffer();
 				})
 				.then((arrayBuffer) => {
-					return this.textDecoder.decode(arrayBuffer);
-				})
+					return decode(arrayBuffer);
+		})
 				.then((body) => {
 					resolve(body);
 				})
