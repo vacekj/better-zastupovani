@@ -3,7 +3,7 @@ import { format, parse } from "date-fns";
 
 import { $context, load, parseTable } from "./DOMUtils";
 
-import { ChybejiciTable, parseChybejiciTable } from "./ChybejiciParser";
+import { ChybejiciRecord, ChybejiciTable, parseChybejiciTable } from "./ChybejiciParser";
 
 /**
  * Parses a classes page into an array of class strings
@@ -38,51 +38,80 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 
 	// Chybejici
 	const chybejiciTableElement = $("table")[0];
-	const chybejiciTable = parseChybejiciTable(chybejiciTableElement);
+	let chybejiciTable: ChybejiciTable;
+	if (chybejiciTableElement) {
+		chybejiciTable = parseChybejiciTable(chybejiciTableElement);
+	} else {
+		chybejiciTable = new ChybejiciTable([], [], []);
+	}
 
 	// Suplovani
 	const suplovaniRecords: SuplovaniRecord[] = [];
-	const suplovaniTable = $("td.StyleC3")[0].parentElement.parentElement.parentElement;
-	const correctedSuplArray = array2d.transpose(parseTable(suplovaniTable)).slice(2);
-	array2d.eachRow(correctedSuplArray, (row) => {
-		suplovaniRecords.push(new SuplovaniRecord(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]));
-	});
+	const suplovaniAnchor = $("td.StyleC3")[0];
+	if (suplovaniAnchor) {
+		const suplovaniTable = suplovaniAnchor.parentElement.parentElement.parentElement;
+		const correctedSuplArray = array2d.transpose(parseTable(suplovaniTable)).slice(2);
+		array2d.eachRow(correctedSuplArray, (row) => {
+			suplovaniRecords.push(new SuplovaniRecord({
+				hodina: row[0],
+				trida: row[1],
+				predmet: row[2],
+				ucebna: row[3],
+				nahucebna: row[4],
+				vyuc: row[5],
+				zastup: row[6],
+				pozn: row[7]
+			}));
+		});
+	}
 
 	// Nahradni ucebny
 	const nahradniUcebnaRecords: NahradniUcebnaRecord[] = [];
-	const nahradniUCebnaTable = $("td.StyleD3")[0].parentElement.parentElement.parentElement;
-	const correctedNahradniUcebnyArray = array2d.transpose(parseTable(nahradniUCebnaTable)).slice(2);
-	array2d.eachRow(correctedNahradniUcebnyArray, (row) => {
-		nahradniUcebnaRecords.push(new NahradniUcebnaRecord({
-			hodina: row[0],
-			trida: row[1],
-			predmet: row[2],
-			chybucebna: row[3],
-			nahucebna: row[4],
-			vyuc: row[5],
-			pozn: row[6]
-		}));
-	});
+	const nahradniUcebnaAnchor = $("td.StyleD3")[0];
+	if (nahradniUcebnaAnchor) {
+		const nahradniUCebnaTable = nahradniUcebnaAnchor.parentElement.parentElement.parentElement;
+		const correctedNahradniUcebnyArray = array2d.transpose(parseTable(nahradniUCebnaTable)).slice(2);
+		array2d.eachRow(correctedNahradniUcebnyArray, (row) => {
+			nahradniUcebnaRecords.push(new NahradniUcebnaRecord({
+				hodina: row[0],
+				trida: row[1],
+				predmet: row[2],
+				chybucebna: row[3],
+				nahucebna: row[4],
+				vyuc: row[5],
+				pozn: row[6]
+			}));
+		});
+	}
 
 	// Dozory
-	const dozoryTable = $('table[width="605"]')[0];
-	const dozorRows = array2d.transpose(parseTable(dozoryTable)).slice(2);
 	const dozorRecords: DozorRecord[] = [];
-	array2d.eachRow(dozorRows, (dozorRow) => {
-		dozorRecords.push(new DozorRecord({
-			timeStart: dozorRow[0],
-			timeEnd: dozorRow[1],
-			misto: dozorRow[2],
-			chybejici: dozorRow[3],
-			dozorujici: dozorRow[4],
-			poznamka: dozorRow[5]
-		}));
-	});
+	const dozoryTable = $('table[width="605"]')[0];
+	if (dozoryTable) {
+		const dozorRows = array2d.transpose(parseTable(dozoryTable)).slice(2);
+		array2d.eachRow(dozorRows, (dozorRow) => {
+			dozorRecords.push(new DozorRecord({
+				timeStart: dozorRow[0],
+				timeEnd: dozorRow[1],
+				misto: dozorRow[2],
+				chybejici: dozorRow[3],
+				dozorujici: dozorRow[4],
+				poznamka: dozorRow[5]
+			}));
+		});
+	}
 
 	// Last updated
 	const lastUpdated = $('table[width="700"] td.StyleZ5')[0].innerHTML;
 
-	return new SuplovaniPage(date, chybejiciTable, suplovaniRecords, nahradniUcebnaRecords, dozorRecords, lastUpdated);
+	return new SuplovaniPage({
+		date,
+		lastUpdated,
+		chybejici: chybejiciTable,
+		suplovani: suplovaniRecords,
+		nahradniUcebny: nahradniUcebnaRecords,
+		dozory: dozorRecords
+	});
 }
 
 /**
@@ -110,14 +139,8 @@ export class SuplovaniPage {
 	public dozory: DozorRecord[];
 	public date: string;
 	public lastUpdated: string;
-	constructor(date: string, chybejici: ChybejiciTable, suplovani: SuplovaniRecord[], nahradniUcebny: NahradniUcebnaRecord[],
-		dozory: DozorRecord[], lastUpdated: string) {
-		this.chybejici = chybejici;
-		this.suplovani = suplovani;
-		this.nahradniUcebny = nahradniUcebny;
-		this.dozory = dozory;
-		this.date = date;
-		this.lastUpdated = lastUpdated;
+	constructor(options: Partial<SuplovaniPage>) {
+		Object.assign(this, options);
 	}
 }
 
@@ -137,17 +160,9 @@ export class SuplovaniRecord extends Record {
 	public zastup: string;
 	public pozn: string;
 
-	constructor(hodina: string, trida: string,
-		predmet: string, ucebna: string, nahucebna: string, vyuc: string, zastup: string, pozn: string) {
+	constructor(options: Partial<SuplovaniRecord>) {
 		super();
-		this.hodina = hodina;
-		this.trida = trida;
-		this.predmet = predmet;
-		this.ucebna = ucebna;
-		this.nahucebna = nahucebna;
-		this.vyuc = vyuc;
-		this.zastup = zastup;
-		this.pozn = pozn;
+		Object.assign(this, options);
 		this.removeNbsp();
 	}
 }
