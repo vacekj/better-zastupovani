@@ -15,7 +15,7 @@ import "./svg/heart.svg";
 import * as $ from "jquery";
 import * as Cookies from "js-cookie";
 
-import { closestIndexTo, closestTo, compareDesc, format, isEqual } from "date-fns";
+import { closestIndexTo, closestTo, compareDesc, format, isEqual, isToday, isTomorrow } from "date-fns";
 import { addBackToTop } from "./lib/backToTop";
 import { ChybejiciRecord, ChybejiciTable } from "./lib/ChybejiciParser";
 import { DateWithUrl, parseDatesPage } from "./lib/DatesParser";
@@ -24,9 +24,11 @@ import { DozorRecord, NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage
 const suplGetter = new SuplGetterBrowser();
 
 const state: {
-	currentSuplovaniPage: SuplovaniPage
+	currentSuplovaniPage: SuplovaniPage,
+	sortedDates: DateWithUrl[]
 } = {
-		currentSuplovaniPage: null
+		currentSuplovaniPage: null,
+		sortedDates: null
 	};
 
 const COOKIE_FILTER = "filter";
@@ -61,6 +63,9 @@ function bootstrap() {
 				return compareDesc(a.date, b.date);
 			});
 
+			// Update states (needed only once)
+			state.sortedDates = sortedDates;
+
 			// Get options
 			const datesOptions = sortedDates.map(dateWithUrlToOption).reduce((acc, curr) => {
 				return acc + curr;
@@ -74,12 +79,10 @@ function bootstrap() {
 			dateSelector.dispatchEvent(new Event("change"));
 
 			// Get and select closest day to today
-			const closestDay = closestTo(new Date(), sortedDates.map((date) => date.date));
-			const today = sortedDates.find((date) => isEqual(date.date, closestDay));
-			if (today) {
-				(dateSelector as HTMLSelectElement).selectedIndex = sortedDates.indexOf(today);
-				// Need to manually trigger render again
-				dateSelector.dispatchEvent(new Event("change"));
+			const closestDate = closestTo(new Date(), sortedDates.map((date) => date.date));
+			const closestDay = sortedDates.find((date) => isEqual(date.date, closestDate));
+			if (closestDay) {
+				selectDate(closestDay);
 			}
 		}).catch(console.log);
 }
@@ -89,8 +92,32 @@ function dateWithUrlToOption(dateWithUrl: DateWithUrl) {
 }
 
 function registerEventHandlers() {
+	$("button#today").on("click", () => {
+		const today = state.sortedDates.find((dateWithUrl) => {
+			return isToday(dateWithUrl.date);
+		});
+
+		selectDate(today);
+	});
+	$("button#tomorrow").on("click", () => {
+		const tomorrow = state.sortedDates.find((dateWithUrl) => {
+			return isTomorrow(dateWithUrl.date);
+		});
+
+		selectDate(tomorrow);
+	});
 	$("#selector_date").on("change", onDateChange);
 	$("#selector_filter").on("keyup input", onFilterChange);
+}
+
+function selectDate(date: DateWithUrl) {
+	const dateSelector = $("#selector_date")[0];
+	const index = state.sortedDates.indexOf(date);
+	if (index) {
+		(dateSelector as HTMLSelectElement).selectedIndex = index;
+		// Need to manually trigger render
+		dateSelector.dispatchEvent(new Event("change"));
+	}
 }
 
 function onFilterChange() {
