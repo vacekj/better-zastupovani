@@ -100,9 +100,19 @@ function registerEventHandlers() {
 		selectDate(today);
 	});
 	$("button#tomorrow").on("click", () => {
-		const tomorrow = state.sortedDates.find((dateWithUrl) => {
+		let tomorrow = state.sortedDates.find((dateWithUrl) => {
 			return isTomorrow(dateWithUrl.date);
 		});
+
+		// There's no tomorrow ;)
+		if (tomorrow === undefined) {
+			const today = state.sortedDates.find((dateWithUrl) => {
+				return isToday(dateWithUrl.date);
+			});
+			const todaysIndex = state.sortedDates.indexOf(today);
+			// Select the next day
+			tomorrow = state.sortedDates[todaysIndex - 1];
+		}
 
 		selectDate(tomorrow);
 	});
