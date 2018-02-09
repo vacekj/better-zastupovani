@@ -1,1 +1,1 @@
--r node_modules/ts-node/register/index.js --timeout 30000 ./src/**/*.test.ts
+-r node_modules/ts-node/register/index.js --timeout 30000
