@@ -39,7 +39,7 @@ function bootstrap() {
 	addBackToTop({
 		backgroundColor: "#002c5f",
 		diameter: 56,
-		showWhenScrollTopIs: 300,
+		showWhenScrollTopIs: 200,
 		textColor: "#fff"
 	});
 	showLoadingIndicator();
