@@ -2,46 +2,42 @@ import { expect } from "chai";
 import { sha256 } from "js-sha256";
 import * as puppeteer from "puppeteer";
 
-import * as connect from "connect";
-import * as serveStatic from "serve-static";
-
-const server = connect().use(serveStatic("dist"));
-
 let browser: puppeteer.Browser;
 let page: puppeteer.Page;
 
 function test(testID) {
 	return `[data-test="${testID}"]`;
 }
-
-before((done) => {
-	server.listen(8000, async () => {
-		browser = await puppeteer.launch(
-			process.env.CI
-				? { args: ["--no-sandbox", "--disable-setuid-sandbox"] }
-				: {
-					headless: false,
-					args: ["--no-sandbox", "--disable-setuid-sandbox"]
-				}
-		);
-		page = await browser.newPage();
-
-		// Throttle network
-		const client = await page.target().createCDPSession();
-		await client.send("Network.enable");
-		await client.send("Network.emulateNetworkConditions", {
-			offline: false,
-			latency: 1000, // Miliseconds
-			downloadThroughput: 300 * 1024 / 8, // 780 kb/s
-			uploadThroughput: 300 * 1024 / 8, // 330 kb/s
-		});
-
-		page.goto("localhost:8000");
-		done();
-	});
-});
-
 describe("E2E Tests", () => {
+	before(async () => {
+		try {
+			browser = await puppeteer.launch(
+				process.env.CI
+					? { args: ["--no-sandbox", "--disable-setuid-sandbox"] }
+					: {
+						headless: false,
+						args: ["--no-sandbox", "--disable-setuid-sandbox"]
+					}
+			);
+			page = await browser.newPage();
+
+			// Throttle network
+			const client = await page.target().createCDPSession();
+			await client.send("Network.enable");
+			await client.send("Network.emulateNetworkConditions", {
+				offline: false,
+				latency: 1000, // Miliseconds
+				downloadThroughput: 300 * 1024 / 8, // 300 kb/s
+				uploadThroughput: 300 * 1024 / 8, // 300 kb/s
+			});
+
+			// Don't await this since we need the page in loading state for the loading test to pass
+			page.goto("http://zastupovani.gytool.cz");
+		} catch (error) {
+			throw error;
+		}
+	});
+
 	describe("Basic layout", () => {
 		describe("Date picker", () => {
 			it("should display loading indicator until data is loaded", async () => {
@@ -93,14 +89,12 @@ describe("E2E Tests", () => {
 		});
 	});
 
+	/* after(async (done) => {
+		await page.close();
+		await browser.close();
+		process.exit();
+	}); */
 });
-
-after(async (done) => {
-	await page.close();
-	await browser.close();
-	process.exit();
-});
-
 async function nextDate() {
 	const select = await page.waitForSelector(test("datePicker"));
 	await select.press("ArrowDown");
