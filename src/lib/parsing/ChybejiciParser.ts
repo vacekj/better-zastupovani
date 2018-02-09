@@ -68,7 +68,7 @@ function formatMissingsArray(chybejiciArray: ChybejiciRecord[]) {
  * Convert hour range to full schedule object
  * ["1", "3"] to {1: false, 2: false, 3: false, 4: true, ...}
  */
-function rangeToSchedule(range: [string, string]): ISchedule {
+function rangeToSchedule(range: [string, string] | [string]): ISchedule {
 	// No range -> full 8 hours
 	if (range === null) {
 		return {
