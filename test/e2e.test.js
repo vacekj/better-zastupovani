@@ -1,11 +1,11 @@
-const puppeteer = require('puppeteer');
-const expect = require('chai').expect;
-const sha = require('sha1');
+const puppeteer = require("puppeteer");
+const expect = require("chai").expect;
+const sha = require("sha1");
 
-const connect = require('connect');
-const serveStatic = require('serve-static');
+const connect = require("connect");
+const serveStatic = require("serve-static");
 
-var server = connect().use(serveStatic('dist'));
+var server = connect().use(serveStatic("dist"));
 
 var browser;
 var page;
@@ -18,24 +18,24 @@ before((done) => {
 	server.listen(8000, async () => {
 		browser = await puppeteer.launch(
 			process.env.CI
-				? { args: ['--no-sandbox'] }
+				? { args: ["--no-sandbox"] }
 				: {
 					headless: false,
 					slowMo: 100,
-					args: ['--no-sandbox']
+					args: ["--no-sandbox"]
 				}
 		);
 		page = await browser.newPage();
-		await page.goto('localhost:8000');
+		await page.goto("localhost:8000");
 		done();
 	});
 });
 
-describe('E2E Tests', () => {
-	describe('Basic layout', () => {
-		describe('Date picker', () => {
-			it('should display date picker', async () => {
-				await page.waitForSelector(test('datePicker'));
+describe("E2E Tests", () => {
+	describe("Basic layout", () => {
+		describe("Date picker", () => {
+			it("should display date picker", async () => {
+				await page.waitForSelector(test("datePicker"));
 			});
 
 			// it('should display loading indicator until data is loaded', async () => {
@@ -99,8 +99,8 @@ after(async (done) => {
 });
 
 async function nextDate() {
-	const datePicker = await page.waitForSelector(test('datePicker'));
+	const datePicker = await page.waitForSelector(test("datePicker"));
 	page.evaluate(() => {
-		document.querySelector('#selector_date').stepUp();
+		document.querySelector("#selector_date").stepUp();
 	});
 }

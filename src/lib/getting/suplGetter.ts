@@ -1,5 +1,5 @@
-import { DateWithUrl } from "./DatesParser";
-import { decode } from "./decode";
+import { DateWithUrl } from "../parsing/DatesParser";
+import { decode } from "../utils/decode";
 /**
  * Base abstract class with common functionality and members for all SuplGetters
  *

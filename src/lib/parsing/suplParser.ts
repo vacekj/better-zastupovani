@@ -1,7 +1,7 @@
 import * as array2d from "array2d";
 import { format, parse } from "date-fns";
 
-import { $context, load, parseTable } from "./DOMUtils";
+import { $context, load, parseTable } from "../utils/DOMUtils";
 
 import { ChybejiciRecord, ChybejiciTable, parseChybejiciTable } from "./ChybejiciParser";
 

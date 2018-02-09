@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import "mocha";
 
-import { SuplGetterNode } from "./suplGetterNode";
+import { SuplGetterNode } from "../getting/suplGetterNode";
 
 import { DateWithUrl, parseDatesPage } from "./DatesParser";
 import { NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from "./suplParser";

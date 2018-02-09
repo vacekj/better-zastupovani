@@ -16,11 +16,11 @@ import * as $ from "jquery";
 import * as Cookies from "js-cookie";
 
 import { closestIndexTo, closestTo, compareDesc, format, isEqual, isToday, isTomorrow } from "date-fns";
-import { addBackToTop } from "./lib/backToTop";
-import { ChybejiciRecord, ChybejiciTable } from "./lib/ChybejiciParser";
-import { DateWithUrl, parseDatesPage } from "./lib/DatesParser";
-import { SuplGetterBrowser } from "./lib/suplGetter";
-import { DozorRecord, NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, parseVyucujiciPage, Record, SuplovaniPage, SuplovaniRecord } from "./lib/suplParser";
+import { SuplGetterBrowser } from "./lib/getting/suplGetter";
+import { ChybejiciRecord, ChybejiciTable } from "./lib/parsing/ChybejiciParser";
+import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
+import { DozorRecord, NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, parseVyucujiciPage, Record, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
+import { addBackToTop } from "./lib/utils/backToTop";
 const suplGetter = new SuplGetterBrowser();
 
 const state: {

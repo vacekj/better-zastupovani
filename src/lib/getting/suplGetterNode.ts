@@ -1,6 +1,6 @@
 import * as iconv from "iconv-lite";
 import * as request_ from "request";
-import { DateWithUrl } from "./DatesParser";
+import { DateWithUrl } from "../parsing/DatesParser";
 import { SuplGetter } from "./suplGetter";
 
 /**

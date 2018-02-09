@@ -1,5 +1,5 @@
 import { parse } from "date-fns";
-import { load } from "./DOMUtils";
+import { load } from "../utils/DOMUtils";
 /**
  * Date information corresponding to one suplovaniPage
  *

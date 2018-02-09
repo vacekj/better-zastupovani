@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import "mocha";
 
-import { parseDatesPage } from "./DatesParser";
+import { parseDatesPage } from "../parsing/DatesParser";
 import { SuplGetterNode } from "./suplGetterNode";
 const suplGetter = new SuplGetterNode();
 
