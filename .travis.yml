@@ -1,7 +1,15 @@
 language: node_js
+
 node_js:
 - 'stable'
 
+dist: trusty
+
+addons:
+  apt:
+    packages:
+      # This is required to run new chrome on old trusty
+      - libnss3
 cache:
   directories:
     - node_modules
@@ -12,7 +20,7 @@ before_install:
 script: ./build.sh
 
 before_deploy:
-- npm run build
+  - npm run build
 
 deploy:
   provider: pages
