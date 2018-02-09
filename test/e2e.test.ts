@@ -89,11 +89,11 @@ describe("E2E Tests", () => {
 		});
 	});
 
-	/* after(async (done) => {
+	after(async (done) => {
 		await page.close();
 		await browser.close();
 		process.exit();
-	}); */
+	});
 });
 async function nextDate() {
 	const select = await page.waitForSelector(test("datePicker"));
