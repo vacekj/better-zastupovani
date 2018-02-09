@@ -10,9 +10,6 @@ addons:
     packages:
       # This is required to run new chrome on old trusty
       - libnss3
-cache:
-  directories:
-    - node_modules
 
 before_install:
   - chmod +x build.sh
