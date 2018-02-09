@@ -53,15 +53,14 @@ describe("E2E Tests", () => {
 			});
 
 			it("should change data on date change", async () => {
-				await page.waitForSelector(test("suplovaniTable") + "> tbody > tr");
-				const datePicker = await page.$(test("datePicker"));
-
-				const currentSuplovani = await page.$(test("suplovaniTable")).then((el) => el.getProperty("innerHTML"));
-				const currentHash = sha256(await currentSuplovani.jsonValue());
+				await page.waitFor(2000);
+				const currentSuplovani = await innerHTML(test("suplovaniTable"));
+				const currentHash = sha256(currentSuplovani);
 
 				await nextDate();
-				const newSuplovani = await page.$(test("suplovaniTable")).toString();
-				const newHash = sha256(await currentSuplovani.jsonValue());
+				await page.waitFor(300);
+				const newSuplovani = await innerHTML(test("suplovaniTable"));
+				const newHash = sha256(newSuplovani);
 				expect(currentHash).to.not.equal(newHash);
 			});
 		});
@@ -72,23 +71,24 @@ describe("E2E Tests", () => {
 			});
 
 			it("should display filtered data on filter change", async () => {
-				while (await page.waitForSelector(test("suplovaniTable") + "> tbody > tr > td[colspan]")) {
-					await nextDate();
-				}
+				await page.waitFor(2000);
 
-				const suplovaniTable = await page.$(test("suplovaniTable"));
-				const currentSuplovani = await suplovaniTable.getProperty("innerHTML");
+				const currentSuplovani = await innerHTML(test("suplovaniTable"));
+				const currentHash = sha256(currentSuplovani);
 
-				const filterTextbox = await page.$(test("filterTextbox"));
-				const currentHash = sha256(await currentSuplovani.jsonValue());
-
-				const randomFilter = await page.evaluate(() => document.querySelectorAll('[data-test="suplovaniTable"] > tbody > tr > td:nth-child(2)')[0].innerHTML);
-				await filterTextbox.type(randomFilter);
-
-				const newSuplovani = await suplovaniTable.getProperty("innerHTML");
-				const newHash = sha256(await newSuplovani.jsonValue());
+				const filterText = await innerHTML("#table_suplovani > tbody > tr:nth-child(1) > td:nth-child(2)");
+				await setFilter(filterText);
+				await page.waitFor(300);
+				const newSuplovani = await innerHTML(test("suplovaniTable"));
+				const newHash = sha256(newSuplovani);
 				expect(currentHash).to.not.equal(newHash);
-				// TODO: Check if all filtered rows contain the filtered phrase
+
+				await page.evaluate((selector, filter) => {
+					const tds = document.querySelectorAll(selector);
+					return Array.prototype.every.call(tds, (td) => {
+						td.innerHTML.includes(filter);
+					});
+				}, "#table_suplovani tbody td", filterText);
 			});
 		});
 	});
@@ -102,10 +102,18 @@ after(async (done) => {
 });
 
 async function nextDate() {
-	return page.evaluate(() => {
-		(document.querySelector(test("datePicker") + " > option:nth-child(3)") as HTMLOptionElement).selected = true;
-		const element = document.querySelector(test("datePicker"));
-		const event = new Event("change", { bubbles: true });
-		element.dispatchEvent(event);
-	});
+	const select = await page.waitForSelector(test("datePicker"));
+	await select.press("ArrowDown");
+	await select.press("Enter");
+}
+
+async function setFilter(filterText: string) {
+	const filter = await page.waitForSelector(test("filterTextbox"));
+	await filter.type(filterText, { delay: 100 });
+}
+
+async function innerHTML(selector: string): Promise<string> {
+	return page.evaluate((el) => {
+		return document.querySelector(el).innerHTML;
+	}, selector);
 }
