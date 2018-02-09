@@ -2,7 +2,9 @@ language: node_js
 node_js:
 - 'stable'
 
-script:
+script: ./build.sh
+
+before_deploy:
 - npm run build
 
 deploy:
