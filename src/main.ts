@@ -15,7 +15,7 @@ import "./svg/heart.svg";
 import * as $ from "jquery";
 import * as Cookies from "js-cookie";
 
-import { closestIndexTo, closestTo, compareDesc, format, isEqual, isToday, isTomorrow } from "date-fns";
+import { closestIndexTo, closestTo, compareDesc, format, isEqual, isPast, isToday, isTomorrow, isWeekend, startOfTomorrow } from "date-fns";
 import { SuplGetterBrowser } from "./lib/getting/suplGetter";
 import { ChybejiciRecord, ChybejiciTable } from "./lib/parsing/ChybejiciParser";
 import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
@@ -43,6 +43,7 @@ function bootstrap() {
 		textColor: "#fff"
 	});
 	showLoadingIndicator();
+	disableInputs();
 	registerEventHandlers();
 
 	// Filter suggestions
@@ -78,9 +79,12 @@ function bootstrap() {
 			// Trigger first render
 			dateSelector.dispatchEvent(new Event("change"));
 
-			// Get and select closest day to today
-			const closestDate = closestTo(new Date(), sortedDates.map((date) => date.date));
-			const closestDay = sortedDates.find((date) => isEqual(date.date, closestDate));
+			// Get and select closest working day to today
+			const closestIndex = closestIndexTo(new Date(), sortedDates.map((date) => date.date));
+			let closestDay = state.sortedDates[closestIndex];
+			if (isPast(closestDay.date)) {
+				closestDay = state.sortedDates[closestIndex - 1];
+			}
 			if (closestDay) {
 				selectDate(closestDay);
 			}
@@ -91,27 +95,39 @@ function dateWithUrlToOption(dateWithUrl: DateWithUrl) {
 	return `<option url="${dateWithUrl.url}">${dateWithUrl.dateString}</option>`;
 }
 
+function disableInputs() {
+	// Disable today button during the weekend
+	if (isWeekend(new Date())) {
+		$("button#today").attr("disabled", "true");
+	}
+
+	// Disable tomorrow button if tomorrow is the weekend
+	if (isWeekend(startOfTomorrow())) {
+		$("button#tomorrow").attr("disabled", "true");
+	}
+}
+
 function registerEventHandlers() {
 	$("button#today").on("click", () => {
 		const today = state.sortedDates.find((dateWithUrl) => {
 			return isToday(dateWithUrl.date);
 		});
 
+		if (today === undefined) {
+			return;
+		}
+
 		selectDate(today);
 	});
+
 	$("button#tomorrow").on("click", () => {
-		let tomorrow = state.sortedDates.find((dateWithUrl) => {
+		const tomorrow = state.sortedDates.find((dateWithUrl) => {
 			return isTomorrow(dateWithUrl.date);
 		});
 
 		// There's no tomorrow ;)
 		if (tomorrow === undefined) {
-			const today = state.sortedDates.find((dateWithUrl) => {
-				return isToday(dateWithUrl.date);
-			});
-			const todaysIndex = state.sortedDates.indexOf(today);
-			// Select the next day
-			tomorrow = state.sortedDates[todaysIndex - 1];
+			return;
 		}
 
 		selectDate(tomorrow);
