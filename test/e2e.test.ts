@@ -17,7 +17,8 @@ describe("E2E Tests", () => {
 					? { args: ["--no-sandbox", "--disable-setuid-sandbox"] }
 					: {
 						headless: false,
-						args: ["--no-sandbox", "--disable-setuid-sandbox"]
+						args: ["--no-sandbox", "--disable-setuid-sandbox"],
+						executablePath: "D:/bin/chrome.exe"
 					}
 			);
 			page = await browser.newPage();
@@ -54,18 +55,21 @@ describe("E2E Tests", () => {
 
 			it("should disable today button during the weekend", async () => {
 				if (isWeekend(new Date())) {
-					const button = await getElement(test("button_today"));
-					expect(button.getAttribute("disabled")).to.equal("");
+					const button = await page.waitForSelector(test("button_today"));
+					const property = await button.getProperty("disabled");
+					expect(await property.jsonValue()).to.equal(true);
 				}
 			});
 
 			it("should disable tomorrow if tomorrow is the weekend", async () => {
 				if (isWeekend(startOfTomorrow())) {
-					const button = await getElement(test("button_tomorrow"));
-					expect(button.getAttribute("disabled")).to.equal("");
+					const button = await page.waitForSelector(test("button_tomorrow"));
+					const property = await button.getProperty("disabled");
+					expect(await property.jsonValue()).to.equal(true);
 				}
 			});
 		});
+
 		describe("Date picker", () => {
 			it("should display date picker", async () => {
 				await page.waitForSelector(test("datePicker"));
@@ -112,12 +116,13 @@ describe("E2E Tests", () => {
 		});
 	});
 
-	after(async (done) => {
+	after(async () => {
 		await page.close();
 		await browser.close();
 		process.exit();
 	});
 });
+
 async function nextDate() {
 	const select = await page.waitForSelector(test("datePicker"));
 	await select.press("ArrowDown");
