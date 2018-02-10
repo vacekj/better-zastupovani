@@ -79,7 +79,7 @@ function bootstrap() {
 			// Trigger first render
 			dateSelector.dispatchEvent(new Event("change"));
 
-			// Get and select closest working day to today
+			// Get and select closest (or next) working day
 			const closestIndex = closestIndexTo(new Date(), sortedDates.map((date) => date.date));
 			let closestDay = state.sortedDates[closestIndex];
 			if (isPast(closestDay.date)) {

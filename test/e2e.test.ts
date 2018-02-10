@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { isWeekend, startOfTomorrow } from "date-fns";
 import { sha256 } from "js-sha256";
 import * as puppeteer from "puppeteer";
 
@@ -39,11 +40,33 @@ describe("E2E Tests", () => {
 	});
 
 	describe("Basic layout", () => {
-		describe("Date picker", () => {
-			it("should display loading indicator until data is loaded", async () => {
-				await page.waitForSelector(test("loadingIndicator"));
+		it("should display loading indicator until data is loaded", async () => {
+			await page.waitForSelector(test("loadingIndicator"));
+		});
+		describe("Date buttons", () => {
+			it("should display today button", async () => {
+				await page.waitForSelector(test("button_today"));
 			});
 
+			it("should display tomorrow button", async () => {
+				await page.waitForSelector(test("button_tomorrow"));
+			});
+
+			it("should disable today button during the weekend", async () => {
+				if (isWeekend(new Date())) {
+					const button = await getElement(test("button_today"));
+					expect(button.getAttribute("disabled")).to.equal("");
+				}
+			});
+
+			it("should disable tomorrow if tomorrow is the weekend", async () => {
+				if (isWeekend(startOfTomorrow())) {
+					const button = await getElement(test("button_tomorrow"));
+					expect(button.getAttribute("disabled")).to.equal("");
+				}
+			});
+		});
+		describe("Date picker", () => {
 			it("should display date picker", async () => {
 				await page.waitForSelector(test("datePicker"));
 			});
@@ -109,5 +132,11 @@ async function setFilter(filterText: string) {
 async function innerHTML(selector: string): Promise<string> {
 	return page.evaluate((el) => {
 		return document.querySelector(el).innerHTML;
+	}, selector);
+}
+
+async function getElement(selector: string): Promise<Element> {
+	return page.evaluate((el) => {
+		return document.querySelector(el);
 	}, selector);
 }
