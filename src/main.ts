@@ -15,7 +15,7 @@ import "./svg/heart.svg";
 import * as $ from "jquery";
 import * as Cookies from "js-cookie";
 
-import { closestIndexTo, closestTo, compareDesc, format, isEqual, isPast, isToday, isTomorrow, isWeekend, startOfTomorrow, addYears } from "date-fns";
+import { addYears, closestIndexTo, closestTo, compareDesc, format, isEqual, isPast, isToday, isTomorrow, isWeekend, startOfTomorrow } from "date-fns";
 import { SuplGetterBrowser } from "./lib/getting/suplGetter";
 import { ChybejiciRecord, ChybejiciTable } from "./lib/parsing/ChybejiciParser";
 import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
