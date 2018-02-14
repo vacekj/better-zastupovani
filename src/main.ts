@@ -1,6 +1,5 @@
 // Polyfills
 import "babel-polyfill";
-import "core-js/es7/array";
 import "whatwg-fetch";
 
 // Bootstrap imports
