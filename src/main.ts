@@ -12,6 +12,10 @@ import "./pecet.jpg";
 import "./svg/code.svg";
 import "./svg/heart.svg";
 
+// Polyfills
+import "promise-polyfill/src/polyfill";
+import "whatwg-fetch";
+
 import * as $ from "jquery";
 import * as Cookies from "js-cookie";
 

@@ -7,7 +7,9 @@
 		"array2d": "0.0.5",
 		"date-fns": "^1.29.0",
 		"jquery": "^3.3.1",
-		"js-cookie": "^2.1.4"
+		"js-cookie": "^2.1.4",
+		"promise-polyfill": "7.1.0",
+		"whatwg-fetch": "^2.0.3"
 	},
 	"devDependencies": {
 		"@types/chai": "^4.1.2",
