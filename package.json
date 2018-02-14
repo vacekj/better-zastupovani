@@ -5,10 +5,12 @@
 	"main": "dist/index.html",
 	"dependencies": {
 		"array2d": "0.0.5",
+		"babel-polyfill": "^6.26.0",
+		"core-js": "^2.5.3",
 		"date-fns": "^1.29.0",
 		"jquery": "^3.3.1",
 		"js-cookie": "^2.1.4",
-		"promise-polyfill": "7.1.0",
+		"modernizr": "^3.5.0",
 		"whatwg-fetch": "^2.0.3"
 	},
 	"devDependencies": {
@@ -45,7 +47,8 @@
 		"webpack-bundle-analyzer": "^2.9.2",
 		"webpack-closure-compiler": "^2.1.6",
 		"webpack-dev-server": "^2.7.1",
-		"webpack-merge": "^4.1.0"
+		"webpack-merge": "^4.1.0",
+		"webpack-modernizr-loader": "^4.0.1"
 	},
 	"scripts": {
 		"build": "webpack -p --config webpack.prod.js",

@@ -1,5 +1,7 @@
 // Polyfills
-import "./modernizr-custom";
+import "babel-polyfill";
+import "core-js/es7/array";
+import "whatwg-fetch";
 
 // Bootstrap imports
 import "./bootstrap-md.min.css";
@@ -163,7 +165,7 @@ function onFilterChange() {
 
 function onDateChange() {
 	showLoadingIndicator();
-	const newDateUrl: string = (this as HTMLSelectElement).selectedOptions[0].getAttribute("url");
+	const newDateUrl: string = (this as HTMLSelectElement).options[(this as HTMLSelectElement).selectedIndex].getAttribute("url");
 
 	suplGetter.getSuplovaniPage(newDateUrl)
 		.then(parseSuplovaniPage)
