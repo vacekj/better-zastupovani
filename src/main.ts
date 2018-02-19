@@ -46,11 +46,11 @@ function bootstrap() {
 		showWhenScrollTopIs: 200,
 		textColor: "#fff"
 	});
-	showLoadingIndicator();
+	showLoadingIndicators();
 	disableInputs();
 	registerEventHandlers();
 
-	// Filter suggestions
+	// Populate filter suggestions
 	const suggestionPromises = Promise.all([suplGetter.getClassesPage().then(parseClassesPage), suplGetter.getVyucujiciPage().then(parseVyucujiciPage)]);
 	suggestionPromises.then((suggestions) => {
 		const options = suggestions[0].concat(suggestions[1]).map((suggestion) => {
@@ -83,15 +83,20 @@ function bootstrap() {
 			// Trigger first render
 			dateSelector.dispatchEvent(new Event("change"));
 
-			// Get and select closest (or next) working day
+			// Get and select closest day to today
 			const closestIndex = closestIndexTo(new Date(), sortedDates.map((date) => date.date));
 			let closestDay = state.sortedDates[closestIndex];
+
+			// During the weekend, always select monday
 			if (isPast(closestDay.date)) {
 				closestDay = state.sortedDates[closestIndex - 1];
 			}
+
+			// If there's a closest day, select it
 			if (closestDay) {
 				selectDate(closestDay);
 			}
+
 		}).catch(console.log);
 }
 
@@ -163,7 +168,7 @@ function onFilterChange() {
 }
 
 function onDateChange() {
-	showLoadingIndicator();
+	showLoadingIndicators();
 	const newDateUrl: string = (this as HTMLSelectElement).options[(this as HTMLSelectElement).selectedIndex].getAttribute("url");
 
 	suplGetter.getSuplovaniPage(newDateUrl)
@@ -183,7 +188,9 @@ function onDateChange() {
 }
 
 function render(suplovaniPage: SuplovaniPage, filter?: string) {
+	// Filter only - load records from state
 	if (filter) {
+		// Function for filtering records by string
 		const filterRecords = <T>(records: T[], filterString: string) => {
 			return records.filter((record) => {
 				return objectContainsString(record, filterString);
@@ -194,13 +201,21 @@ function render(suplovaniPage: SuplovaniPage, filter?: string) {
 		renderDozory(filterRecords(state.currentSuplovaniPage.dozory, filter));
 		renderNahradniUcebny(filterRecords(state.currentSuplovaniPage.nahradniUcebny, filter));
 	} else {
+		// Update render - render from supplied parameter
 		renderSuplovani(suplovaniPage.suplovani);
 		renderDozory(suplovaniPage.dozory);
 		renderNahradniUcebny(suplovaniPage.nahradniUcebny);
 
-		// Non-filtered
+		// Non-filtered records
 		renderChybejici(suplovaniPage.chybejici);
+		renderOznameni(suplovaniPage.oznameni);
 	}
+}
+
+function objectContainsString<T>(object: T, filter: string) {
+	return Object.values(object).some((value: string) => {
+		return value.toLowerCase().includes(filter.toLowerCase());
+	});
 }
 
 function renderSuplovani(suplovaniRecords: SuplovaniRecord[]) {
@@ -212,12 +227,6 @@ function renderSuplovani(suplovaniRecords: SuplovaniRecord[]) {
 		: rowHeader("Žádné suplování", 8);
 
 	suplovaniTable.append(contentToAppend);
-}
-
-function objectContainsString<T>(object: T, filter: string) {
-	return Object.values(object).some((value: string) => {
-		return value.toLowerCase().includes(filter.toLowerCase());
-	});
 }
 
 function suplovaniRecordToTr(suplovaniRecord: SuplovaniRecord): string {
@@ -316,6 +325,10 @@ function nahradniUcebnaRecordToTr(nahradniUcebna: NahradniUcebnaRecord) {
 		</tr>`);
 }
 
+function renderOznameni(oznameni: string) {
+	$("#oznameni").html(oznameni);
+}
+
 function rowHeader(text: string, colspan: number) {
 	return `<tr><td colspan="${colspan}" class="noCellBg">${text}</td></tr>`;
 }
@@ -328,7 +341,8 @@ function removeControlChars(s: string) {
 	return s.replace(/[\n\r\t]/g, "");
 }
 
-function showLoadingIndicator() {
+function showLoadingIndicators() {
+	// Variable colspan for different-columned tables
 	const indicator = (colspan) => `
 	<tr data-test="loadingIndicator">
 		<td colspan="${colspan}" class="noCellBg">

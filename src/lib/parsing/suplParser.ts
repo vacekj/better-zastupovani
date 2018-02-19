@@ -104,13 +104,18 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 	// Last updated
 	const lastUpdated = $('table[width="700"] td.StyleZ5')[0].innerHTML;
 
+	// Oznámení
+	const oznameni = $(".StyleH2")[0];
+	const oznameniText = oznameni ? oznameni.innerHTML : "";
+
 	return new SuplovaniPage({
 		date,
 		lastUpdated,
 		chybejici: chybejiciTable,
 		suplovani: suplovaniRecords,
 		nahradniUcebny: nahradniUcebnaRecords,
-		dozory: dozorRecords
+		dozory: dozorRecords,
+		oznameni: oznameniText
 	});
 }
 
@@ -139,6 +144,7 @@ export class SuplovaniPage {
 	public dozory: DozorRecord[];
 	public date: string;
 	public lastUpdated: string;
+	public oznameni: string;
 	constructor(options: Partial<SuplovaniPage>) {
 		Object.assign(this, options);
 	}
