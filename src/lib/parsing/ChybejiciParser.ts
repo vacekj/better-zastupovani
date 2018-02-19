@@ -10,7 +10,7 @@ export function parseChybejiciTable(chybejiciTable: Element): ChybejiciTable {
 		const parsedRow = row.split(", ");
 
 		return parsedRow.map((elem) => {
-			const kdo = elem.split(" ")[0];
+			const kdo = elem.split("(")[0];
 			const range = extractRange(elem);
 
 			return new ChybejiciRecord(kdo, rangeToSchedule(range));
