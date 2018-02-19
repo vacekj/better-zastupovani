@@ -193,7 +193,7 @@ function render(suplovaniPage: SuplovaniPage, filter?: string) {
 		// Function for filtering records by string
 		const filterRecords = <T>(records: T[], filterString: string) => {
 			return records.filter((record) => {
-				return objectContainsString(record, filterString);
+				return objectContainsOneOf(record, filterString.split(" "));
 			});
 		};
 
@@ -215,6 +215,12 @@ function render(suplovaniPage: SuplovaniPage, filter?: string) {
 function objectContainsString<T>(object: T, filter: string) {
 	return Object.values(object).some((value: string) => {
 		return value.toLowerCase().includes(filter.toLowerCase());
+	});
+}
+
+function objectContainsOneOf<T>(object: T, filters: string[]) {
+	return filters.some((filter) => {
+		return objectContainsString(object, filter);
 	});
 }
 
