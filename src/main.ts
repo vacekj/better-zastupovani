@@ -19,7 +19,7 @@ import "./svg/heart.svg";
 import * as $ from "jquery";
 import * as Cookies from "js-cookie";
 
-import { addYears, closestIndexTo, closestTo, compareDesc, format, isEqual, isPast, isToday, isTomorrow, isWeekend, startOfTomorrow } from "date-fns";
+import { addYears, closestIndexTo, closestTo, compareDesc, format, isAfter, isBefore, isEqual, isPast, isToday, isTomorrow, isWeekend, setHours, startOfTomorrow } from "date-fns";
 import { SuplGetterBrowser } from "./lib/getting/suplGetter";
 import { ChybejiciRecord, ChybejiciTable } from "./lib/parsing/ChybejiciParser";
 import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
@@ -68,10 +68,10 @@ function bootstrap() {
 				return compareDesc(a.date, b.date);
 			});
 
-			// Update states (needed only once)
+			// Update dates (needed only once)
 			state.sortedDates = sortedDates;
 
-			// Get options
+			// Transform dates to <option>'s
 			const datesOptions = sortedDates.map(dateWithUrlToOption).reduce((acc, curr) => {
 				return acc + curr;
 			});
@@ -85,11 +85,16 @@ function bootstrap() {
 
 			// Get and select closest day to today
 			const closestIndex = closestIndexTo(new Date(), sortedDates.map((date) => date.date));
-			let closestDay = state.sortedDates[closestIndex];
+			let closestDay: DateWithUrl = state.sortedDates[closestIndex];
 
-			// During the weekend, always select monday
+			// If date is in the past, select the next date
 			if (isPast(closestDay.date)) {
 				closestDay = state.sortedDates[closestIndex - 1];
+			}
+
+			// If it's a working day and it's before 14:00, display today's date;
+			if ((!isWeekend(new Date()) && isBefore(new Date(), setHours(new Date(), 14)))) {
+				closestDay = state.sortedDates.find((date) => isToday(date.date));
 			}
 
 			// If there's a closest day, select it
@@ -163,7 +168,7 @@ function onFilterChange() {
 		render(state.currentSuplovaniPage);
 	}
 
-	// Save filter to cookiecookie
+	// Save filter to cookie
 	Cookies.set(COOKIE_FILTER, value, { expires: addYears(new Date(), 1) });
 }
 

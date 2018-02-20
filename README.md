@@ -1,5 +1,6 @@
 # better-zastupovani 📆👨‍🏫
 ![travis](https://api.travis-ci.org/JouzaLoL/better-zastupovani.svg)
+[![Maintainability](https://api.codeclimate.com/v1/badges/b43ae628ba7680808cfc/maintainability)](https://codeclimate.com/github/JouzaLoL/better-zastupovani/maintainability)
 ### [Official live version](https://jouzalol.github.com/better-zastupovani)
 
 ## Features
