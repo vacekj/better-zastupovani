@@ -340,7 +340,13 @@ function nahradniUcebnaRecordToTr(nahradniUcebna: NahradniUcebnaRecord) {
 }
 
 function renderOznameni(oznameni: string) {
-	$("#oznameni").html(oznameni);
+	const template = oznameni ? `
+	<div class="card">
+		<div class="card-body">
+			${oznameni}
+		</div>
+	</div>` : "";
+	$("#oznameniContainer").html(template);
 }
 
 function rowHeader(text: string, colspan: number) {
