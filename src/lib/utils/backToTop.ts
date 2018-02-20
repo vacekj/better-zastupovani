@@ -1,16 +1,18 @@
-export function addBackToTop(options: {
-	containerSelector: string,
-	showWhenScrollTopIs: number,
-	backgroundColor: string,
-	diameter: number,
-	textColor: string,
-	id: string,
-	innerHTML: string,
-	onClickScrollTo: number,
-	scrollDuration: number,
-	cornerOffset: number,
-	zIndex: number
-}) {
+interface IOptions {
+	containerSelector: string;
+	showWhenScrollTopIs: number;
+	backgroundColor: string;
+	diameter: number;
+	textColor: string;
+	id: string;
+	innerHTML: string;
+	onClickScrollTo: number;
+	scrollDuration: number;
+	cornerOffset: number;
+	zIndex: number;
+}
+
+export function addBackToTop(options: Partial<IOptions>) {
 	const id = options.id || "back-to-top";
 	const innerHTML = options.innerHTML || '<svg viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path></svg>';
 	const diameter = options.diameter || 56;
@@ -25,7 +27,7 @@ export function addBackToTop(options: {
 	appendStyles();
 	const upEl = appendElement();
 	let hidden = true;
-	document.querySelector(".container").addEventListener("scroll", adapt);
+	document.querySelector(containerSelector).addEventListener("scroll", adapt);
 	adapt();
 
 	function adapt() {
@@ -139,10 +141,10 @@ export function addBackToTop(options: {
 	}
 
 	function getScrollTop() {
-		return document.querySelector(".container").scrollTop || 0;
+		return document.querySelector(containerSelector).scrollTop || 0;
 	}
 
 	function setScrollTop(value) {
-		document.querySelector(".container").scrollTop = value;
+		document.querySelector(containerSelector).scrollTop = value;
 	}
 }
