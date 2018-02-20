@@ -1,48 +1,35 @@
-/* tslint:disable */
-let _typeof = (obj) => {
-	if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-		_typeof = function _typeof(obj) {
-			return typeof obj;
-		};
-	} else {
-		_typeof = function _typeof(obj) {
-			return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-		};
-	} return _typeof(obj);
-};
-// TODO: refactor this mess
-export function addBackToTop(...args) {
-	let params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-	let _params$id = params.id,
-		id = _params$id === void 0 ? "back-to-top" : _params$id,
-		_params$showWhenScrol = params.showWhenScrollTopIs,
-		showWhenScrollTopIs = _params$showWhenScrol === void 0 ? 1 : _params$showWhenScrol,
-		_params$onClickScroll = params.onClickScrollTo,
-		onClickScrollTo = _params$onClickScroll === void 0 ? 0 : _params$onClickScroll,
-		_params$scrollDuratio = params.scrollDuration,
-		scrollDuration = _params$scrollDuratio === void 0 ? 100 : _params$scrollDuratio,
-		_params$innerHTML = params.innerHTML,
-		innerHTML = _params$innerHTML === void 0 ? '<svg viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path></svg>' : _params$innerHTML,
-		_params$diameter = params.diameter,
-		diameter = _params$diameter === void 0 ? 56 : _params$diameter,
-		_params$size = params.size,
-		size = _params$size === void 0 ? diameter : _params$size,
-		_params$cornerOffset = params.cornerOffset,
-		cornerOffset = _params$cornerOffset === void 0 ? 20 : _params$cornerOffset,
-		_params$backgroundCol = params.backgroundColor,
-		backgroundColor = _params$backgroundCol === void 0 ? "#000" : _params$backgroundCol,
-		_params$textColor = params.textColor,
-		textColor = _params$textColor === void 0 ? "#fff" : _params$textColor,
-		_params$zIndex = params.zIndex,
-		zIndex = _params$zIndex === void 0 ? 1 : _params$zIndex;
+export function addBackToTop(options: {
+	containerSelector: string,
+	showWhenScrollTopIs: number,
+	backgroundColor: string,
+	diameter: number,
+	textColor: string,
+	id: string,
+	innerHTML: string,
+	onClickScrollTo: number,
+	scrollDuration: number,
+	cornerOffset: number,
+	zIndex: number
+}) {
+	const id = options.id || "back-to-top";
+	const innerHTML = options.innerHTML || '<svg viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path></svg>';
+	const diameter = options.diameter || 56;
+	const onClickScrollTo = options.onClickScrollTo || 0;
+	const scrollDuration = options.scrollDuration || 100;
+	const containerSelector = options.containerSelector || "body";
+	const cornerOffset = options.cornerOffset || 20;
+	const backgroundColor = options.backgroundColor || "#000";
+	const textColor = options.textColor || "#fff";
+	const zIndex = options.zIndex || 1;
+
 	appendStyles();
-	let upEl = appendElement();
+	const upEl = appendElement();
 	let hidden = true;
 	document.querySelector(".container").addEventListener("scroll", adapt);
 	adapt();
 
 	function adapt() {
-		getScrollTop() >= showWhenScrollTopIs ? show() : hide();
+		getScrollTop() >= options.showWhenScrollTopIs ? show() : hide();
 	}
 
 	function show() {
@@ -64,44 +51,85 @@ export function addBackToTop(...args) {
 	}
 
 	function appendElement() {
-		let upEl = document.createElement("div");
-		upEl.id = id;
-		upEl.className = "hidden";
-		upEl.innerHTML = innerHTML;
-		upEl.addEventListener("click", function(event) {
+		const upElement = document.createElement("div");
+		upElement.id = id;
+		upElement.className = "hidden";
+		upElement.innerHTML = innerHTML;
+
+		upElement.addEventListener("click", (event) => {
 			event.preventDefault();
 			scrollUp();
 		});
-		document.body.appendChild(upEl);
-		return upEl;
+		document.body.appendChild(upElement);
+		return upElement;
 	}
 
 	function appendStyles() {
-		let svgSize = Math.round(0.43 * size);
-		let svgTop = Math.round(0.29 * size);
-		let styles = "#" + id + "{background:" + backgroundColor + ";-webkit-border-radius:50%;-moz-border-radius:50%;border-radius:50%;bottom:" + cornerOffset + "px;-webkit-box-shadow:0 2px 5px 0 rgba(0,0,0,.26);-moz-box-shadow:0 2px 5px 0 rgba(0,0,0,.26);box-shadow:0 2px 5px 0 rgba(0,0,0,.26);color:" + textColor + ";cursor:pointer;display:block;height:" + size + "px;opacity:1;outline:0;position:fixed;right:" + cornerOffset + "px;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-transition:bottom .2s,opacity .2s;-o-transition:bottom .2s,opacity .2s;-moz-transition:bottom .2s,opacity .2s;transition:bottom .2s,opacity .2s;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;width:" + size + "px;z-index:" + zIndex + "}#" + id + " svg{display:block;fill:currentColor;height:" + svgSize + "px;margin:" + svgTop + "px auto 0;width:" + svgSize + "px}#" + id + ".hidden{bottom:-" + size + "px;opacity:0}";
-		let styleEl = document.createElement("style");
+		const svgSize = Math.round(0.43 * diameter);
+		const svgTop = Math.round(0.29 * diameter);
+		const styles = `
+		#${id} {
+			background:${backgroundColor};
+			-webkit-border-radius:50%;
+			-moz-border-radius:50%;
+			border-radius:50%;
+			bottom:${cornerOffset}px;
+			-webkit-box-shadow:0 2px 5px 0 rgba(0,0,0,.26);
+			-moz-box-shadow:0 2px 5px 0 rgba(0,0,0,.26);
+			box-shadow:0 2px 5px 0 rgba(0,0,0,.26);
+			color:${textColor};
+			cursor:pointer;
+			display:block;
+			height:${diameter}px;
+			opacity:1;
+			outline:0;
+			position:fixed;
+			right:${cornerOffset}px;
+			-webkit-tap-highlight-color:transparent;
+			-webkit-touch-callout:none;
+			-webkit-transition:bottom .2s,opacity .2s;
+			-o-transition:bottom .2s,opacity .2s;
+			-moz-transition:bottom .2s,opacity .2s;
+			transition:bottom .2s,opacity .2s;
+			-webkit-user-select:none;
+			-moz-user-select:none;
+			-ms-user-select:none;
+			user-select:none;
+			width:${diameter}px;
+			z-index:${zIndex};
+		}
+
+		#${id} svg {
+			display:block;
+			fill:currentColor;
+			height:${svgSize}px;
+			margin:${svgTop}px auto 0;
+			width:${svgSize}px;
+		}
+
+		#${id}.hidden {
+			bottom:-${diameter}px;
+			opacity:0;
+		}`;
+
+		const styleEl = document.createElement("style");
 		styleEl.appendChild(document.createTextNode(styles));
 		document.head.insertAdjacentElement("afterbegin", styleEl);
 	}
 
 	function scrollUp() {
-		let _window = window,
-			performance = _window.performance,
-			requestAnimationFrame = _window.requestAnimationFrame;
-
 		if (scrollDuration <= 0 || typeof performance === "undefined" || typeof requestAnimationFrame === "undefined") {
 			return setScrollTop(onClickScrollTo);
 		}
 
-		let start = performance.now();
-		let initScrollTop = getScrollTop();
-		let pxsToScrollBy = initScrollTop - onClickScrollTo;
-		requestAnimationFrame(step);
+		const start = performance.now();
+		const initScrollTop = getScrollTop();
+		const pxsToScrollBy = initScrollTop - onClickScrollTo;
+		window.requestAnimationFrame(step);
 
 		function step(timestamp) {
-			let delta = timestamp - start;
-			let progress = Math.min(delta / scrollDuration, 1);
+			const delta = timestamp - start;
+			const progress = Math.min(delta / scrollDuration, 1);
 			setScrollTop(initScrollTop - Math.round(progress * pxsToScrollBy));
 
 			if (progress < 1) {
