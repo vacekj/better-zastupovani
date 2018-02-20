@@ -16,10 +16,12 @@ import "./pecet.jpg";
 import "./svg/code.svg";
 import "./svg/heart.svg";
 
+// NPM Modules
+import { addYears, closestIndexTo, closestTo, compareDesc, format, isAfter, isBefore, isEqual, isPast, isToday, isTomorrow, isWeekend, setHours, startOfTomorrow } from "date-fns";
 import * as $ from "jquery";
 import * as Cookies from "js-cookie";
 
-import { addYears, closestIndexTo, closestTo, compareDesc, format, isAfter, isBefore, isEqual, isPast, isToday, isTomorrow, isWeekend, setHours, startOfTomorrow } from "date-fns";
+// LIB Modules
 import { SuplGetterBrowser } from "./lib/getting/suplGetter";
 import { ChybejiciRecord, ChybejiciTable } from "./lib/parsing/ChybejiciParser";
 import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
@@ -68,7 +70,7 @@ function bootstrap() {
 				return compareDesc(a.date, b.date);
 			});
 
-			// Update dates (needed only once)
+			// Update state with sorted dates (needed only once on bootstrap)
 			state.sortedDates = sortedDates;
 
 			// Transform dates to <option>'s
