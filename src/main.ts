@@ -105,7 +105,7 @@ function bootstrap() {
 				selectDate(closestDay);
 			}
 
-		}).catch(console.log);
+		}).catch(handleError);
 }
 
 function dateWithUrlToOption(dateWithUrl: DateWithUrl) {
@@ -192,7 +192,7 @@ function onDateChange() {
 				$("#selector_filter").val(Cookies.get(COOKIE_FILTER));
 				$("#selector_filter")[0].dispatchEvent(new Event("keyup"));
 			}
-		}).catch(console.log);
+		}).catch(handleError);
 }
 
 function render(suplovaniPage: SuplovaniPage, filter?: string) {
@@ -285,9 +285,9 @@ function renderChybejici(chybejici: ChybejiciTable) {
 
 	const noChybejici = rowHeader("Žádní chybějící", 9);
 
-	const ucitele = chybejici.ucitele.map(chybejiciRecordToTr).reduce((acc, el) => acc + el);
-	const tridy = chybejici.tridy.map(chybejiciRecordToTr).reduce((acc, el) => acc + el);
-	const ucebny = chybejici.ucebny.map(chybejiciRecordToTr).reduce((acc, el) => acc + el);
+	const ucitele = chybejici.ucitele.map(chybejiciRecordToTr).reduce((acc, el) => acc + el, "");
+	const tridy = chybejici.tridy.map(chybejiciRecordToTr).reduce((acc, el) => acc + el, "");
+	const ucebny = chybejici.ucebny.map(chybejiciRecordToTr).reduce((acc, el) => acc + el, "");
 
 	const contentToAppend = `
 	${rowHeader("Učitelé", 9)}
@@ -375,4 +375,15 @@ function showLoadingIndicators() {
 	$("#table_dozory > tbody").html(indicator(6));
 	$("#table_chybejici > tbody").html(indicator(9));
 	$("#table_nahradniUcebny > tbody").html(indicator(7));
+}
+
+function handleError(error: Error) {
+	const alertHtml = `
+	<div class="col-md-12">
+		<div class="alert alert-danger" role="alert">
+			V aplikaci se vyskytla chyba, kontaktujte administrátora (Josef Vacek) | ${error.name} ${error.message}
+		</div>
+	</div>`;
+
+	$("#alert-row").append(alertHtml);
 }
