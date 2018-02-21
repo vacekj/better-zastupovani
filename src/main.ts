@@ -54,7 +54,7 @@ function bootstrap() {
 	registerEventHandlers();
 
 	// Populate filter suggestions
-	const suggestionPromises = Promise.all([suplGetter.getClassesPage().then(parseClassesPage), suplGetter.getVyucujiciPage().then(parseVyucujiciPage)]);
+	const suggestionPromises = Promise.all([suplGetter.getVyucujiciPage().then(parseVyucujiciPage), suplGetter.getClassesPage().then(parseClassesPage)]);
 	suggestionPromises.then((suggestions) => {
 		const options = suggestions[0].concat(suggestions[1]).map((suggestion) => {
 			return `<option value="${suggestion}">`;
