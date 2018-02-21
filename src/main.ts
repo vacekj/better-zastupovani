@@ -54,13 +54,13 @@ function bootstrap() {
 	registerEventHandlers();
 
 	// Populate filter suggestions
-	const suggestionPromises = Promise.all([suplGetter.getVyucujiciPage().then(parseVyucujiciPage), suplGetter.getClassesPage().then(parseClassesPage)]);
+	const suggestionPromises = Promise.all([suplGetter.getVyucujiciPage().then(parseVyucujiciPage), suplGetter.getClassesPage().then(parseClassesPage)]).catch(handleError);
 	suggestionPromises.then((suggestions) => {
 		const options = suggestions[0].concat(suggestions[1]).map((suggestion) => {
 			return `<option value="${suggestion}">`;
 		}).reduce((acc, el) => acc + el);
 		$("datalist#filterSuggestions").append(options);
-	});
+	}).catch(handleError);
 
 	// Populate date selector
 	suplGetter.getDatesPage()
