@@ -221,8 +221,9 @@ function render(suplovaniPage: SuplovaniPage, filter?: string) {
 }
 
 function objectContainsString<T>(object: T, filter: string) {
+	const regexp =  RegExp("\\b" + filter, "i");
 	return Object.values(object).some((value: string) => {
-		return value.toLowerCase().includes(filter.toLowerCase());
+		return regexp.test(value);
 	});
 }
 
