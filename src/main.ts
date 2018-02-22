@@ -238,7 +238,7 @@ function renderSuplovani(suplovaniRecords: SuplovaniRecord[]) {
 	suplovaniTable.empty();
 
 	const contentToAppend = suplovaniRecords.length
-		? suplovaniRecords.map(suplovaniRecordToTr).reduce((acc, tr) => acc + tr)
+		? suplovaniRecords.map(suplovaniRecordToTr).join("")
 		: rowHeader("Žádné suplování", 8);
 
 	suplovaniTable.append(contentToAppend);
@@ -263,7 +263,7 @@ function renderDozory(dozorRecords: DozorRecord[]) {
 	dozorTable.empty();
 
 	const contentToAppend = dozorRecords.length
-		? dozorRecords.map(dozorRecordToTr).reduce((acc, tr) => acc + tr)
+		? dozorRecords.map(dozorRecordToTr).join("")
 		: rowHeader("Žádné dozory", 6);
 
 	dozorTable.append(contentToAppend);
@@ -322,7 +322,7 @@ function renderNahradniUcebny(nahradniUcebnyRecords: NahradniUcebnaRecord[]) {
 	nahradniUcebnyTable.empty();
 
 	const contentToAppend = nahradniUcebnyRecords.length
-		? nahradniUcebnyRecords.map(nahradniUcebnaRecordToTr).reduce((acc, tr) => acc + tr)
+		? nahradniUcebnyRecords.map(nahradniUcebnaRecordToTr).join("")
 		: rowHeader("Žádné náhradní učebny", 8);
 
 	nahradniUcebnyTable.append(contentToAppend);
