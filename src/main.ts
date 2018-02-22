@@ -221,9 +221,12 @@ function render(suplovaniPage: SuplovaniPage, filter?: string) {
 }
 
 function objectContainsString<T>(object: T, filter: string) {
-	const regexp =  RegExp("\\b" + filter, "i");
+	// If filter is a class, match only whole word to prevent II.A from matching II.A6
+	const classRegex = new RegExp(".*\.[ABC]");
+	const isClass = classRegex.test(filter) ? "\\b" : "";
+	const regex = new RegExp("\\b" + filter + isClass, "i");
 	return Object.values(object).some((value: string) => {
-		return regexp.test(value);
+		return regex.test(value);
 	});
 }
 
@@ -286,31 +289,33 @@ function renderChybejici(chybejici: ChybejiciTable) {
 
 	const noChybejici = rowHeader("Žádní chybějící", 9);
 
-	const ucitele = chybejici.ucitele.map(chybejiciRecordToTr).reduce((acc, el) => acc + el, "");
-	const tridy = chybejici.tridy.map(chybejiciRecordToTr).reduce((acc, el) => acc + el, "");
-	const ucebny = chybejici.ucebny.map(chybejiciRecordToTr).reduce((acc, el) => acc + el, "");
+	const ucitele = chybejici.ucitele.map(chybejiciRecordToTr).join("");
+	const tridy = chybejici.tridy.map(chybejiciRecordToTr).join("");
+	const ucebny = chybejici.ucebny.map(chybejiciRecordToTr).join("");
 
 	const contentToAppend = `
-	${rowHeader("Učitelé", 9)}
-	${ucitele.length ? ucitele : noChybejici}
-	${rowHeader("Třídy", 9)}
-	${tridy.length ? tridy : noChybejici}
-	${rowHeader("Učebny", 9)}
-	${ucebny.length ? ucebny : noChybejici}
+		${rowHeader("Učitelé", 9)}
+		${ucitele.length ? ucitele : noChybejici}
+		${rowHeader("Třídy", 9)}
+		${tridy.length ? tridy : noChybejici}
+		${rowHeader("Učebny", 9)}
+		${ucebny.length ? ucebny : noChybejici}
 	`;
 
 	chybejiciTable.append(contentToAppend);
 }
 
 function chybejiciRecordToTr(chybejiciRecord: ChybejiciRecord) {
-	const cells = Object.keys(chybejiciRecord.schedule).map((hour) => {
-		return `<td class="${chybejiciRecord.schedule[hour] ? "present" : "absent"}">${hour}</td>`;
+	// Missing graph
+	const missingGraphCells = Object.keys(chybejiciRecord.schedule).map((hour) => {
+		const className = chybejiciRecord.schedule[hour] ? "present" : "absent";
+		return `<td class="${className}">${hour}</td>`;
 	});
 
 	const row = `
 		<tr>
 			<td>${chybejiciRecord.kdo}</td>
-			${cells.join("")}
+			${missingGraphCells.join("")}
 		</tr >
 	`;
 
