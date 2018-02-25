@@ -1,6 +1,6 @@
 import * as iconv from "iconv-lite";
 import * as request_ from "request";
-import { DateWithUrl } from "../parsing/DatesParser";
+
 import { SuplGetter } from "./suplGetter";
 
 /**
@@ -10,7 +10,6 @@ import { SuplGetter } from "./suplGetter";
  * @class SuplGetterNode
  * @extends {SuplGetter}
  */
-// tslint:disable-next-line:export-name
 export class SuplGetterNode extends SuplGetter {
 	constructor() {
 		super();

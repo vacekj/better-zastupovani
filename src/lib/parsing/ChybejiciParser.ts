@@ -1,4 +1,5 @@
 import { parseTable } from "../utils/DOMUtils";
+// TODO: Test this
 export function parseChybejiciTable(chybejiciTable: Element): ChybejiciTable {
 	const chybejiciRows = parseTable(chybejiciTable)[0].slice(1);
 	const chybejiciArray = chybejiciRows.map((row) => {

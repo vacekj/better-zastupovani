@@ -25,9 +25,7 @@ describe("suplParser", () => {
 				expect(classes[0]).to.equal("I.A8");
 				expect(classes).to.include.members(["I.A6", "I.A"]);
 				done();
-			}).catch((err) => {
-				done(err);
-			});
+			}).catch(done);
 	});
 
 	it("should parse dates page", (done) => {
@@ -40,32 +38,23 @@ describe("suplParser", () => {
 				const containsDate = new RegExp("pondělí|úterý|středa|čtvrtek|pátek");
 				expect(dates[0].dateString).to.match(containsDate);
 				done();
-			}).catch((err) => {
-				done(err);
-			});
+			}).catch(done);
 	});
 
 	it("should parse suplovani page", (done) => {
-		suplGetter
-			.getDatesPage().then((datesPage) => {
+		suplGetter.getDatesPage()
+			.then((datesPage) => {
 				const dates = parseDatesPage(datesPage);
 				const date = dates[0];
 				suplGetter.getSuplovaniPage(date.url).then((suplovaniPage) => {
 					const parsedSuplovaniPage = parseSuplovaniPage(suplovaniPage);
-					// Check for class etc. format using regex
 					expect(parsedSuplovaniPage).to.be.an.instanceOf(SuplovaniPage);
 					expect(parsedSuplovaniPage).to.not.satisfy(containsNullOrUndefined);
-					expect(parsedSuplovaniPage.chybejici.tridy.map((record) => record.kdo)).to.satisfy((array) => {
-						return arrayMatchesRegex(array, regexes.trida);
-					});
-					expect(parsedSuplovaniPage.chybejici.ucebny.map((record) => record.kdo)).to.satisfy((array) => {
-						return arrayMatchesRegex(array, regexes.ucebna);
-					});
+					expect(parsedSuplovaniPage.chybejici.tridy.map((record) => record.kdo)).to.satisfy((array) => arrayMatchesRegex(array, regexes.trida));
+					expect(parsedSuplovaniPage.chybejici.ucebny.map((record) => record.kdo)).to.satisfy((array) => arrayMatchesRegex(array, regexes.ucebna));
 					done();
-				}).catch((err) => {
-					done(err);
-				});
-			}, done);
+				}).catch(done);
+			}).catch(done);
 	});
 
 	after(() => {

@@ -1,5 +1,6 @@
 import { parse } from "date-fns";
 import { load } from "../utils/DOMUtils";
+// TODO: Test this
 /**
  * Date information corresponding to one suplovaniPage
  *
@@ -22,7 +23,7 @@ export class DateWithUrl {
 	public dateString: string;
 	constructor(url: string, dateString: string) {
 		this.url = url;
-		const extractedDate = url.slice(7, 17).replace("_", "-").replace("_", "-");
+		const extractedDate = url.slice(7, 17).replace(new RegExp("_", "g"), "-");
 		this.date = parse(extractedDate);
 		this.dateString = dateString;
 	}

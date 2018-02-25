@@ -1,4 +1,3 @@
-import { DateWithUrl } from "../parsing/DatesParser";
 import { decode } from "../utils/decode";
 /**
  * Base abstract class with common functionality and members for all SuplGetters
@@ -38,7 +37,7 @@ export abstract class SuplGetter {
 /**
  * A SuplGetter that works in browser environment
  *
- * Uses only native browser APIs
+ * Uses fetch
  * Handles decoding of the responses
  * @class SuplGetterNode
  * @extends {SuplGetter}
@@ -46,23 +45,17 @@ export abstract class SuplGetter {
 export class SuplGetterBrowser extends SuplGetter {
 	public async request(url: string): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
-			const myInit: RequestInit = {
-				method: "GET"
-			};
-			fetch(url, myInit)
+			fetch(url)
 				.then(async (res) => {
+					// Fetch doesn't reject the promise on codes like 404
 					if (!res.ok) {
 						reject({ error: "res not ok" });
 					}
 
 					return res.arrayBuffer();
 				})
-				.then((arrayBuffer) => {
-					return decode(arrayBuffer);
-		})
-				.then((body) => {
-					resolve(body);
-				})
+				.then(decode)
+				.then(resolve)
 				.catch(reject);
 		});
 	}
