@@ -27,7 +27,7 @@ export function addBackToTop(options: Partial<IOptions>) {
 	appendStyles();
 	const upEl = appendElement();
 	let hidden = true;
-	document.querySelector(containerSelector).addEventListener("scroll", adapt);
+	document.addEventListener("scroll", adapt);
 	adapt();
 
 	function adapt() {
@@ -141,10 +141,10 @@ export function addBackToTop(options: Partial<IOptions>) {
 	}
 
 	function getScrollTop() {
-		return document.querySelector(containerSelector).scrollTop || 0;
+		return document.documentElement.scrollTop || 0;
 	}
 
 	function setScrollTop(value) {
-		document.querySelector(containerSelector).scrollTop = value;
+		document.documentElement.scrollTop = value;
 	}
 }

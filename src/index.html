@@ -29,151 +29,153 @@
 </head>
 
 <body>
-	<div class="container">
-		<!-- HEADER -->
-		<div class="row mt-4 mb-2 justify-content-center">
-			<div class="col-md-1 pr-0">
-				<a href="http://www.gytool.cz">
-					<img src="gh.png" class="img-fluid d-none d-md-block" alt="GH Logo">
-				</a>
-			</div>
-			<div class="col-md-5 text-center">
-				<h4 class="logo">
-					<a href="http://www.gytool.cz">Gymnázium, Olomouc - Hejčín</a>
-				</h4>
-				<hr style="width: 300px">
-				<h2>Zastupování</h2>
-			</div>
-			<div class="col-md-1 pl-0">
-				<img src="pecet.jpg" class="img-fluid d-none d-md-block" alt="GH Pečeť">
-			</div>
-		</div>
-		<div class="form-row justify-content-center">
-			<div class="col-md-3 text-center">
-				<div class="btn-group">
-					<button type="button" class="btn btn-raised btn-primary" id="today" data-test="button_today">Dnes</button>
-					<button type="button" class="btn btn-raised btn-primary" id="tomorrow" data-test="button_tomorrow">Zítra</button>
+	<div class="container px-0" id="container">
+		<div class="container">
+			<!-- HEADER -->
+			<div class="row mt-4 mb-2 justify-content-center">
+				<div class="col-md-1 pr-0">
+					<a href="http://www.gytool.cz">
+						<img src="gh.png" class="img-fluid d-none d-md-block" alt="GH Logo">
+					</a>
+				</div>
+				<div class="col-md-5 text-center">
+					<h4 class="logo">
+						<a href="http://www.gytool.cz">Gymnázium, Olomouc - Hejčín</a>
+					</h4>
+					<hr style="width: 300px">
+					<h2>Zastupování</h2>
+				</div>
+				<div class="col-md-1 pl-0">
+					<img src="pecet.jpg" class="img-fluid d-none d-md-block" alt="GH Pečeť">
 				</div>
 			</div>
-			<fieldset class="col-md-2 form-group">
-				<label for="selector_date" class="bmd-label-floating">Datum</label>
-				<select class="form-control" name="selector_date" id="selector_date" data-test="datePicker"></select>
-			</fieldset>
-			<fieldset class="col-md-7 form-group">
-				<label for="selector_filter" class="bmd-label-floating">Filtr</label>
-				<input type="text" class="form-control" name="selector_filter" id="selector_filter" placeholder="Učitel, třída..." list="filterSuggestions"
-				 data-test="filterTextbox">
-				<datalist id="filterSuggestions">
-				</datalist>
-			</fieldset>
-		</div>
-		<div class="row" id="alert-row">
-		</div>
+			<div class="form-row justify-content-center">
+				<div class="col-md-3 text-center">
+					<div class="btn-group">
+						<button type="button" class="btn btn-raised btn-primary" id="today" data-test="button_today">Dnes</button>
+						<button type="button" class="btn btn-raised btn-primary" id="tomorrow" data-test="button_tomorrow">Zítra</button>
+					</div>
+				</div>
+				<fieldset class="col-md-2 form-group">
+					<label for="selector_date" class="bmd-label-floating">Datum</label>
+					<select class="form-control" name="selector_date" id="selector_date" data-test="datePicker"></select>
+				</fieldset>
+				<fieldset class="col-md-7 form-group">
+					<label for="selector_filter" class="bmd-label-floating">Filtr</label>
+					<input type="text" class="form-control" name="selector_filter" id="selector_filter" placeholder="Učitel, třída..." list="filterSuggestions"
+					 data-test="filterTextbox">
+					<datalist id="filterSuggestions">
+					</datalist>
+				</fieldset>
+			</div>
+			<div class="row" id="alert-row">
+			</div>
 
-		<!-- MAIN -->
-		<div class="row">
-			<div class="col-md-12 table-responsive">
-				<h5>Suplování</h5>
-				<table class="table table-bordered table-sm table-striped table-hover" id="table_suplovani" data-test="suplovaniTable">
-					<thead>
-						<tr>
-							<th>#</th>
-							<th>Třída</th>
-							<th>Předmět</th>
-							<th>Učebna</th>
-							<th>Náh. učebna</th>
-							<th>Vyučující</th>
-							<th>Zastupující</th>
-							<th>Poznámka</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
+			<!-- MAIN -->
+			<div class="row">
+				<div class="col-md-12 table-responsive">
+					<h5>Suplování</h5>
+					<table class="table table-bordered table-sm table-striped table-hover" id="table_suplovani" data-test="suplovaniTable">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Třída</th>
+								<th>Předmět</th>
+								<th>Učebna</th>
+								<th>Náh. učebna</th>
+								<th>Vyučující</th>
+								<th>Zastupující</th>
+								<th>Poznámka</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12 table-responsive">
-				<h5>Dozory</h5>
-				<table class="table table-bordered table-sm table-striped table-hover" id="table_dozory" data-test="dozoryTable">
-					<thead>
-						<tr>
-							<th>Od</th>
-							<th>Do</th>
-							<th>Místo</th>
-							<th>Chybějící</th>
-							<th>Dozorující</th>
-							<th>Poznámka</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
+			<div class="row">
+				<div class="col-md-12 table-responsive">
+					<h5>Dozory</h5>
+					<table class="table table-bordered table-sm table-striped table-hover" id="table_dozory" data-test="dozoryTable">
+						<thead>
+							<tr>
+								<th>Od</th>
+								<th>Do</th>
+								<th>Místo</th>
+								<th>Chybějící</th>
+								<th>Dozorující</th>
+								<th>Poznámka</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12 table-responsive">
-				<h5>Náhradní učebny</h5>
-				<table id="table_nahradniUcebny" class="table table-bordered table-sm table-striped table-hover">
-					<thead>
-						<tr>
-							<th>#</th>
-							<th>Třída</th>
-							<th>Předmět</th>
-							<th>Chybějící učebna</th>
-							<th>Náhradní učebna</th>
-							<th>Vyučující</th>
-							<th>Poznámka</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
+			<div class="row">
+				<div class="col-md-12 table-responsive">
+					<h5>Náhradní učebny</h5>
+					<table id="table_nahradniUcebny" class="table table-bordered table-sm table-striped table-hover">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Třída</th>
+								<th>Předmět</th>
+								<th>Chybějící učebna</th>
+								<th>Náhradní učebna</th>
+								<th>Vyučující</th>
+								<th>Poznámka</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
 			</div>
-		</div>
-		<hr>
-		<div class="row">
-			<div class="col-md-12">
-				<h5>Oznámení</h5>
-				<div id="oznameniContainer"></div>
+			<hr>
+			<div class="row">
+				<div class="col-md-12">
+					<h5>Oznámení</h5>
+					<div id="oznameniContainer"></div>
+				</div>
 			</div>
-		</div>
-		<hr>
-		<div class="row">
-			<div class="col-md-12 table-responsive">
-				<h5>Chybějící</h5>
-				<h6 class="float-left present p-2">Přítomný</h6>
-				<h6 class="float-left absent p-2">Chybějící</h6>
-				<table id="table_chybejici" class="table table-bordered table-sm table-striped table-hover">
-					<thead>
-						<tr>
-							<th>Kdo</th>
-							<th>1</th>
-							<th>2</th>
-							<th>3</th>
-							<th>4</th>
-							<th>5</th>
-							<th>6</th>
-							<th>7</th>
-							<th>8</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
+			<hr>
+			<div class="row">
+				<div class="col-md-12 table-responsive">
+					<h5>Chybějící</h5>
+					<h6 class="float-left present p-2">Přítomný</h6>
+					<h6 class="float-left absent p-2">Chybějící</h6>
+					<table id="table_chybejici" class="table table-bordered table-sm table-striped table-hover">
+						<thead>
+							<tr>
+								<th>Kdo</th>
+								<th>1</th>
+								<th>2</th>
+								<th>3</th>
+								<th>4</th>
+								<th>5</th>
+								<th>6</th>
+								<th>7</th>
+								<th>8</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
 			</div>
-		</div>
-		<hr>
+			<hr>
 
-		<!-- FOOTER -->
-		<div class="row justify-content-center text-center">
-			<div class="cold-md-12">
-				<div class="alert alert-light">
-					<span class="footer p-3">&copy;
-						<a href="https://github.com/JouzaLoL">Josef Vacek</a> - Made with
-						<img class="glyph" src="svg/heart.svg" alt="Love"> and
-						<img class="glyph" src="svg/code.svg" alt="Code">
-					</span>
+			<!-- FOOTER -->
+			<div class="row justify-content-center text-center">
+				<div class="cold-md-12">
+					<div class="alert alert-light">
+						<span class="footer p-3">&copy;
+							<a href="https://github.com/JouzaLoL">Josef Vacek</a> - Made with
+							<img class="glyph" src="svg/heart.svg" alt="Love"> and
+							<img class="glyph" src="svg/code.svg" alt="Code">
+						</span>
+					</div>
 				</div>
 			</div>
 		</div>

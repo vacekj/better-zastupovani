@@ -3,6 +3,7 @@ Main color: #2d548d
 */
 
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
 #selector_date {
 	height: 34px;
 	margin: 0px 0px !important;
@@ -23,12 +24,12 @@ body>* {
 	font-size: 14px;
 }
 
-.container {
-	height: 100% !important;
-	max-width: 1080px;
+#container {
+	/* height: 100% !important;
+	max-width: 1080px; */
 	box-shadow: 0 0 30px #E1E2FA;
-	height: 100%;
-	overflow: auto;
+	/* height: 100%; */
+	padding-top: 1px;
 }
 
 /* Header */

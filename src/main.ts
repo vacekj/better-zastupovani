@@ -43,7 +43,6 @@ $(document).ready(bootstrap);
 
 function bootstrap() {
 	addBackToTop({
-		containerSelector: ".container",
 		backgroundColor: "#002c5f",
 		diameter: 56,
 		showWhenScrollTopIs: 200,
