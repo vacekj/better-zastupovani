@@ -1,4 +1,7 @@
 const path = require("path");
+require('file-loader');
+require('ts-loader');
+
 
 module.exports = {
 	entry: ["babel-polyfill", "whatwg-fetch", "./src/main.ts"],
