@@ -8,6 +8,7 @@ import "./bootstrap-md.min.css";
 // Webpack imports
 import "./favicon.png";
 import "./index.html";
+import "./robots.txt";
 import "./style.css";
 
 // Images
