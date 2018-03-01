@@ -17,7 +17,7 @@ import "./svg/code.svg";
 import "./svg/heart.svg";
 
 // NPM Modules
-import { addYears, closestIndexTo, closestTo, compareDesc, format, isAfter, isBefore, isEqual, isPast, isToday, isTomorrow, isWeekend, setHours, startOfTomorrow } from "date-fns";
+import { addYears, closestIndexTo, compareDesc, isBefore, isPast, isToday, isTomorrow, isWeekend, setHours, startOfTomorrow } from "date-fns";
 import * as $ from "jquery";
 import * as Cookies from "js-cookie";
 import Raven from "raven-js";
@@ -43,6 +43,7 @@ const COOKIE_FILTER = "filter";
 $(document).ready(bootstrap);
 
 function bootstrap() {
+	Raven.config("https://9d2a2a92d6d84dc08743bfb197a5cb65@sentry.io/296434").install();
 	addBackToTop({
 		backgroundColor: "#002c5f",
 		diameter: 56,
