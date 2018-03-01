@@ -199,7 +199,7 @@ function onDateChange() {
 				$("#selector_filter").val(Cookies.get(COOKIE_FILTER));
 				$("#selector_filter")[0].dispatchEvent(new Event("keyup"));
 			}
-		}).catch();
+		}).catch(Raven.captureException);
 }
 
 function render(suplovaniPage: SuplovaniPage, filter?: string) {
