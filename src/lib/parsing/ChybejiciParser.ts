@@ -18,7 +18,7 @@ export function parseChybejiciTable(chybejiciTable: Element): ChybejiciTable {
 		});
 	});
 
-	return new ChybejiciTable(chybejiciArray[0], chybejiciArray[1], chybejiciArray[2]);
+	return new ChybejiciTable(chybejiciArray[0] || [], chybejiciArray[1] || [], chybejiciArray[2] || []);
 }
 
 function extractRange(elem: string): [string, string] | null {

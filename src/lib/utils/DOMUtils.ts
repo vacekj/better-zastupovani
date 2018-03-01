@@ -12,7 +12,7 @@ export function $context(selector: string, context: Element) {
 	return context.querySelectorAll(selector);
 }
 
-export function parseTable(context: Element, dupCols = true, dupRows = true, textMode = false): string[][] {
+export function parseTable(context: Element, dupCols = true, dupRows = true): string[][] {
 	const columns = [];
 	let currX = 0;
 	let currY = 0;
