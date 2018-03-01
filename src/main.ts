@@ -20,6 +20,7 @@ import "./svg/heart.svg";
 import { addYears, closestIndexTo, closestTo, compareDesc, format, isAfter, isBefore, isEqual, isPast, isToday, isTomorrow, isWeekend, setHours, startOfTomorrow } from "date-fns";
 import * as $ from "jquery";
 import * as Cookies from "js-cookie";
+import Raven from "raven-js";
 
 // LIB Modules
 import { SuplGetterBrowser } from "./lib/getting/suplGetter";
@@ -53,13 +54,17 @@ function bootstrap() {
 	registerEventHandlers();
 
 	// Populate filter suggestions
-	const suggestionPromises = Promise.all([suplGetter.getVyucujiciPage().then(parseVyucujiciPage), suplGetter.getClassesPage().then(parseClassesPage)]).catch(handleError);
+	const suggestionPromises = Promise.all([suplGetter.getVyucujiciPage().then(parseVyucujiciPage), suplGetter.getClassesPage().then(parseClassesPage)]).catch((ex) => {
+		Raven.captureException(ex);
+	});
 	suggestionPromises.then((suggestions) => {
 		const options = suggestions[0].concat(suggestions[1]).map((suggestion) => {
 			return `<option value="${suggestion}">`;
 		}).reduce((acc, el) => acc + el);
 		$("datalist#filterSuggestions").append(options);
-	}).catch(handleError);
+	}).catch((ex) => {
+		Raven.captureException(ex);
+	});
 
 	// Populate date selector
 	suplGetter.getDatesPage()
@@ -104,7 +109,9 @@ function bootstrap() {
 				selectDate(closestDay);
 			}
 
-		}).catch(handleError);
+		}).catch((ex) => {
+			Raven.captureException(ex);
+		});
 }
 
 function dateWithUrlToOption(dateWithUrl: DateWithUrl) {
@@ -191,7 +198,7 @@ function onDateChange() {
 				$("#selector_filter").val(Cookies.get(COOKIE_FILTER));
 				$("#selector_filter")[0].dispatchEvent(new Event("keyup"));
 			}
-		}).catch(handleError);
+		}).catch();
 }
 
 function render(suplovaniPage: SuplovaniPage, filter?: string) {
@@ -380,15 +387,4 @@ function showLoadingIndicators() {
 	$("#table_dozory > tbody").html(indicator(6));
 	$("#table_chybejici > tbody").html(indicator(9));
 	$("#table_nahradniUcebny > tbody").html(indicator(7));
-}
-
-function handleError(error: Error) {
-	const alertHtml = `
-	<div class="col-md-12">
-		<div class="alert alert-danger" role="alert">
-			V aplikaci se vyskytla chyba, kontaktujte administrátora (Josef Vacek) | ${error.name} ${error.message}
-		</div>
-	</div>`;
-
-	$("#alert-row").append(alertHtml);
 }
