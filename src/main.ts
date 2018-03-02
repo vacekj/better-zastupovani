@@ -39,6 +39,13 @@ const state: {
 		sortedDates: null
 	};
 
+const Selectors = {
+	DateSelector: $("#selector_date"),
+	TodayButton: $("button#today"),
+	TomorrowButton: $("button#tomorrow"),
+	FilterSelector: $("#selector_filter")
+};
+
 const COOKIE_FILTER = "filter";
 
 $(document).ready(bootstrap);
@@ -91,11 +98,7 @@ function bootstrap() {
 			});
 
 			// Append options to date selector
-			const dateSelector = $("#selector_date")[0];
-			$(dateSelector).append(datesOptions);
-
-			// Trigger first render
-			dateSelector.dispatchEvent(new Event("change"));
+			Selectors.DateSelector.append(datesOptions);
 
 			// Get and select closest day to today
 			const closestIndex = closestIndexTo(new Date(), sortedDates.map((date) => date.date));
@@ -122,20 +125,19 @@ function bootstrap() {
 }
 
 function registerEventHandlers() {
-	$("button#today").on("click", DatesHandler.todayButtonHandler);
-	$("button#tomorrow").on("click", DatesHandler.tomorrowButtonHandler);
-	$("#selector_date").on("change", DatesHandler.onDateChange);
-	$("#selector_filter").on("keyup input", FilterHandler.onFilterChange);
+	Selectors.TodayButton.on("click", DatesHandler.todayButtonHandler);
+	Selectors.TomorrowButton.on("click", DatesHandler.tomorrowButtonHandler);
+	Selectors.DateSelector.on("change", DatesHandler.onDateChange);
+	Selectors.FilterSelector.on("keyup input", FilterHandler.onFilterChange);
 }
 
 namespace DatesHandler {
 	export function selectDate(date: DateWithUrl) {
-		const dateSelector = $("#selector_date")[0];
+		const dateSelector = Selectors.DateSelector[0];
 		const index = state.sortedDates.indexOf(date);
 		if (index) {
 			(dateSelector as HTMLSelectElement).selectedIndex = index;
-			// Need to manually trigger render
-			dateSelector.dispatchEvent(new Event("change"));
+			DatesHandler.triggerDateChange();
 		}
 	}
 
@@ -175,16 +177,21 @@ namespace DatesHandler {
 				return suplovaniPage;
 			})
 			.then((suplovaniPage) => {
-				RenderHandler.render(suplovaniPage);
 				// Filter cookie
 				if (Cookies.get(COOKIE_FILTER)) {
 					$("#selector_filter").val(Cookies.get(COOKIE_FILTER));
-					$("#selector_filter")[0].dispatchEvent(new Event("keyup"));
+					RenderHandler.render(suplovaniPage, $(Selectors.FilterSelector).val() as string);
+				} else {
+					RenderHandler.render(suplovaniPage);
 				}
 			}).catch((ex) => {
 				Raven.captureException(ex);
 				throw ex;
 			});
+	}
+
+	export function triggerDateChange() {
+		Selectors.DateSelector[0].dispatchEvent(new Event("change"));
 	}
 }
 
@@ -207,11 +214,11 @@ namespace RenderHandler {
 			RenderHandler.renderSuplovani(suplovaniPage.suplovani);
 			RenderHandler.renderDozory(suplovaniPage.dozory);
 			RenderHandler.renderNahradniUcebny(suplovaniPage.nahradniUcebny);
-
-			// Non-filtered records
-			RenderHandler.renderChybejici(suplovaniPage.chybejici);
-			RenderHandler.renderOznameni(suplovaniPage.oznameni);
 		}
+
+		// Non-filtered records
+		RenderHandler.renderChybejici(suplovaniPage.chybejici);
+		RenderHandler.renderOznameni(suplovaniPage.oznameni);
 	}
 
 	export function renderSuplovani(suplovaniRecords: SuplovaniRecord[]) {
@@ -375,7 +382,7 @@ namespace Utils {
 	export function disableInputs() {
 		// Disable today button during the weekend
 		if (isWeekend(new Date())) {
-			$("button#today").attr("disabled", "true");
+			Selectors.TodayButton.attr("disabled", "true");
 		}
 
 		// Disable tomorrow button if tomorrow is the weekend
