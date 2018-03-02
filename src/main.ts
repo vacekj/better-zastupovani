@@ -180,7 +180,7 @@ namespace DatesHandler {
 				// Filter cookie
 				if (Cookies.get(COOKIE_FILTER)) {
 					$("#selector_filter").val(Cookies.get(COOKIE_FILTER));
-					RenderHandler.render(suplovaniPage, $(Selectors.FilterSelector).val() as string);
+					RenderHandler.render(undefined, $(Selectors.FilterSelector).val() as string);
 				} else {
 					RenderHandler.render(suplovaniPage);
 				}
