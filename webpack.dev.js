@@ -3,9 +3,11 @@ const common = require("./webpack.common.js");
 require('style-loader');
 require('css-loader');
 
+const serverHost = process.env.DEV_SERVER_HOST || "192.168.1.200";
+
 module.exports = merge(common, {
 	devServer: {
-		host: "192.168.1.200"
+		host: serverHost
 	},
 	devtool: "inline-source-map",
 	module: {
