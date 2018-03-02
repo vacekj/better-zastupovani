@@ -29,8 +29,8 @@ import { ChybejiciRecord, ChybejiciTable } from "./lib/parsing/ChybejiciParser";
 import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
 import { DozorRecord, NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, parseVyucujiciPage, Record, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
 import { addBackToTop } from "./lib/utils/backToTop";
-const suplGetter = new SuplGetterBrowser();
 
+const suplGetter = new SuplGetterBrowser();
 const state: {
 	currentSuplovaniPage: SuplovaniPage,
 	sortedDates: DateWithUrl[]
@@ -51,21 +51,26 @@ function bootstrap() {
 		showWhenScrollTopIs: 200,
 		textColor: "#fff"
 	});
-	showLoadingIndicators();
-	disableInputs();
+	Utils.showLoadingIndicators();
+	Utils.disableInputs();
 	registerEventHandlers();
 
 	// Populate filter suggestions
-	const suggestionPromises = Promise.all([suplGetter.getVyucujiciPage().then(parseVyucujiciPage), suplGetter.getClassesPage().then(parseClassesPage)]).catch((ex) => {
-		Raven.captureException(ex);
-	});
+	const suggestionPromises = Promise.all([suplGetter.getVyucujiciPage().then(parseVyucujiciPage), suplGetter.getClassesPage().then(parseClassesPage)])
+		.catch((ex) => {
+			Raven.captureException(ex);
+			throw ex;
+		});
+
 	suggestionPromises.then((suggestions) => {
 		const options = suggestions[0].concat(suggestions[1]).map((suggestion) => {
 			return `<option value="${suggestion}">`;
 		}).reduce((acc, el) => acc + el);
+
 		$("datalist#filterSuggestions").append(options);
 	}).catch((ex) => {
 		Raven.captureException(ex);
+		throw ex;
 	});
 
 	// Populate date selector
@@ -81,7 +86,7 @@ function bootstrap() {
 			state.sortedDates = sortedDates;
 
 			// Transform dates to <option>'s
-			const datesOptions = sortedDates.map(dateWithUrlToOption).reduce((acc, curr) => {
+			const datesOptions = sortedDates.map(RenderHandler.dateWithUrlToOption).reduce((acc, curr) => {
 				return acc + curr;
 			});
 
@@ -108,32 +113,33 @@ function bootstrap() {
 
 			// If there's a closest day, select it
 			if (closestDay) {
-				selectDate(closestDay);
+				DatesHandler.selectDate(closestDay);
 			}
-
 		}).catch((ex) => {
 			Raven.captureException(ex);
+			throw ex;
 		});
 }
 
-function dateWithUrlToOption(dateWithUrl: DateWithUrl) {
-	return `<option url="${dateWithUrl.url}">${dateWithUrl.dateString}</option>`;
-}
-
-function disableInputs() {
-	// Disable today button during the weekend
-	if (isWeekend(new Date())) {
-		$("button#today").attr("disabled", "true");
-	}
-
-	// Disable tomorrow button if tomorrow is the weekend
-	if (isWeekend(startOfTomorrow())) {
-		$("button#tomorrow").attr("disabled", "true");
-	}
-}
-
 function registerEventHandlers() {
-	$("button#today").on("click", () => {
+	$("button#today").on("click", DatesHandler.todayButtonHandler);
+	$("button#tomorrow").on("click", DatesHandler.tomorrowButtonHandler);
+	$("#selector_date").on("change", DatesHandler.onDateChange);
+	$("#selector_filter").on("keyup input", FilterHandler.onFilterChange);
+}
+
+namespace DatesHandler {
+	export function selectDate(date: DateWithUrl) {
+		const dateSelector = $("#selector_date")[0];
+		const index = state.sortedDates.indexOf(date);
+		if (index) {
+			(dateSelector as HTMLSelectElement).selectedIndex = index;
+			// Need to manually trigger render
+			dateSelector.dispatchEvent(new Event("change"));
+		}
+	}
+
+	export function todayButtonHandler() {
 		const today = state.sortedDates.find((dateWithUrl) => {
 			return isToday(dateWithUrl.date);
 		});
@@ -142,10 +148,10 @@ function registerEventHandlers() {
 			return;
 		}
 
-		selectDate(today);
-	});
+		DatesHandler.selectDate(today);
+	}
 
-	$("button#tomorrow").on("click", () => {
+	export function tomorrowButtonHandler() {
 		const tomorrow = state.sortedDates.find((dateWithUrl) => {
 			return isTomorrow(dateWithUrl.date);
 		});
@@ -155,238 +161,246 @@ function registerEventHandlers() {
 			return;
 		}
 
-		selectDate(tomorrow);
-	});
-	$("#selector_date").on("change", onDateChange);
-	$("#selector_filter").on("keyup input", onFilterChange);
-}
-
-function selectDate(date: DateWithUrl) {
-	const dateSelector = $("#selector_date")[0];
-	const index = state.sortedDates.indexOf(date);
-	if (index) {
-		(dateSelector as HTMLSelectElement).selectedIndex = index;
-		// Need to manually trigger render
-		dateSelector.dispatchEvent(new Event("change"));
-	}
-}
-
-function onFilterChange() {
-	const value = (this as HTMLInputElement).value.trim();
-	if (value && value.length) {
-		render(undefined, value);
-	} else {
-		render(state.currentSuplovaniPage);
+		DatesHandler.selectDate(tomorrow);
 	}
 
-	// Save filter to cookie
-	Cookies.set(COOKIE_FILTER, value, { expires: addYears(new Date(), 1) });
-}
+	export function onDateChange() {
+		Utils.showLoadingIndicators();
+		const newDateUrl: string = (this as HTMLSelectElement).options[(this as HTMLSelectElement).selectedIndex].getAttribute("url");
 
-function onDateChange() {
-	showLoadingIndicators();
-	const newDateUrl: string = (this as HTMLSelectElement).options[(this as HTMLSelectElement).selectedIndex].getAttribute("url");
-
-	suplGetter.getSuplovaniPage(newDateUrl)
-		.then(parseSuplovaniPage)
-		.then((suplovaniPage) => {
-			state.currentSuplovaniPage = suplovaniPage;
-			return suplovaniPage;
-		})
-		.then((suplovaniPage) => {
-			render(suplovaniPage);
-			// Filter cookie
-			if (Cookies.get(COOKIE_FILTER)) {
-				$("#selector_filter").val(Cookies.get(COOKIE_FILTER));
-				$("#selector_filter")[0].dispatchEvent(new Event("keyup"));
-			}
-		}).catch(Raven.captureException);
-}
-
-function render(suplovaniPage: SuplovaniPage, filter?: string) {
-	// Filter only - load records from state
-	if (filter) {
-		// Function for filtering records by string
-		const filterRecords = <T>(records: T[], filterString: string) => {
-			return records.filter((record) => {
-				return objectContainsOneOf(record, filterString.split(" "));
+		suplGetter.getSuplovaniPage(newDateUrl)
+			.then(parseSuplovaniPage)
+			.then((suplovaniPage) => {
+				state.currentSuplovaniPage = suplovaniPage;
+				return suplovaniPage;
+			})
+			.then((suplovaniPage) => {
+				RenderHandler.render(suplovaniPage);
+				// Filter cookie
+				if (Cookies.get(COOKIE_FILTER)) {
+					$("#selector_filter").val(Cookies.get(COOKIE_FILTER));
+					$("#selector_filter")[0].dispatchEvent(new Event("keyup"));
+				}
+			}).catch((ex) => {
+				Raven.captureException(ex);
+				throw ex;
 			});
-		};
-
-		renderSuplovani(filterRecords(state.currentSuplovaniPage.suplovani, filter));
-		renderDozory(filterRecords(state.currentSuplovaniPage.dozory, filter));
-		renderNahradniUcebny(filterRecords(state.currentSuplovaniPage.nahradniUcebny, filter));
-	} else {
-		// Update render - render from supplied parameter
-		renderSuplovani(suplovaniPage.suplovani);
-		renderDozory(suplovaniPage.dozory);
-		renderNahradniUcebny(suplovaniPage.nahradniUcebny);
-
-		// Non-filtered records
-		renderChybejici(suplovaniPage.chybejici);
-		renderOznameni(suplovaniPage.oznameni);
 	}
 }
 
-function objectContainsString<T>(object: T, filter: string) {
-	// If filter is a class, match only whole word to prevent II.A from matching II.A6
-	const classRegex = new RegExp(".*\.[ABC]");
-	const isClass = classRegex.test(filter) ? "\\b" : "";
-	const regex = new RegExp("\\b" + filter + isClass, "i");
-	return Object.values(object).some((value: string) => {
-		return regex.test(value);
-	});
-}
+namespace RenderHandler {
+	export function render(suplovaniPage: SuplovaniPage, filter?: string) {
+		// Filter only - load records from state
+		if (filter) {
+			// Function for filtering records by string
+			const filterRecords = <T>(records: T[], filterString: string) => {
+				return records.filter((record) => {
+					return FilterHandler.objectContainsOneOf(record, filterString.split(" "));
+				});
+			};
 
-function objectContainsOneOf<T>(object: T, filters: string[]) {
-	return filters.some((filter) => {
-		return objectContainsString(object, filter);
-	});
-}
+			RenderHandler.renderSuplovani(filterRecords(state.currentSuplovaniPage.suplovani, filter));
+			RenderHandler.renderDozory(filterRecords(state.currentSuplovaniPage.dozory, filter));
+			RenderHandler.renderNahradniUcebny(filterRecords(state.currentSuplovaniPage.nahradniUcebny, filter));
+		} else {
+			// Update render - render from supplied parameter
+			RenderHandler.renderSuplovani(suplovaniPage.suplovani);
+			RenderHandler.renderDozory(suplovaniPage.dozory);
+			RenderHandler.renderNahradniUcebny(suplovaniPage.nahradniUcebny);
 
-function renderSuplovani(suplovaniRecords: SuplovaniRecord[]) {
-	const suplovaniTable = $("#table_suplovani > tbody");
-	suplovaniTable.empty();
+			// Non-filtered records
+			RenderHandler.renderChybejici(suplovaniPage.chybejici);
+			RenderHandler.renderOznameni(suplovaniPage.oznameni);
+		}
+	}
 
-	const contentToAppend = suplovaniRecords.length
-		? suplovaniRecords.map(suplovaniRecordToTr).join("")
-		: rowHeader("Žádné suplování", 8);
+	export function renderSuplovani(suplovaniRecords: SuplovaniRecord[]) {
+		const suplovaniTable = $("#table_suplovani > tbody");
+		suplovaniTable.empty();
 
-	suplovaniTable.append(contentToAppend);
-}
+		const contentToAppend = suplovaniRecords.length
+			? suplovaniRecords.map(RenderHandler.suplovaniRecordToTr).join("")
+			: RenderHandler.rowHeader("Žádné suplování", 8);
 
-function suplovaniRecordToTr(suplovaniRecord: SuplovaniRecord): string {
-	return removeControlChars(`<tr>
-				<td>${suplovaniRecord.hodina}</td>
-				<td>${suplovaniRecord.trida}</td>
-				<td>${suplovaniRecord.predmet}</td>
-				<td>${suplovaniRecord.ucebna}</td>
-				<td>${suplovaniRecord.nahucebna}</td>
-				<td>${suplovaniRecord.vyuc}</td>
-				<td>${suplovaniRecord.zastup}</td>
-				<td>${suplovaniRecord.pozn}</td>
-			</tr>
-			`);
-}
+		suplovaniTable.append(contentToAppend);
+	}
 
-function renderDozory(dozorRecords: DozorRecord[]) {
-	const dozorTable = $("#table_dozory > tbody");
-	dozorTable.empty();
+	export function suplovaniRecordToTr(suplovaniRecord: SuplovaniRecord): string {
+		return Utils.removeControlChars(`<tr>
+					<td>${suplovaniRecord.hodina}</td>
+					<td>${suplovaniRecord.trida}</td>
+					<td>${suplovaniRecord.predmet}</td>
+					<td>${suplovaniRecord.ucebna}</td>
+					<td>${suplovaniRecord.nahucebna}</td>
+					<td>${suplovaniRecord.vyuc}</td>
+					<td>${suplovaniRecord.zastup}</td>
+					<td>${suplovaniRecord.pozn}</td>
+				</tr>
+				`);
+	}
 
-	const contentToAppend = dozorRecords.length
-		? dozorRecords.map(dozorRecordToTr).join("")
-		: rowHeader("Žádné dozory", 6);
+	export function renderDozory(dozorRecords: DozorRecord[]) {
+		const dozorTable = $("#table_dozory > tbody");
+		dozorTable.empty();
 
-	dozorTable.append(contentToAppend);
-}
+		const contentToAppend = dozorRecords.length
+			? dozorRecords.map(RenderHandler.dozorRecordToTr).join("")
+			: RenderHandler.rowHeader("Žádné dozory", 6);
 
-function dozorRecordToTr(dozorRecord: DozorRecord): string {
-	return removeControlChars(`<tr>
-				<td>${dozorRecord.timeStart}</td>
-				<td>${dozorRecord.timeEnd}</td>
-				<td>${dozorRecord.misto}</td>
-				<td>${dozorRecord.chybejici}</td>
-				<td>${dozorRecord.dozorujici}</td>
-				<td>${dozorRecord.poznamka}</td>
+		dozorTable.append(contentToAppend);
+	}
+
+	export function dozorRecordToTr(dozorRecord: DozorRecord): string {
+		return Utils.removeControlChars(`<tr>
+					<td>${dozorRecord.timeStart}</td>
+					<td>${dozorRecord.timeEnd}</td>
+					<td>${dozorRecord.misto}</td>
+					<td>${dozorRecord.chybejici}</td>
+					<td>${dozorRecord.dozorujici}</td>
+					<td>${dozorRecord.poznamka}</td>
+				</tr>`);
+	}
+
+	export function renderChybejici(chybejici: ChybejiciTable) {
+		const chybejiciTable = $("#table_chybejici > tbody");
+		chybejiciTable.empty();
+
+		const noChybejici = RenderHandler.rowHeader("Žádní chybějící", 9);
+
+		const ucitele = chybejici.ucitele.map(RenderHandler.chybejiciRecordToTr).join("");
+		const tridy = chybejici.tridy.map(RenderHandler.chybejiciRecordToTr).join("");
+		const ucebny = chybejici.ucebny.map(RenderHandler.chybejiciRecordToTr).join("");
+
+		const contentToAppend = `
+			${RenderHandler.rowHeader("Učitelé", 9)}
+			${ucitele.length ? ucitele : noChybejici}
+			${RenderHandler.rowHeader("Třídy", 9)}
+			${tridy.length ? tridy : noChybejici}
+			${RenderHandler.rowHeader("Učebny", 9)}
+			${ucebny.length ? ucebny : noChybejici}
+		`;
+
+		chybejiciTable.append(contentToAppend);
+	}
+
+	export function chybejiciRecordToTr(chybejiciRecord: ChybejiciRecord) {
+		// Missing graph
+		const missingGraphCells = Object.keys(chybejiciRecord.schedule).map((hour) => {
+			const className = chybejiciRecord.schedule[hour] ? "present" : "absent";
+			return `<td class="${className}">${hour}</td>`;
+		});
+
+		const row = `
+			<tr>
+				<td>${chybejiciRecord.kdo}</td>
+				${missingGraphCells.join("")}
+			</tr >
+		`;
+
+		return Utils.removeControlChars(row);
+	}
+
+	export function renderNahradniUcebny(nahradniUcebnyRecords: NahradniUcebnaRecord[]) {
+		const nahradniUcebnyTable = $("#table_nahradniUcebny > tbody");
+		nahradniUcebnyTable.empty();
+
+		const contentToAppend = nahradniUcebnyRecords.length
+			? nahradniUcebnyRecords.map(RenderHandler.nahradniUcebnaRecordToTr).join("")
+			: RenderHandler.rowHeader("Žádné náhradní učebny", 8);
+
+		nahradniUcebnyTable.append(contentToAppend);
+	}
+
+	export function nahradniUcebnaRecordToTr(nahradniUcebna: NahradniUcebnaRecord) {
+		return Utils.removeControlChars(`<tr>
+				<td>${nahradniUcebna.hodina}</td>
+				<td>${nahradniUcebna.trida}</td>
+				<td>${nahradniUcebna.predmet}</td>
+				<td>${nahradniUcebna.chybucebna}</td>
+				<td>${nahradniUcebna.nahucebna}</td>
+				<td>${nahradniUcebna.vyuc}</td>
+				<td>${nahradniUcebna.pozn}</td>
 			</tr>`);
+	}
+
+	export function renderOznameni(oznameni: string) {
+		const template = oznameni ? `
+		<div class="card">
+			<div class="card-body">
+				${oznameni}
+			</div>
+		</div>` : "";
+		$("#oznameniContainer").html(template);
+	}
+
+	export function rowHeader(text: string, colspan: number) {
+		return `<tr><td colspan="${colspan}" class="noCellBg">${text}</td></tr>`;
+	}
+
+	export function dateWithUrlToOption(dateWithUrl: DateWithUrl) {
+		return `<option url="${dateWithUrl.url}">${dateWithUrl.dateString}</option>`;
+	}
 }
 
-function renderChybejici(chybejici: ChybejiciTable) {
-	const chybejiciTable = $("#table_chybejici > tbody");
-	chybejiciTable.empty();
+namespace FilterHandler {
+	export function onFilterChange() {
+		const value = (this as HTMLInputElement).value.trim();
+		if (value && value.length) {
+			RenderHandler.render(undefined, value);
+		} else {
+			RenderHandler.render(state.currentSuplovaniPage);
+		}
 
-	const noChybejici = rowHeader("Žádní chybějící", 9);
+		// Save filter to cookie
+		Cookies.set(COOKIE_FILTER, value, { expires: addYears(new Date(), 1) });
+	}
+	export function objectContainsOneOf<T>(object: T, filters: string[]) {
+		return filters.some((filter) => {
+			return objectContainsString(object, filter);
+		});
+	}
 
-	const ucitele = chybejici.ucitele.map(chybejiciRecordToTr).join("");
-	const tridy = chybejici.tridy.map(chybejiciRecordToTr).join("");
-	const ucebny = chybejici.ucebny.map(chybejiciRecordToTr).join("");
-
-	const contentToAppend = `
-		${rowHeader("Učitelé", 9)}
-		${ucitele.length ? ucitele : noChybejici}
-		${rowHeader("Třídy", 9)}
-		${tridy.length ? tridy : noChybejici}
-		${rowHeader("Učebny", 9)}
-		${ucebny.length ? ucebny : noChybejici}
-	`;
-
-	chybejiciTable.append(contentToAppend);
+	function objectContainsString<T>(object: T, filter: string) {
+		// If filter is a class, match only whole word to prevent II.A from matching II.A6
+		const classRegex = new RegExp(".*\.[ABC]");
+		const isClass = classRegex.test(filter) ? "\\b" : "";
+		const regex = new RegExp("\\b" + filter + isClass, "i");
+		return Object.values(object).some((value: string) => {
+			return regex.test(value);
+		});
+	}
 }
 
-function chybejiciRecordToTr(chybejiciRecord: ChybejiciRecord) {
-	// Missing graph
-	const missingGraphCells = Object.keys(chybejiciRecord.schedule).map((hour) => {
-		const className = chybejiciRecord.schedule[hour] ? "present" : "absent";
-		return `<td class="${className}">${hour}</td>`;
-	});
+namespace Utils {
+	export function disableInputs() {
+		// Disable today button during the weekend
+		if (isWeekend(new Date())) {
+			$("button#today").attr("disabled", "true");
+		}
 
-	const row = `
-		<tr>
-			<td>${chybejiciRecord.kdo}</td>
-			${missingGraphCells.join("")}
-		</tr >
-	`;
+		// Disable tomorrow button if tomorrow is the weekend
+		if (isWeekend(startOfTomorrow())) {
+			$("button#tomorrow").attr("disabled", "true");
+		}
+	}
 
-	return removeControlChars(row);
-}
+	export function removeControlChars(s: string) {
+		return s.replace(/[\n\r\t]/g, "");
+	}
 
-function renderNahradniUcebny(nahradniUcebnyRecords: NahradniUcebnaRecord[]) {
-	const nahradniUcebnyTable = $("#table_nahradniUcebny > tbody");
-	nahradniUcebnyTable.empty();
-
-	const contentToAppend = nahradniUcebnyRecords.length
-		? nahradniUcebnyRecords.map(nahradniUcebnaRecordToTr).join("")
-		: rowHeader("Žádné náhradní učebny", 8);
-
-	nahradniUcebnyTable.append(contentToAppend);
-}
-
-function nahradniUcebnaRecordToTr(nahradniUcebna: NahradniUcebnaRecord) {
-	return removeControlChars(`<tr>
-			<td>${nahradniUcebna.hodina}</td>
-			<td>${nahradniUcebna.trida}</td>
-			<td>${nahradniUcebna.predmet}</td>
-			<td>${nahradniUcebna.chybucebna}</td>
-			<td>${nahradniUcebna.nahucebna}</td>
-			<td>${nahradniUcebna.vyuc}</td>
-			<td>${nahradniUcebna.pozn}</td>
-		</tr>`);
-}
-
-function renderOznameni(oznameni: string) {
-	const template = oznameni ? `
-	<div class="card">
-		<div class="card-body">
-			${oznameni}
-		</div>
-	</div>` : "";
-	$("#oznameniContainer").html(template);
-}
-
-function rowHeader(text: string, colspan: number) {
-	return `<tr><td colspan="${colspan}" class="noCellBg">${text}</td></tr>`;
-}
-
-/**
- * Removes control characters from a string
- *
- */
-function removeControlChars(s: string) {
-	return s.replace(/[\n\r\t]/g, "");
-}
-
-function showLoadingIndicators() {
-	// Variable colspan for different-columned tables
-	const indicator = (colspan) => `
-	<tr data-test="loadingIndicator">
+	export function showLoadingIndicators() {
+		// Variable colspan for different-columned tables
+		const indicator = (colspan) =>
+			`<tr data-test="loadingIndicator">
 		<td colspan="${colspan}" class="noCellBg">
 			<svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
 				<circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg>
 		</td>
-	</tr>`;
+		</tr>`;
 
-	$("#table_suplovani > tbody").html(indicator(8));
-	$("#table_dozory > tbody").html(indicator(6));
-	$("#table_chybejici > tbody").html(indicator(9));
-	$("#table_nahradniUcebny > tbody").html(indicator(7));
+		$("#table_suplovani > tbody").html(indicator(8));
+		$("#table_dozory > tbody").html(indicator(6));
+		$("#table_chybejici > tbody").html(indicator(9));
+		$("#table_nahradniUcebny > tbody").html(indicator(7));
+	}
 }

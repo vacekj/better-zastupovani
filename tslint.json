@@ -31,6 +31,7 @@
 		"no-use-before-declare": false,
 		"strict-boolean-expressions": false,
 		"no-require-imports": false,
+		"no-namespace": false,
 		"comment-format": [
 			true,
 			"check-space",
