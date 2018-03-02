@@ -214,11 +214,11 @@ namespace RenderHandler {
 			RenderHandler.renderSuplovani(suplovaniPage.suplovani);
 			RenderHandler.renderDozory(suplovaniPage.dozory);
 			RenderHandler.renderNahradniUcebny(suplovaniPage.nahradniUcebny);
-		}
 
-		// Non-filtered records
-		RenderHandler.renderChybejici(suplovaniPage.chybejici);
-		RenderHandler.renderOznameni(suplovaniPage.oznameni);
+			// Non-filtered records
+			RenderHandler.renderChybejici(suplovaniPage.chybejici);
+			RenderHandler.renderOznameni(suplovaniPage.oznameni);
+		}
 	}
 
 	export function renderSuplovani(suplovaniRecords: SuplovaniRecord[]) {
@@ -353,13 +353,12 @@ namespace FilterHandler {
 	export function onFilterChange() {
 		const value = (this as HTMLInputElement).value.trim();
 		if (value && value.length) {
+			// Save filter to cookie
+			Cookies.set(COOKIE_FILTER, value, { expires: addYears(new Date(), 1) });
 			RenderHandler.render(undefined, value);
 		} else {
 			RenderHandler.render(state.currentSuplovaniPage);
 		}
-
-		// Save filter to cookie
-		Cookies.set(COOKIE_FILTER, value, { expires: addYears(new Date(), 1) });
 	}
 	export function objectContainsOneOf<T>(object: T, filters: string[]) {
 		return filters.some((filter) => {
@@ -371,7 +370,7 @@ namespace FilterHandler {
 		// If filter is a class, match only whole word to prevent II.A from matching II.A6
 		const classRegex = new RegExp(".*\.[ABC]");
 		const isClass = classRegex.test(filter) ? "\\b" : "";
-		const regex = new RegExp("\\b" + filter + isClass, "i");
+		const regex = new RegExp("\\b" + Utils.escapeRegExp(filter) + isClass, "i");
 		return Object.values(object).some((value: string) => {
 			return regex.test(value);
 		});
@@ -409,5 +408,9 @@ namespace Utils {
 		$("#table_dozory > tbody").html(indicator(6));
 		$("#table_chybejici > tbody").html(indicator(9));
 		$("#table_nahradniUcebny > tbody").html(indicator(7));
+	}
+
+	export function escapeRegExp(str) {
+		return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 	}
 }
