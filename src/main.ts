@@ -209,6 +209,10 @@ namespace RenderHandler {
 			RenderHandler.renderSuplovani(filterRecords(state.currentSuplovaniPage.suplovani, filter));
 			RenderHandler.renderDozory(filterRecords(state.currentSuplovaniPage.dozory, filter));
 			RenderHandler.renderNahradniUcebny(filterRecords(state.currentSuplovaniPage.nahradniUcebny, filter));
+
+			// Non-filtered records
+			RenderHandler.renderChybejici(state.currentSuplovaniPage.chybejici);
+			RenderHandler.renderOznameni(state.currentSuplovaniPage.oznameni);
 		} else {
 			// Update render - render from supplied parameter
 			RenderHandler.renderSuplovani(suplovaniPage.suplovani);
