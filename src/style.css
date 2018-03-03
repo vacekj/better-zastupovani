@@ -100,6 +100,7 @@ table thead th {
 	font-size: 0.7rem !important;
 	max-width: 0px;
 	overflow: hidden;
+	color: black !important;
 }
 
 .hidden {
@@ -119,8 +120,8 @@ table td {
 	white-space: nowrap;
 	padding: 0.3rem !important;
 	text-align: left;
-	/* border: solid 1px rgb(160,160,160) !important;
-	border-top: solid 1px rgb(160,160,160) !important; */
+	font-family: "Tahoma";
+	font-size: 13px;
 }
 
 table:not(#table_chybejici) td:last-child {
@@ -153,7 +154,12 @@ table#table_chybejici td {
 	text-align: center;
 }
 
-/* Fotoer */
+
+table#table_chybejici th {
+	text-align: center;
+}
+
+/* Footer */
 
 .backlink {
 	background-color: #2d548d;
