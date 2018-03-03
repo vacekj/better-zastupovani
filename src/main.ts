@@ -214,6 +214,8 @@ namespace RenderHandler {
 			// Non-filtered records
 			RenderHandler.renderChybejici(state.currentSuplovaniPage.chybejici);
 			RenderHandler.renderOznameni(state.currentSuplovaniPage.oznameni);
+
+			Utils.hideEmptyColumns();
 		} else {
 			// Update render - render from supplied parameter
 			RenderHandler.renderSuplovani(suplovaniPage.suplovani);
@@ -223,6 +225,8 @@ namespace RenderHandler {
 			// Non-filtered records
 			RenderHandler.renderChybejici(suplovaniPage.chybejici);
 			RenderHandler.renderOznameni(suplovaniPage.oznameni);
+
+			Utils.hideEmptyColumns();
 		}
 	}
 
@@ -383,6 +387,20 @@ namespace FilterHandler {
 }
 
 namespace Utils {
+
+	export function hideEmptyColumns() {
+		$("#table_suplovani th").each(function (i) {
+			let remove = 0;
+
+			const tds = $(this).parents("table").find("tr td:nth-child(" + (i + 1) + ")");
+			tds.each(function (j) { if (this.innerHTML === "") { remove++; } });
+
+			if (remove === ($("#table_suplovani tr").length - 1)) {
+				$(this).hide();
+				tds.hide();
+			}
+		});
+	}
 	export function enableDayButtons() {
 		const today = state.sortedDates.find((dateWithUrl) => {
 			return isToday(dateWithUrl.date);
