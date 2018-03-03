@@ -3,10 +3,10 @@ Main color: #2d548d
 */
 
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
-
-#selector_date {
-	height: 34px;
-	margin: 0px 0px !important;
+@media (min-width: 576px) {
+	.container {
+		max-width: 1000px;
+	}
 }
 
 html {
@@ -56,6 +56,11 @@ label {
 	margin-bottom: 0;
 }
 
+#selector_date {
+	height: 34px;
+	margin: 0px 0px !important;
+}
+
 /* Buttons */
 
 .btn-primary {
@@ -92,7 +97,11 @@ table thead {
 }
 
 table thead th {
-	font-size: 0.8rem !important;
+	font-size: 0.7rem !important;
+	/* text-overflow: ellipsis; */
+    max-width: 0px;
+	overflow: hidden;
+	word-wrap: break-word;
 }
 
 table td {
