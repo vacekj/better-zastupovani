@@ -3,10 +3,6 @@
 const { isWeekend, startOfTomorrow } = require("date-fns");
 const sha256 = require("js-sha256");
 
-function test(testID) {
-	return `[data-test="${testID}"]`;
-}
-
 describe("Integration Tests", () => {
 	it("loads successfully", () => {
 		cy.visit(process.env.DEV_SERVER_HOST || "192.168.1.200:8080");
@@ -44,6 +40,8 @@ describe("Integration Tests", () => {
 	describe("Date Picker", () => {
 		beforeEach(() => {
 			cy.get(test("datePicker")).as("datePicker");
+			cy.get(test("suplovaniTable")).as("suplovaniTable");
+			cy.get(test("filterTextbox")).as("filterTextbox");
 		});
 
 		it("displays datePicker", () => {
@@ -51,13 +49,48 @@ describe("Integration Tests", () => {
 		});
 
 		it('changes data on datePicker date change', () => {
-			cy.get(test("suplovaniTable")).then((el) => {
+			cy.get("@suplovaniTable").then((el) => {
 				return el[0].innerHTML;
 			}).then((innerHTML) => {
 				return sha256(innerHTML);
-			}).then((hash) => {
-				console.log(hash);
+			}).then(async (hash) => {
+				const s = await nextDate();
+				cy
+					.get("@suplovaniTable")
+					.then(el => el[0].innerHTML)
+					.then((innerHTML) => {
+						expect(hash).to.not.equal(sha256(innerHTML));
+					});
+			});
+		});
+
+		it('changes data on filter text change', () => {
+			cy.get("@suplovaniTable").then((el) => {
+				return el[0].innerHTML;
+			}).then((innerHTML) => {
+				return sha256(innerHTML);
+			}).then(async (hash) => {
+				cy.get("[data-test=suplovaniTable] > tbody > :nth-child(1) > :nth-child(2)").then((tds) => {
+					const text = tds[0].innerText;
+					cy.get("@filterTextbox").type(text);
+					cy.get("@suplovaniTable").then(el => el[0].innerHTML).then((innerHTML) => {
+						expect(hash).to.not.equal(sha256(innerHTML));
+					});
+				});
 			});
 		});
 	});
 });
+
+async function nextDate() {
+	await cy.get(test("datePicker")).then(async (result) => {
+		const selectedIndex = result[0].selectedIndex;
+		cy.get(test("datePicker") + " > option").filter(`:nth-child(${selectedIndex + 3})`).invoke("attr", "selected", true)
+			.get(test("datePicker")).trigger("change");
+		await cy.get(test("loadingIndicator")).should("not.exist");
+	});
+}
+
+function test(testID) {
+	return `[data-test="${testID}"]`;
+}

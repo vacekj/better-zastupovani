@@ -2,9 +2,7 @@ const webpack = require('@cypress/webpack-preprocessor');
 
 module.exports = (on) => {
 	const options = {
-
 		webpackOptions: {
-			entry: ["babel-polyfill"],
 			module: {
 				rules: [
 					{
@@ -14,7 +12,11 @@ module.exports = (on) => {
 							loader: 'babel-loader',
 							options: {
 								presets: [
-									'babel-preset-stage-3',
+									['babel-preset-es2015', {
+										"targets": {
+											"chrome": 64
+										}
+									}],
 									'babel-preset-react',
 								],
 							},
