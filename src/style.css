@@ -98,10 +98,21 @@ table thead {
 
 table thead th {
 	font-size: 0.7rem !important;
-	/* text-overflow: ellipsis; */
-    max-width: 0px;
+	max-width: 0px;
 	overflow: hidden;
-	word-wrap: break-word;
+}
+
+.hidden {
+	display: none;
+}
+
+@media (min-width: 600px) {
+	table thead th {
+		max-width: 10%;
+	}
+	.hidden {
+		display: table-cell;
+	}
 }
 
 table td {

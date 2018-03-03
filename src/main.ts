@@ -396,8 +396,8 @@ namespace Utils {
 			tds.each(function (j) { if (this.innerHTML === "") { remove++; } });
 
 			if (remove === ($("#table_suplovani tr").length - 1)) {
-				$(this).hide();
-				tds.hide();
+				$(this).addClass("hidden");
+				tds.addClass("hidden");
 			}
 		});
 	}
