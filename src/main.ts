@@ -59,7 +59,6 @@ function bootstrap() {
 		textColor: "#fff"
 	});
 	Utils.showLoadingIndicators();
-	Utils.disableInputs();
 	registerEventHandlers();
 
 	// Populate filter suggestions
@@ -91,6 +90,8 @@ function bootstrap() {
 
 			// Update state with sorted dates (needed only once on bootstrap)
 			state.sortedDates = sortedDates;
+
+			Utils.enableDayButtons();
 
 			// Transform dates to <option>'s
 			const datesOptions = sortedDates.map(RenderHandler.dateWithUrlToOption).reduce((acc, curr) => {
@@ -382,15 +383,22 @@ namespace FilterHandler {
 }
 
 namespace Utils {
-	export function disableInputs() {
-		// Disable today button during the weekend
-		if (isWeekend(new Date())) {
-			Selectors.TodayButton.attr("disabled", "true");
+	export function enableDayButtons() {
+		const today = state.sortedDates.find((dateWithUrl) => {
+			return isToday(dateWithUrl.date);
+		});
+
+		if (today !== undefined) {
+			Selectors.TodayButton.removeAttr("disabled");
 		}
 
+		const tomorrow = state.sortedDates.find((dateWithUrl) => {
+			return isTomorrow(dateWithUrl.date);
+		});
+
 		// Disable tomorrow button if tomorrow is the weekend
-		if (isWeekend(startOfTomorrow())) {
-			$("button#tomorrow").attr("disabled", "true");
+		if (tomorrow !== undefined) {
+			Selectors.TomorrowButton[0].removeAttribute("disabled");
 		}
 	}
 
@@ -414,7 +422,7 @@ namespace Utils {
 		$("#table_nahradniUcebny > tbody").html(indicator(7));
 	}
 
-	export function escapeRegExp(str) {
+	export function escapeRegExp(str: string) {
 		return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 	}
 }
