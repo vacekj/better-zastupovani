@@ -31,13 +31,12 @@ import { DozorRecord, NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage
 import { addBackToTop } from "./lib/utils/backToTop";
 
 const suplGetter = new SuplGetterBrowser();
-const state: {
+
+// tslint:disable-next-line:prefer-const
+let state: {
 	currentSuplovaniPage: SuplovaniPage,
 	sortedDates: DateWithUrl[]
-} = {
-		currentSuplovaniPage: null,
-		sortedDates: null
-	};
+};
 
 const Selectors = {
 	DateSelector: $("#selector_date"),
@@ -101,26 +100,15 @@ function bootstrap() {
 			// Append options to date selector
 			Selectors.DateSelector.append(datesOptions);
 
-			// Get and select closest day to today
-			const closestIndex = closestIndexTo(new Date(), sortedDates.map((date) => date.date));
-			let closestDay: DateWithUrl = state.sortedDates[closestIndex];
+			// Get and select best day
+			const closestDay: DateWithUrl = DatesHandler.getBestDay(sortedDates);
 
-			// If date is in the past, select the next date
-			if (isPast(closestDay.date)) {
-				closestDay = state.sortedDates[closestIndex - 1];
-			}
-
-			// If it's a working day and it's before 14:00, try to display today's date;
-			if ((!isWeekend(new Date()) && isBefore(new Date(), setHours(new Date(), 14)))) {
-				const workingClosestDay = state.sortedDates.find((date) => isToday(date.date));
-				if (workingClosestDay) {
-					closestDay = workingClosestDay;
-				}
-			}
-
-			// If there's a closest day, select it
+			// If there's a best day, select it
 			if (closestDay) {
 				DatesHandler.selectDate(closestDay);
+			} else {
+				// Fallback if no best day found, just select the first in the list
+				DatesHandler.selectDate(sortedDates[0]);
 			}
 		}).catch((ex) => {
 			Raven.captureException(ex);
@@ -136,6 +124,30 @@ function registerEventHandlers() {
 }
 
 namespace DatesHandler {
+	/**
+	 * Selects best day to show at startup
+	 *
+	 * @param {DateWithUrl[]} sortedDates Dates sorted by date descending. Order must be preserved
+	 * @returns
+	 */
+	export function getBestDay(sortedDates: DateWithUrl[]) {
+		const closestIndex = closestIndexTo(new Date(), sortedDates.map((date) => date.date));
+		let closestDay: DateWithUrl = state.sortedDates[closestIndex];
+		// If date is in the past, select the next date
+		if (isPast(closestDay.date)) {
+			closestDay = state.sortedDates[closestIndex - 1];
+		}
+
+		// If it's a working day and it's before 14:00, try to display today's date;
+		if ((!isWeekend(new Date()) && isBefore(new Date(), setHours(new Date(), 14)))) {
+			const workingClosestDay = state.sortedDates.find((date) => isToday(date.date));
+			if (workingClosestDay) {
+				closestDay = workingClosestDay;
+			}
+		}
+
+		return closestDay;
+	}
 	export function selectDate(date: DateWithUrl) {
 		const dateSelector = Selectors.DateSelector[0];
 		const index = state.sortedDates.indexOf(date);
@@ -170,10 +182,12 @@ namespace DatesHandler {
 		DatesHandler.selectDate(tomorrow);
 	}
 
-	export function onDateChange() {
+	export function onDateChange(this: HTMLSelectElement) {
 		Utils.showLoadingIndicators();
-		const newDateUrl: string = (this as HTMLSelectElement).options[(this as HTMLSelectElement).selectedIndex].getAttribute("url");
-
+		const newDateUrl: string | null = this.options[this.selectedIndex].getAttribute("url");
+		if (!newDateUrl) {
+			return;
+		}
 		suplGetter.getSuplovaniPage(newDateUrl)
 			.then(parseSuplovaniPage)
 			.then((suplovaniPage) => {
@@ -183,7 +197,7 @@ namespace DatesHandler {
 			.then((suplovaniPage) => {
 				// Filter cookie
 				if (Cookies.get(COOKIE_FILTER)) {
-					$("#selector_filter").val(Cookies.get(COOKIE_FILTER));
+					$("#selector_filter").val(Cookies.get(COOKIE_FILTER) as string);
 					RenderHandler.render(undefined, $(Selectors.FilterSelector).val() as string);
 				} else {
 					RenderHandler.render(suplovaniPage);
@@ -200,7 +214,7 @@ namespace DatesHandler {
 }
 
 namespace RenderHandler {
-	export function render(suplovaniPage: SuplovaniPage, filter?: string) {
+	export function render(suplovaniPage: SuplovaniPage | undefined, filter?: string) {
 		// Filter only - load records from state
 		if (filter) {
 			// Function for filtering records by string
@@ -219,7 +233,7 @@ namespace RenderHandler {
 			RenderHandler.renderOznameni(state.currentSuplovaniPage.oznameni);
 
 			Utils.hideEmptyColumns();
-		} else {
+		} else if (suplovaniPage) {
 			// Update render - render from supplied parameter
 			RenderHandler.renderSuplovani(suplovaniPage.suplovani);
 			RenderHandler.renderDozory(suplovaniPage.dozory);
@@ -362,8 +376,8 @@ namespace RenderHandler {
 }
 
 namespace FilterHandler {
-	export function onFilterChange() {
-		const value = (this as HTMLInputElement).value.trim();
+	export function onFilterChange(this: HTMLInputElement) {
+		const value = this.value.trim();
 		if (value && value.length) {
 			// Save filter to cookie
 			Cookies.set(COOKIE_FILTER, value, { expires: addYears(new Date(), 1) });
