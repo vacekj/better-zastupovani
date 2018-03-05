@@ -1,6 +1,5 @@
 /// <reference types="Cypress" />
 
-const { isWeekend, startOfTomorrow } = require("date-fns");
 const sha256 = require("js-sha256");
 
 describe("Integration Tests", () => {
@@ -15,7 +14,6 @@ describe("Integration Tests", () => {
 
 			cy.get("[data-test=datePicker] > option").as("option");
 		});
-
 
 		it("displays buttons", () => {
 			cy.get("@todayButton").should("exist");
@@ -35,9 +33,11 @@ describe("Integration Tests", () => {
 		// 	cy.reload()
 		// 		.get("@tomorrowButton").should("have.attr", "disabled");
 		// });
+
+		// TODO: check that buttons change date on click to corresponding date.
 	});
-	// TODO: lint cypress directory
-	// TODO: Add test that checks that some date is loaded upon startup, then tests for the best date picking logic
+	// TODO: test hiding empty columns on mobile
+	// TODO: Add tests for the best date picking logic
 	describe("Date Picker", () => {
 		beforeEach(() => {
 			cy.get(test("datePicker")).as("datePicker");
@@ -50,7 +50,7 @@ describe("Integration Tests", () => {
 		});
 
 		it('loads some date and corresponding data on startup', () => {
-			cy.get("[data-test=suplovaniTable] > tbody > :nth-child(1) > :nth-child(2)").should("exist");
+			waitForLoad();
 		});
 
 		it('changes data on datePicker date change', () => {
@@ -59,7 +59,7 @@ describe("Integration Tests", () => {
 			}).then((innerHTML) => {
 				return sha256(innerHTML);
 			}).then(async (hash) => {
-				const s = await nextDate();
+				await nextDate();
 				cy
 					.get("@suplovaniTable")
 					.then(el => el[0].innerHTML)
@@ -67,6 +67,13 @@ describe("Integration Tests", () => {
 						expect(hash).to.not.equal(sha256(innerHTML));
 					});
 			});
+		});
+	});
+
+	describe('Filter textbox', () => {
+		beforeEach(() => {
+			cy.get(test("suplovaniTable")).as("suplovaniTable");
+			cy.get(test("filterTextbox")).as("filterTextbox");
 		});
 
 		it('changes data on filter text change', () => {
@@ -87,13 +94,27 @@ describe("Integration Tests", () => {
 	});
 });
 
-async function nextDate() {
-	await cy.get(test("datePicker")).then(async (result) => {
+function nextDate() {
+	cy.get(test("datePicker")).then(async (result) => {
 		const selectedIndex = result[0].selectedIndex;
-		cy.get(test("datePicker") + " > option").filter(`:nth-child(${selectedIndex + 3})`).invoke("attr", "selected", true)
-			.get(test("datePicker")).trigger("change");
-		await cy.get(test("loadingIndicator")).should("not.exist");
+		cy
+			.get(test("datePicker") + " > option")
+			.filter(`:nth-child(${selectedIndex + 3})`)
+			.invoke("attr", "selected", true);
+		await triggerDateChange();
+		await waitForLoad();
 	});
+}
+
+function waitForLoad() {
+	cy.get("[data-test=suplovaniTable] > tbody > :nth-child(1) > :nth-child(2)");
+}
+
+async function triggerDateChange() {
+	cy
+		.get(test("datePicker"))
+		.trigger("change");
+	await waitForLoad();
 }
 
 function test(testID) {
