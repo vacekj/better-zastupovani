@@ -25,6 +25,7 @@
 		"clean-webpack-plugin": "^0.1.18",
 		"css-loader": "^0.28.10",
 		"cypress": "^2.1.0",
+		"eslint": "^4.18.2",
 		"eslint-config-google": "^0.9.1",
 		"eslint-plugin-cypress": "^2.0.1",
 		"extract-text-webpack-plugin": "^3.0.2",
@@ -60,7 +61,8 @@
 		"test-server-prod": "npm run build && http-server ./dist",
 		"cy:run": "npx cypress run",
 		"cy:open": "npx cypress open",
-		"cy:local": "start-server-and-test test-server-dev http://192.168.1.200:8080 cy:run"
+		"cy:local:dev:run": "start-server-and-test test-server-dev http://192.168.1.200:8080 cy:run",
+		"cy:local:dev:open": "start-server-and-test test-server-dev http://192.168.1.200:8080 cy:open"
 	},
 	"repository": {
 		"type": "git",
