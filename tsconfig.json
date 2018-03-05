@@ -14,8 +14,7 @@
 			"esnext",
 			"dom.iterable",
 			"es7"
-		],
-		"strict": false,
+		]
 		
 	},
 	"typeAcquisition": {

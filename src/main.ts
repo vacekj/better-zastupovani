@@ -34,8 +34,8 @@ const suplGetter = new SuplGetterBrowser();
 
 // tslint:disable-next-line:prefer-const
 let state: {
-	currentSuplovaniPage: SuplovaniPage,
-	sortedDates: DateWithUrl[]
+	currentSuplovaniPage: SuplovaniPage | null,
+	sortedDates: DateWithUrl[] | null
 } = {
 		currentSuplovaniPage: null,
 		sortedDates: null
