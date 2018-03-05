@@ -98,18 +98,30 @@ table thead {
 
 table thead th {
 	font-size: 0.7rem !important;
-	/* text-overflow: ellipsis; */
-    max-width: 0px;
+	max-width: 0px;
 	overflow: hidden;
-	word-wrap: break-word;
+	color: black !important;
+}
+
+.hidden {
+	display: none;
+}
+
+@media (min-width: 600px) {
+	table thead th {
+		max-width: 10%;
+	}
+	.hidden {
+		display: table-cell;
+	}
 }
 
 table td {
 	white-space: nowrap;
 	padding: 0.3rem !important;
 	text-align: left;
-	/* border: solid 1px rgb(160,160,160) !important;
-	border-top: solid 1px rgb(160,160,160) !important; */
+	font-family: "Tahoma";
+	font-size: 13px;
 }
 
 table:not(#table_chybejici) td:last-child {
@@ -142,7 +154,12 @@ table#table_chybejici td {
 	text-align: center;
 }
 
-/* Fotoer */
+
+table#table_chybejici th {
+	text-align: center;
+}
+
+/* Footer */
 
 .backlink {
 	background-color: #2d548d;
