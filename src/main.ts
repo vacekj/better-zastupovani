@@ -110,9 +110,12 @@ function bootstrap() {
 				closestDay = state.sortedDates[closestIndex - 1];
 			}
 
-			// If it's a working day and it's before 14:00, display today's date;
+			// If it's a working day and it's before 14:00, try to display today's date;
 			if ((!isWeekend(new Date()) && isBefore(new Date(), setHours(new Date(), 14)))) {
-				closestDay = state.sortedDates.find((date) => isToday(date.date));
+				const workingClosestDay = state.sortedDates.find((date) => isToday(date.date));
+				if (workingClosestDay) {
+					closestDay = workingClosestDay;
+				}
 			}
 
 			// If there's a closest day, select it
