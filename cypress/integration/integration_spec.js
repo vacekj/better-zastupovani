@@ -36,7 +36,8 @@ describe("Integration Tests", () => {
 		// 		.get("@tomorrowButton").should("have.attr", "disabled");
 		// });
 	});
-
+	// TODO: lint cypress directory
+	// TODO: Add test that checks that some date is loaded upon startup, then tests for the best date picking logic
 	describe("Date Picker", () => {
 		beforeEach(() => {
 			cy.get(test("datePicker")).as("datePicker");
@@ -46,6 +47,10 @@ describe("Integration Tests", () => {
 
 		it("displays datePicker", () => {
 			cy.get("@datePicker").should("exist");
+		});
+
+		it('loads some date and corresponding data on startup', () => {
+			cy.get("[data-test=suplovaniTable] > tbody > :nth-child(1) > :nth-child(2)").should("exist");
 		});
 
 		it('changes data on datePicker date change', () => {

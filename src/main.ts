@@ -36,7 +36,10 @@ const suplGetter = new SuplGetterBrowser();
 let state: {
 	currentSuplovaniPage: SuplovaniPage,
 	sortedDates: DateWithUrl[]
-};
+} = {
+		currentSuplovaniPage: null,
+		sortedDates: null
+	};
 
 const Selectors = {
 	DateSelector: $("#selector_date"),

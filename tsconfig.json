@@ -15,7 +15,7 @@
 			"dom.iterable",
 			"es7"
 		],
-		"strict": true,
+		"strict": false,
 		
 	},
 	"typeAcquisition": {
