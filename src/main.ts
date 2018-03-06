@@ -67,6 +67,7 @@ function bootstrap() {
 	const suggestionPromises = Promise.all([suplGetter.getVyucujiciPage().then(parseVyucujiciPage), suplGetter.getClassesPage().then(parseClassesPage)])
 		.catch((ex) => {
 			Raven.captureException(ex);
+			Utils.handleFetchError(ex);
 			throw ex;
 		});
 
@@ -78,7 +79,6 @@ function bootstrap() {
 		$("datalist#filterSuggestions").append(options);
 	}).catch((ex) => {
 		Raven.captureException(ex);
-		Utils.handleFetchError(ex);
 		throw ex;
 	});
 
@@ -116,6 +116,7 @@ function bootstrap() {
 			}
 		}).catch((ex) => {
 			Raven.captureException(ex);
+			Utils.handleFetchError(ex);
 			throw ex;
 		});
 }
@@ -208,6 +209,7 @@ namespace DatesHandler {
 				}
 			}).catch((ex) => {
 				Raven.captureException(ex);
+				Utils.handleFetchError(ex);
 				throw ex;
 			});
 	}
