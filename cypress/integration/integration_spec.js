@@ -11,7 +11,7 @@ describe("Integration Tests", () => {
 		beforeEach(() => {
 			cy.get(test("button_today")).as("todayButton");
 			cy.get(test("button_tomorrow")).as("tomorrowButton");
-
+			cy.get("[data-test=datePicker]").as("datePicker");
 			cy.get("[data-test=datePicker] > option").as("option");
 		});
 
@@ -34,10 +34,26 @@ describe("Integration Tests", () => {
 		// 		.get("@tomorrowButton").should("have.attr", "disabled");
 		// });
 
-		// TODO: check that buttons change date on click to corresponding date.
+		// // TODO: check that buttons change date on click to corresponding date.
+		// it("changes date when buttons are clicked", () => {
+		// 	// mock time to monday
+		// 	const monday = new Date(2018, 2, 26).getTime();
+		// 	cy.clock(monday, ["Date"]);
+		// 	cy.reload(true);
+		// 	waitForLoad();
+		// 	triggerDateChange();
+		// 	// test that clicking tomorrow changes the date to tomorrow
+		// 	cy.get(test("button_tomorrow")).click();
+		// 	cy.get("@datePicker").then((datePicker) => {
+		// 		const index = datePicker[0].selectedIndex;
+		// 		const selectedDate = datePicker.children()[index];
+		// 		cy.wrap(selectedDate).should("have.text", "27. 2. 2018");
+		// 	});
+
+		// });
 	});
 	// TODO: test hiding empty columns on mobile
-	// TODO: Add tests for the best date picking logic
+	// TODO: Add tests for the best date picking logic when time mocking is working
 	describe("Date Picker", () => {
 		beforeEach(() => {
 			cy.get(test("datePicker")).as("datePicker");
@@ -102,7 +118,6 @@ function nextDate() {
 			.filter(`:nth-child(${selectedIndex + 3})`)
 			.invoke("attr", "selected", true);
 		await triggerDateChange();
-		await waitForLoad();
 	});
 }
 
@@ -110,11 +125,11 @@ function waitForLoad() {
 	cy.get("[data-test=suplovaniTable] > tbody > :nth-child(1) > :nth-child(2)");
 }
 
-async function triggerDateChange() {
+function triggerDateChange() {
 	cy
 		.get(test("datePicker"))
 		.trigger("change");
-	await waitForLoad();
+	waitForLoad();
 }
 
 function test(testID) {
