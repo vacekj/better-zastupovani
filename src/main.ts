@@ -468,9 +468,14 @@ namespace Utils {
 	}
 
 	export function handleFetchError(ex: any) {
-		// TypeError: Failed to fetch
-		if (ex === TypeError) {
-			window.location.reload(true);
-		}
+		const alertHtml = `
+			<div class="col-md-12">
+				<div class="alert alert-warning" role="alert">
+					Vypadá to, že jste offline. Některé stránky se nemusí načítat.
+				</div>
+			</div>
+			`;
+
+		$("#alert-row").append(alertHtml);
 	}
 }
