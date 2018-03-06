@@ -78,6 +78,7 @@ function bootstrap() {
 		$("datalist#filterSuggestions").append(options);
 	}).catch((ex) => {
 		Raven.captureException(ex);
+		Utils.handleFetchError(ex);
 		throw ex;
 	});
 
@@ -462,5 +463,12 @@ namespace Utils {
 
 	export function escapeRegExp(str: string) {
 		return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+	}
+
+	export function handleFetchError(ex: any) {
+		// TypeError: Failed to fetch
+		if (ex === TypeError) {
+			window.location.reload(true);
+		}
 	}
 }
