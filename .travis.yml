@@ -21,7 +21,7 @@ before_deploy:
 
 deploy:
   provider: pages
-  skip_cleanup: true
+  skip-cleanup: true
   github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
   local-dir: './dist'
   fqdn: 'zastupovani.gytool.cz'
