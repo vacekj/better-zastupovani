@@ -412,6 +412,9 @@ namespace FilterHandler {
 namespace Utils {
 
 	export function hideEmptyColumns() {
+		// Clear hidden classes first
+		$("th, td").removeClass("hidden");
+
 		$("#table_suplovani th").each(function (i) {
 			let remove = 0;
 

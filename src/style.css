@@ -98,7 +98,6 @@ table thead {
 
 table thead th {
 	font-size: 0.7rem !important;
-	max-width: 0px;
 	overflow: hidden;
 	color: black !important;
 }
