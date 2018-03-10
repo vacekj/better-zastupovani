@@ -90,7 +90,8 @@ namespace DatesHandler {
 		}
 
 		// If it's a working day and it's before 14:00, try to display today's date;
-		if ((!isWeekend(new Date()) && isBefore(new Date(), setHours(new Date(), 14)))) {
+		const THRESHOLD_HOURS = 15;
+		if ((!isWeekend(new Date()) && isBefore(new Date(), setHours(new Date(), THRESHOLD_HOURS)))) {
 			const workingClosestDay = state.sortedDates.find((date) => isToday(date.date));
 			if (workingClosestDay) {
 				closestDay = workingClosestDay;
