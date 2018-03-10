@@ -19,6 +19,7 @@ import "./svg/heart.svg";
 
 // NPM Modules
 import { addYears, closestIndexTo, compareDesc, isBefore, isPast, isToday, isTomorrow, isWeekend, setHours, startOfTomorrow } from "date-fns";
+import * as Hammer from "hammerjs";
 import * as $ from "jquery";
 import * as Cookies from "js-cookie";
 import Raven from "raven-js";
@@ -126,6 +127,16 @@ function registerEventHandlers() {
 	Selectors.TomorrowButton.on("click", DatesHandler.tomorrowButtonHandler);
 	Selectors.DateSelector.on("change", DatesHandler.onDateChange);
 	Selectors.FilterSelector.on("keyup input", FilterHandler.onFilterChange);
+
+	// Touch Gestures
+	const hammertime = new Hammer(Selectors.DateSelector[0]);
+	hammertime.on("swipe", (ev) => {
+		if (ev.direction === 4 /* right */) {
+			DatesHandler.nextDay();
+		} else if (ev.direction === 2 /* left */) {
+			DatesHandler.previousDay();
+		}
+	});
 }
 
 namespace DatesHandler {
@@ -216,6 +227,25 @@ namespace DatesHandler {
 
 	export function triggerDateChange() {
 		Selectors.DateSelector[0].dispatchEvent(new Event("change"));
+	}
+
+	export function nextDay() {
+		const select = (Selectors.DateSelector[0] as HTMLSelectElement);
+		if (select.selectedIndex === 0) {
+			return;
+		} else {
+			select.selectedIndex--;
+		}
+		DatesHandler.triggerDateChange();
+	}
+	export function previousDay() {
+		const select = (Selectors.DateSelector[0] as HTMLSelectElement);
+		if (select.selectedIndex === select.options.length - 1) {
+			return;
+		} else {
+			select.selectedIndex++;
+		}
+		DatesHandler.triggerDateChange();
 	}
 }
 
