@@ -32,16 +32,12 @@ const suplGetter = new SuplGetterBrowser();
 
 // tslint:disable-next-line:prefer-const
 let state: {
-	currentSuplovaniPage: SuplovaniPage | null,
-	sortedDates: DateWithUrl[] | null
+	sortedDates: DateWithUrl[] | null,
+	currentDate: [DateWithUrl, DateWithUrl]
 } = {
-		currentSuplovaniPage: null,
-		sortedDates: null
+		sortedDates: null,
+		currentDate: [null, null]
 	};
-
-const Selectors = {
-	DateSelector: $("#selector_date")
-};
 
 $(document).ready(bootstrap);
 
@@ -49,7 +45,7 @@ function bootstrap() {
 	Raven.config("https://9d2a2a92d6d84dc08743bfb197a5cb65@sentry.io/296434").install();
 	Utils.showLoadingIndicators();
 
-	// Populate date selector
+	// Select todays
 	suplGetter.getDatesPage()
 		.then(parseDatesPage)
 		.then((dates) => {
@@ -104,62 +100,17 @@ namespace DatesHandler {
 		return closestDay;
 	}
 	export function selectDate(date: DateWithUrl) {
-		const dateSelector = Selectors.DateSelector[0];
-		const index = state.sortedDates.indexOf(date);
-		if (index) {
-			(dateSelector as HTMLSelectElement).selectedIndex = index;
-			DatesHandler.triggerDateChange();
-		}
-	}
-
-	export function todayButtonHandler() {
-		const today = state.sortedDates.find((dateWithUrl) => {
-			return isToday(dateWithUrl.date);
-		});
-
-		if (today === undefined) {
-			return;
-		}
-
-		DatesHandler.selectDate(today);
-	}
-
-	export function tomorrowButtonHandler() {
-		const tomorrow = state.sortedDates.find((dateWithUrl) => {
-			return isTomorrow(dateWithUrl.date);
-		});
-
-		// There's no tomorrow ;)
-		if (tomorrow === undefined) {
-			return;
-		}
-
-		DatesHandler.selectDate(tomorrow);
-	}
-
-	export function onDateChange(this: HTMLSelectElement) {
+		state.currentDate[0] = date;
 		Utils.showLoadingIndicators();
-		const newDateUrl: string | null = this.options[this.selectedIndex].getAttribute("url");
-		if (!newDateUrl) {
-			return;
-		}
-		suplGetter.getSuplovaniPage(newDateUrl)
+
+		suplGetter.getSuplovaniPage(date.url)
 			.then(parseSuplovaniPage)
-			.then((suplovaniPage) => {
-				state.currentSuplovaniPage = suplovaniPage;
-				return suplovaniPage;
-			})
-			.then((suplovaniPage) => {
-				RenderHandler.render(suplovaniPage);
-			}).catch((ex) => {
+			.then(RenderHandler.render)
+			.catch((ex) => {
 				Raven.captureException(ex);
 				Utils.handleFetchError(ex);
 				throw ex;
 			});
-	}
-
-	export function triggerDateChange() {
-		Selectors.DateSelector[0].dispatchEvent(new Event("change"));
 	}
 }
 
