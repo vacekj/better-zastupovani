@@ -129,12 +129,12 @@ function registerEventHandlers() {
 	Selectors.FilterSelector.on("keyup input", FilterHandler.onFilterChange);
 
 	// Touch Gestures
-	const hammertime = new Hammer(Selectors.DateSelector[0]);
+	const hammertime = new Hammer($("#selectorField_date")[0]);
 	hammertime.on("swipe", (ev) => {
-		if (ev.direction === 4 /* right */) {
-			DatesHandler.nextDay();
-		} else if (ev.direction === 2 /* left */) {
+		if (ev.direction === 4 /* swipe right */) {
 			DatesHandler.previousDay();
+		} else if (ev.direction === 2 /* swipe left */) {
+			DatesHandler.nextDay();
 		}
 	});
 }
