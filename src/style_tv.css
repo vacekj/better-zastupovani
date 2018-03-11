@@ -44,45 +44,6 @@ a {
 	color: #33528B;
 }
 
-/* Pickers */
-
-.form-control {
-	background-image: linear-gradient(0deg, #2d548d 2px, rgba(0, 150, 136, 0) 0), linear-gradient(0deg, rgba(0, 0, 0, .26) 1px, transparent 0);
-}
-
-label {
-	font-size: 0.8rem;
-	color: #2d548d !important;
-	margin-bottom: 0;
-}
-
-#selector_date {
-	height: 34px;
-	margin: 0px 0px !important;
-}
-
-/* Buttons */
-
-.btn-primary {
-	background-color: #2d548d !important;
-}
-
-.btn-group {
-	width: 100%;
-	margin-top: 15px;
-}
-
-.btn-group>* {
-	width: 100%;
-	height: 60%;
-	padding: 0.6rem;
-	margin: 0.1rem;
-}
-
-button[disabled] {
-	cursor: not-allowed;
-}
-
 /* Table */
 
 table {
@@ -123,13 +84,13 @@ table td {
 	font-size: 13px;
 }
 
-table:not(#table_chybejici) td:last-child {
+table:not(.table_chybejici) td:last-child {
 	width: 100% !important;
 }
 
 /* Table stripes */
 
-table:not(#table_chybejici).table-striped>tbody>tr:nth-child(2n+1)>td:not(.noCellBg), .table-striped>tbody>tr:nth-child(2n+1)>th {
+table:not(.table_chybejici).table-striped>tbody>tr:nth-child(2n+1)>td:not(.noCellBg), .table-striped>tbody>tr:nth-child(2n+1)>th {
 	background-color: rgba(51, 82, 139, 0.267);
 }
 
@@ -148,13 +109,13 @@ table:not(#table_chybejici).table-striped>tbody>tr:nth-child(2n+1)>td:not(.noCel
 	background-color: gray;
 }
 
-table#table_chybejici td {
+table.table_chybejici td {
 	font-size: small;
 	text-align: center;
 }
 
 
-table#table_chybejici th {
+table.table_chybejici th {
 	text-align: center;
 }
 
