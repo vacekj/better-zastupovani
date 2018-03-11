@@ -45,7 +45,6 @@ function bootstrap() {
 	Raven.config("https://9d2a2a92d6d84dc08743bfb197a5cb65@sentry.io/296434").install();
 	Utils.showLoadingIndicators();
 
-	// Select todays
 	suplGetter.getDatesPage()
 		.then(parseDatesPage)
 		.then((dates) => {
@@ -59,13 +58,13 @@ function bootstrap() {
 
 			// Get and select best day
 			const closestDay: DateWithUrl = DatesHandler.getBestDay(sortedDates);
-
+			const nextDay: DateWithUrl = sortedDates[sortedDates.indexOf(closestDay) - 1];
 			// If there's a best day, select it
 			if (closestDay) {
-				DatesHandler.selectDate(closestDay);
+				DatesHandler.selectDate([closestDay, nextDay]);
 			} else {
-				// Fallback if no best day found, just select the first in the list
-				DatesHandler.selectDate(sortedDates[0]);
+				// Fallback if no best day found, just select the first two in the list
+				DatesHandler.selectDate([sortedDates[1], sortedDates[0]]);
 			}
 		}).catch((ex) => {
 			Raven.captureException(ex);
@@ -84,14 +83,15 @@ namespace DatesHandler {
 	export function getBestDay(sortedDates: DateWithUrl[]) {
 		const closestIndex = closestIndexTo(new Date(), sortedDates.map((date) => date.date));
 		let closestDay: DateWithUrl = state.sortedDates[closestIndex];
+
 		// If date is in the past, select the next date
 		if (isPast(closestDay.date)) {
 			closestDay = state.sortedDates[closestIndex - 1];
 		}
 
-		// If it's a working day and it's before 14:00, try to display today's date;
-		const THRESHOLD_HOURS = 15;
-		if ((!isWeekend(new Date()) && isBefore(new Date(), setHours(new Date(), THRESHOLD_HOURS)))) {
+		// If it's a working day and it's before TRESHOLD_HOUR, try to display today's date;
+		const THRESHOLD_HOUR = 15;
+		if ((!isWeekend(new Date()) && isBefore(new Date(), setHours(new Date(), THRESHOLD_HOUR)))) {
 			const workingClosestDay = state.sortedDates.find((date) => isToday(date.date));
 			if (workingClosestDay) {
 				closestDay = workingClosestDay;
@@ -100,12 +100,13 @@ namespace DatesHandler {
 
 		return closestDay;
 	}
-	export function selectDate(date: DateWithUrl) {
-		state.currentDate[0] = date;
+	export function selectDate(dates: [DateWithUrl, DateWithUrl]) {
+		state.currentDate = dates;
 		Utils.showLoadingIndicators();
 
-		suplGetter.getSuplovaniPage(date.url)
-			.then(parseSuplovaniPage)
+		const promises = Promise.all(dates.map((date) => date.url).map(suplGetter.getSuplovaniPage, suplGetter));
+		promises
+			.then((pages) => pages.map(parseSuplovaniPage))
 			.then(RenderHandler.render)
 			.catch((ex) => {
 				Raven.captureException(ex);
@@ -116,16 +117,26 @@ namespace DatesHandler {
 }
 
 namespace RenderHandler {
-	export function render(suplovaniPage: SuplovaniPage | undefined) {
-		RenderHandler.renderSuplovani(suplovaniPage.suplovani);
-		RenderHandler.renderDozory(suplovaniPage.dozory);
-		RenderHandler.renderNahradniUcebny(suplovaniPage.nahradniUcebny);
-		RenderHandler.renderChybejici(suplovaniPage.chybejici);
-		RenderHandler.renderOznameni(suplovaniPage.oznameni);
+	export function render([suplovaniPage, secondSuplovaniPage]: [SuplovaniPage, SuplovaniPage]) {
+		$("#datum1").text(suplovaniPage.date);
+		$("#aktualizace1").text(suplovaniPage.lastUpdated);
+		RenderHandler.renderSuplovani(suplovaniPage.suplovani, "#table_suplovani > tbody");
+		RenderHandler.renderDozory(suplovaniPage.dozory, "#table_dozory > tbody");
+		RenderHandler.renderNahradniUcebny(suplovaniPage.nahradniUcebny, "#table_nahradniUcebny > tbody");
+		RenderHandler.renderChybejici(suplovaniPage.chybejici, "#table_chybejici > tbody");
+		RenderHandler.renderOznameni(suplovaniPage.oznameni, "#oznameniContainer");
+
+		$("#datum2").text(secondSuplovaniPage.date);
+		$("#aktualizace2").text(secondSuplovaniPage.lastUpdated);
+		RenderHandler.renderSuplovani(secondSuplovaniPage.suplovani, "#table_suplovani2 > tbody");
+		RenderHandler.renderDozory(secondSuplovaniPage.dozory, "#table_dozory2 > tbody");
+		RenderHandler.renderNahradniUcebny(secondSuplovaniPage.nahradniUcebny, "#table_nahradniUcebny2 > tbody");
+		RenderHandler.renderChybejici(secondSuplovaniPage.chybejici, "#table_chybejici2 > tbody");
+		RenderHandler.renderOznameni(secondSuplovaniPage.oznameni, "#oznameniContainer2");
 	}
 
-	export function renderSuplovani(suplovaniRecords: SuplovaniRecord[]) {
-		const suplovaniTable = $("#table_suplovani > tbody");
+	export function renderSuplovani(suplovaniRecords: SuplovaniRecord[], targetSelector: string) {
+		const suplovaniTable = $(targetSelector);
 		suplovaniTable.empty();
 
 		const contentToAppend = suplovaniRecords.length
@@ -149,8 +160,8 @@ namespace RenderHandler {
 				`);
 	}
 
-	export function renderDozory(dozorRecords: DozorRecord[]) {
-		const dozorTable = $("#table_dozory > tbody");
+	export function renderDozory(dozorRecords: DozorRecord[], targetSelector: string) {
+		const dozorTable = $(targetSelector);
 		dozorTable.empty();
 
 		const contentToAppend = dozorRecords.length
@@ -171,8 +182,8 @@ namespace RenderHandler {
 				</tr>`);
 	}
 
-	export function renderChybejici(chybejici: ChybejiciTable) {
-		const chybejiciTable = $("#table_chybejici > tbody");
+	export function renderChybejici(chybejici: ChybejiciTable, targetSelector: string) {
+		const chybejiciTable = $(targetSelector);
 		chybejiciTable.empty();
 
 		const noChybejici = RenderHandler.rowHeader("Žádní chybějící", 9);
@@ -209,8 +220,8 @@ namespace RenderHandler {
 		return Utils.removeControlChars(row);
 	}
 
-	export function renderNahradniUcebny(nahradniUcebnyRecords: NahradniUcebnaRecord[]) {
-		const nahradniUcebnyTable = $("#table_nahradniUcebny > tbody");
+	export function renderNahradniUcebny(nahradniUcebnyRecords: NahradniUcebnaRecord[], targetSelector: string) {
+		const nahradniUcebnyTable = $(targetSelector);
 		nahradniUcebnyTable.empty();
 
 		const contentToAppend = nahradniUcebnyRecords.length
@@ -232,14 +243,14 @@ namespace RenderHandler {
 			</tr>`);
 	}
 
-	export function renderOznameni(oznameni: string) {
+	export function renderOznameni(oznameni: string, targetSelector: string) {
 		const template = oznameni ? `
 		<div class="card">
 			<div class="card-body">
 				${oznameni}
 			</div>
 		</div>` : "";
-		$("#oznameniContainer").html(template);
+		$(targetSelector).html(template);
 	}
 
 	export function rowHeader(text: string, colspan: number) {
