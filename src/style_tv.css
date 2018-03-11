@@ -1,0 +1,189 @@
+/*
+Main color: #2d548d
+*/
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@media (min-width: 576px) {
+	.container {
+		max-width: 1000px;
+	}
+}
+
+html {
+	height: 100%;
+}
+
+body {
+	height: 100%;
+	margin-top: 0px !important;
+	background-color: #F5F7FE;
+}
+
+body>* {
+	background-color: white;
+	font-size: 14px;
+}
+
+#container {
+	/* height: 100% !important;
+	max-width: 1080px; */
+	box-shadow: 0 0 30px #E1E2FA;
+	/* height: 100%; */
+	padding-top: 1px;
+}
+
+/* Header */
+
+.logo {
+	font-family: 'Open Sans', sans-serif;
+	margin: 0;
+	color: #33528B;
+}
+
+a {
+	color: #33528B;
+}
+
+/* Table */
+
+table {
+	/* box-shadow: rgb(225, 226, 250) 2px 2px 10px 0px; */
+	border-style: hidden;
+	table-layout: auto;
+	border-collapse: collapse;
+}
+
+table thead {
+	border-top: 3px solid #2d548d;
+}
+
+table thead th {
+	font-size: 0.7rem !important;
+	overflow: hidden;
+	color: black !important;
+}
+
+.hidden {
+	display: none;
+}
+
+@media (min-width: 600px) {
+	table thead th {
+		max-width: 10%;
+	}
+	.hidden {
+		display: table-cell;
+	}
+}
+
+table td {
+	white-space: nowrap;
+	padding: 0.3rem !important;
+	text-align: left;
+	font-family: "Tahoma";
+	font-size: 13px;
+}
+
+table:not(.table_chybejici) td:last-child {
+	width: 100% !important;
+}
+
+/* Table stripes */
+
+table:not(.table_chybejici).table-striped>tbody>tr:nth-child(2n+1)>td:not(.noCellBg), .table-striped>tbody>tr:nth-child(2n+1)>th {
+	background-color: rgba(51, 82, 139, 0.267);
+}
+
+/* Chybejici */
+
+.present, .absent {
+	color: white;
+	font-weight: bold;
+}
+
+.present {
+	background-color: #2d548d;
+}
+
+.absent {
+	background-color: gray;
+}
+
+table.table_chybejici td {
+	font-size: small;
+	text-align: center;
+}
+
+
+table.table_chybejici th {
+	text-align: center;
+}
+
+/* Footer */
+
+.backlink {
+	background-color: #2d548d;
+	color: white;
+	border-radius: 0px 0px 5px 5px;
+}
+
+.glyph {
+	width: 15px;
+}
+
+/* 
+Loading indicator
+*/
+
+.spinner {
+	animation: rotator 1.4s linear infinite;
+	margin: 10px;
+}
+
+@keyframes rotator {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(270deg);
+	}
+}
+
+.path {
+	stroke-dasharray: 187;
+	stroke-dashoffset: 0;
+	transform-origin: center;
+	animation: dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
+}
+
+@keyframes colors {
+	0% {
+		stroke: #4285f4;
+	}
+	25% {
+		stroke: #de3e35;
+	}
+	50% {
+		stroke: #f7c223;
+	}
+	75% {
+		stroke: #1b9a59;
+	}
+	100% {
+		stroke: #4285f4;
+	}
+}
+
+@keyframes dash {
+	0% {
+		stroke-dashoffset: 187;
+	}
+	50% {
+		stroke-dashoffset: 46.75;
+		transform: rotate(135deg);
+	}
+	100% {
+		stroke-dashoffset: 187;
+		transform: rotate(450deg);
+	}
+}

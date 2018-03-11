@@ -4,9 +4,12 @@ require('ts-loader');
 
 
 module.exports = {
-	entry: ["babel-polyfill", "whatwg-fetch", "./src/main.ts"],
+	entry: {
+		"bundle": ["babel-polyfill", "whatwg-fetch", "./src/main.ts"],
+		"tv": "./src/tv.ts"
+	},
 	output: {
-		filename: "bundle.js",
+		filename: "[name].js",
 		path: path.resolve(__dirname, "dist")
 	},
 	resolve: {

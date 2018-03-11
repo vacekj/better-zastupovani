@@ -15,17 +15,8 @@
 	<meta property="og:type" content="website">
 	<meta property="og:url" content="http://zastupovani.gytool.cz">
 	<meta property="og:image" content="http://zastupovani.gytool.cz/gh.png">
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-111548982-1"></script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag() { dataLayer.push(arguments); }
-		gtag('js', new Date());
-
-		gtag('config', 'UA-111548982-1');
-	</script>
 	<!-- Styles -->
-	<link rel="stylesheet" href="style_main.css">
+	<link rel="stylesheet" href="style_tv.css">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
 </head>
 
@@ -54,28 +45,17 @@
 			<div class="row" id="alert-row">
 			</div>
 
-			<!-- PICKERS -->
-			<div class="form-row justify-content-center">
-				<div class="col-md-3 text-center">
-					<div class="btn-group">
-						<button type="button" class="btn btn-raised btn-primary" id="today" data-test="button_today" disabled>Dnes</button>
-						<button type="button" class="btn btn-raised btn-primary" id="tomorrow" data-test="button_tomorrow" disabled>Zítra</button>
-					</div>
+			<!-- MAIN 1 -->
+			<div class="row">
+				<div class="col-md-12">
+					<h3>Datum:
+						<span id="datum1"></span>
+					</h3>
+					<h6>Poslední aktualizace:
+						<span id="aktualizace1"></span>
+					</h6>
 				</div>
-				<fieldset class="col-md-2 form-group" id="selectorField_date">
-					<label for="selector_date" class="bmd-label-floating">Datum</label>
-					<select class="form-control" name="selector_date" id="selector_date" data-test="datePicker"></select>
-				</fieldset>
-				<fieldset class="col-md-7 form-group">
-					<label for="selector_filter" class="bmd-label-floating">Filtr</label>
-					<input type="text" class="form-control" name="selector_filter" id="selector_filter" placeholder="Učitel, třída..." list="filterSuggestions"
-					 data-test="filterTextbox">
-					<datalist id="filterSuggestions">
-					</datalist>
-				</fieldset>
 			</div>
-
-			<!-- MAIN -->
 			<!-- SUPLOVÁNÍ -->
 			<div class="row">
 				<div class="col-md-12">
@@ -164,7 +144,127 @@
 					<h5>Chybějící</h5>
 					<h6 class="float-left present p-2">Přítomný</h6>
 					<h6 class="float-left absent p-2">Chybějící</h6>
-					<table id="table_chybejici" class="table table-bordered table-sm table-striped table-hover">
+					<table id="table_chybejici" class="table table-bordered table-sm table-striped table-hover table_chybejici">
+						<thead>
+							<tr>
+								<th>Kdo</th>
+								<th>1</th>
+								<th>2</th>
+								<th>3</th>
+								<th>4</th>
+								<th>5</th>
+								<th>6</th>
+								<th>7</th>
+								<th>8</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<hr>
+
+			<!-- MAIN 2 -->
+			<div class="row">
+				<div class="col-md-12">
+					<h3>Datum:
+						<span id="datum2"></span>
+					</h3>
+					<h6>Poslední aktualizace:
+						<span id="aktualizace2"></span>
+					</h6>
+				</div>
+			</div>
+			<!-- SUPLOVÁNÍ -->
+			<div class="row">
+				<div class="col-md-12">
+					<h5>Suplování</h5>
+				</div>
+				<div class="col-md-12 table-responsive">
+					<table class="table table-bordered table-sm table-striped table-hover" id="table_suplovani2">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Třída</th>
+								<th>Předmět</th>
+								<th>Učebna</th>
+								<th>Náh. učebna</th>
+								<th>Vyučující</th>
+								<th>Zastupující</th>
+								<th>Poznámka</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- DOZORY -->
+			<div class="row">
+				<div class="col-md-12">
+					<h5>Dozory</h5>
+				</div>
+				<div class="col-md-12 table-responsive">
+					<table class="table table-bordered table-sm table-striped table-hover" id="table_dozory2">
+						<thead>
+							<tr>
+								<th>Od</th>
+								<th>Do</th>
+								<th>Místo</th>
+								<th>Chybějící</th>
+								<th>Dozorující</th>
+								<th>Poznámka</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- NAHRADNI UCEBNY -->
+			<div class="row">
+				<div class="col-md-12">
+					<h5>Náhradní učebny</h5>
+				</div>
+				<div class="col-md-12 table-responsive">
+					<table id="table_nahradniUcebny2" class="table table-bordered table-sm table-striped table-hover">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Třída</th>
+								<th>Předmět</th>
+								<th>Chybějící učebna</th>
+								<th>Náhradní učebna</th>
+								<th>Vyučující</th>
+								<th>Poznámka</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<hr>
+
+			<!-- OZNAMENI -->
+			<div class="row">
+				<div class="col-md-12">
+					<h5>Oznámení</h5>
+					<div id="oznameniContainer2"></div>
+				</div>
+			</div>
+			<hr>
+
+			<!-- CHYBEJICI -->
+			<div class="row">
+				<div class="col-md-12 table-responsive">
+					<h5>Chybějící</h5>
+					<h6 class="float-left present p-2">Přítomný</h6>
+					<h6 class="float-left absent p-2">Chybějící</h6>
+					<table id="table_chybejici2" class="table table-bordered table-sm table-striped table-hover table_chybejici">
 						<thead>
 							<tr>
 								<th>Kdo</th>
@@ -201,7 +301,7 @@
 		</div>
 	</div>
 	<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
-	<script src="bundle.js"></script>
+	<script src="tv.js"></script>
 </body>
 
 </html>

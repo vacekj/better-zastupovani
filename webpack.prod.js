@@ -16,7 +16,7 @@ module.exports = merge(common, {
 	},
 	plugins: [
 		new CleanWebpackPlugin(["dist/"]),
-		new ExtractTextPlugin("style.css"),
+		new ExtractTextPlugin("[name].css"),
 		new ClosureCompiler({
 			options: {
 				languageIn: "ECMASCRIPT_2017",

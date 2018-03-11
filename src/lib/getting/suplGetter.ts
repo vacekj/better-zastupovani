@@ -38,6 +38,7 @@ export abstract class SuplGetter {
  * A SuplGetter that works in browser environment
  *
  * Uses fetch
+ *
  * Handles decoding of the responses
  * @class SuplGetterNode
  * @extends {SuplGetter}

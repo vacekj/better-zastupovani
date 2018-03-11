@@ -18,7 +18,6 @@ export function addBackToTop(options: Partial<IOptions>) {
 	const diameter = options.diameter || 56;
 	const onClickScrollTo = options.onClickScrollTo || 0;
 	const scrollDuration = options.scrollDuration || 100;
-	const containerSelector = options.containerSelector || "body";
 	const cornerOffset = options.cornerOffset || 20;
 	const backgroundColor = options.backgroundColor || "#000";
 	const textColor = options.textColor || "#fff";

@@ -1,20 +1,25 @@
 import { parseTable } from "../utils/DOMUtils";
 // TODO: Test this
 export function parseChybejiciTable(chybejiciTable: Element): ChybejiciTable {
+	// First row is always empty, slice it
 	const chybejiciRows = parseTable(chybejiciTable)[0].slice(1);
 	const chybejiciArray = chybejiciRows.map((row) => {
+		// If row is empty or only contains a space, return empty array
 		if (!row || row === "&nbsp;") {
 			return [];
 		}
 
 		// Split the row into individual missing records
-		const parsedRow = row.split(", ");
+		const chybejiciRecords = row.split(", ");
 
-		return parsedRow.map((elem) => {
+		return chybejiciRecords.map((elem) => {
 			const kdo = elem.split("(")[0];
 			const range = extractRange(elem);
 
-			return new ChybejiciRecord(kdo, rangeToSchedule(range));
+			return new ChybejiciRecord({
+				kdo,
+				schedule: rangeToSchedule(range)
+			});
 		});
 	});
 
@@ -41,28 +46,6 @@ function extractRange(elem: string): [string, string] | null {
 	}
 
 	return range;
-}
-
-/**
- * Dedupe and format missings array
- */
-function formatMissingsArray(chybejiciArray: ChybejiciRecord[]) {
-	const dedupedArray: ChybejiciRecord[] = [];
-	if (!chybejiciArray || chybejiciArray.length === 0) {
-		return [];
-	}
-
-	chybejiciArray.map((missing) => {
-		const index = includesObjectWithProp(dedupedArray, "kdo", missing.kdo);
-		if (index !== -1) {
-			const originalObject = dedupedArray[index];
-			dedupedArray[index] = Object.assign(originalObject, { schedule: missing.schedule });
-		} else {
-			dedupedArray.push(missing);
-		}
-	});
-
-	return dedupedArray;
 }
 
 /**
@@ -131,20 +114,6 @@ function rangeToSchedule(range: [string, string] | [string]): ISchedule {
 }
 
 /**
- * Searches an array of objects for an object with a specified prop
- * Returns index if found
- */
-function includesObjectWithProp(arr: ChybejiciRecord[], prop: string, value) {
-	for (let i = 0; i < arr.length; i++) {
-		if (arr[i][prop] === value) {
-			return i;
-		}
-	}
-
-	return -1;
-}
-
-/**
  * Represents a single Chybejici table, grouped by type
  */
 export class ChybejiciTable {
@@ -166,9 +135,8 @@ export class ChybejiciTable {
 export class ChybejiciRecord {
 	public kdo: string;
 	public schedule: ISchedule;
-	constructor(kdo: string, schedule: ISchedule) {
-		this.kdo = kdo;
-		this.schedule = schedule;
+	constructor(options: Partial<ChybejiciRecord>) {
+		Object.assign(this, options);
 	}
 }
 

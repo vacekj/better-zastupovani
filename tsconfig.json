@@ -19,5 +19,8 @@
 	},
 	"typeAcquisition": {
 		"enable": true
-	}
+	},
+	"exclude": [
+		"./test/**.*"
+	]
 }
