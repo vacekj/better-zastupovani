@@ -22,7 +22,7 @@ module.exports = merge(common, {
 				language_in: 'ECMASCRIPT_2017',
 				language_out: 'ECMASCRIPT5'
 			},
-			concurrency: 3,
+			concurrency: 5,
 		})
 	]
 });
