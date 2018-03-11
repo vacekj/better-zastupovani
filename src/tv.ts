@@ -4,12 +4,6 @@ import "./commonImports";
 import "./style_tv.css";
 import "./tv.html";
 
-// Images
-import "./gh.png";
-import "./pecet.jpg";
-import "./svg/code.svg";
-import "./svg/heart.svg";
-
 // NPM Modules
 import { addYears, closestIndexTo, compareDesc, isBefore, isPast, isToday, isTomorrow, isWeekend, setHours, startOfTomorrow } from "date-fns";
 import * as $ from "jquery";

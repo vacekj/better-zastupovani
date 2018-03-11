@@ -4,7 +4,6 @@ import "./commonImports";
 import "./index.html";
 import "./style_main.css";
 
-
 // NPM Modules
 import { addYears, closestIndexTo, compareDesc, isBefore, isPast, isToday, isTomorrow, isWeekend, setHours, startOfTomorrow } from "date-fns";
 import * as Hammer from "hammerjs";

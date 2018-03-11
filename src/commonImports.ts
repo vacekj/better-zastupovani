@@ -1,3 +1,5 @@
+/* Imports shared across pages */
+
 // Polyfills
 import "babel-polyfill";
 import "whatwg-fetch";
