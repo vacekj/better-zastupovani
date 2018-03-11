@@ -2,7 +2,7 @@ import "./commonImports";
 
 // Page-specific imports
 import "./index.html";
-import "./style_main.css";
+import "./main.css";
 
 // NPM Modules
 import { addYears, closestIndexTo, compareDesc, isBefore, isPast, isToday, isTomorrow, isWeekend, setHours } from "date-fns";

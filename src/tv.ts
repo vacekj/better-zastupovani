@@ -1,7 +1,7 @@
 import "./commonImports";
 
 // Page-specific imports
-import "./style_tv.css";
+import "./tv.css";
 import "./tv.html";
 
 // NPM Modules
