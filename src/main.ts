@@ -9,7 +9,7 @@ import "./bootstrap-md.min.css";
 import "./favicon.png";
 import "./index.html";
 import "./robots.txt";
-import "./style.css";
+import "./style_main.css";
 
 // Images
 import "./gh.png";

@@ -8,7 +8,7 @@ import "./bootstrap-md.min.css";
 // Webpack imports
 import "./favicon.png";
 import "./robots.txt";
-import "./style.css";
+import "./style_tv.css";
 import "./tv.html";
 
 // Images
