@@ -7,6 +7,7 @@ import "./tv.html";
 // NPM Modules
 import { closestIndexTo, compareDesc, isBefore, isPast, isToday, isWeekend, setHours } from "date-fns";
 import * as $ from "jquery";
+import ms from "ms";
 import Raven from "raven-js";
 
 // LIB Modules
@@ -14,23 +15,33 @@ import { SuplGetterBrowser } from "./lib/getting/suplGetter";
 import { ChybejiciRecord, ChybejiciTable } from "./lib/parsing/ChybejiciParser";
 import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
 import { DozorRecord, NahradniUcebnaRecord, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
-
 const suplGetter = new SuplGetterBrowser();
 
 // tslint:disable-next-line:prefer-const
 let state: {
 	sortedDates: DateWithUrl[] | null,
-	currentDate: [DateWithUrl, DateWithUrl]
+	currentDates: [DateWithUrl, DateWithUrl]
 } = {
 		sortedDates: null,
-		currentDate: [null, null]
+		currentDates: [null, null]
 	};
 
 $(document).ready(bootstrap);
 
 function bootstrap() {
 	Raven.config("https://9d2a2a92d6d84dc08743bfb197a5cb65@sentry.io/296434").install();
-	Utils.showLoadingIndicators();
+
+	// Refresh data every REFRESH_PERIOD
+	const REFRESH_PERIOD = ms("30 seconds");
+	setInterval(() => {
+		Utils.refresh();
+	}, REFRESH_PERIOD);
+
+	// Reload page every RELOAD_PERIOD
+	const RELOAD_PERIOD = ms("1 hour");
+	setInterval(() => {
+		window.location.reload();
+	}, RELOAD_PERIOD);
 
 	suplGetter.getDatesPage()
 		.then(parseDatesPage)
@@ -88,8 +99,7 @@ namespace DatesHandler {
 		return closestDay;
 	}
 	export function selectDate(dates: [DateWithUrl, DateWithUrl]) {
-		state.currentDate = dates;
-		Utils.showLoadingIndicators();
+		state.currentDates = dates;
 
 		const promises = Promise.all(dates.map((date) => date.url).map(suplGetter.getSuplovaniPage, suplGetter));
 		promises
@@ -251,22 +261,6 @@ namespace Utils {
 		return s.replace(/[\n\r\t]/g, "");
 	}
 
-	export function showLoadingIndicators() {
-		// Variable colspan for different-columned tables
-		const indicator = (colspan) =>
-			`<tr data-test="loadingIndicator">
-		<td colspan="${colspan}" class="noCellBg">
-			<svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-				<circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg>
-		</td>
-		</tr>`;
-
-		$("#table_suplovani > tbody").html(indicator(8));
-		$("#table_dozory > tbody").html(indicator(6));
-		$("#table_chybejici > tbody").html(indicator(9));
-		$("#table_nahradniUcebny > tbody").html(indicator(7));
-	}
-
 	export function handleFetchError(ex: any) {
 		const alertHtml = `
 			<div class="col-md-12">
@@ -277,5 +271,9 @@ namespace Utils {
 			`;
 
 		$("#alert-row").append(alertHtml);
+	}
+
+	export function refresh() {
+		DatesHandler.selectDate(state.currentDates);
 	}
 }
