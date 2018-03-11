@@ -4,7 +4,7 @@ import "mocha";
 import { SuplGetterNode } from "../getting/suplGetterNode";
 
 import { DateWithUrl, parseDatesPage } from "./DatesParser";
-import { NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from "./suplParser";
+import { parseClassesPage, parseSuplovaniPage, SuplovaniPage } from "./suplParser";
 
 import * as globalJsdom from "global-jsdom";
 let jsdom;

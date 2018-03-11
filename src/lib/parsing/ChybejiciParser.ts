@@ -44,28 +44,6 @@ function extractRange(elem: string): [string, string] | null {
 }
 
 /**
- * Dedupe and format missings array
- */
-function formatMissingsArray(chybejiciArray: ChybejiciRecord[]) {
-	const dedupedArray: ChybejiciRecord[] = [];
-	if (!chybejiciArray || chybejiciArray.length === 0) {
-		return [];
-	}
-
-	chybejiciArray.map((missing) => {
-		const index = includesObjectWithProp(dedupedArray, "kdo", missing.kdo);
-		if (index !== -1) {
-			const originalObject = dedupedArray[index];
-			dedupedArray[index] = Object.assign(originalObject, { schedule: missing.schedule });
-		} else {
-			dedupedArray.push(missing);
-		}
-	});
-
-	return dedupedArray;
-}
-
-/**
  * Convert hour range to full schedule object
  * ["1", "3"] to {1: false, 2: false, 3: false, 4: true, ...}
  */

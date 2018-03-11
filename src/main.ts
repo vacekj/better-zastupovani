@@ -5,7 +5,7 @@ import "./index.html";
 import "./style_main.css";
 
 // NPM Modules
-import { addYears, closestIndexTo, compareDesc, isBefore, isPast, isToday, isTomorrow, isWeekend, setHours, startOfTomorrow } from "date-fns";
+import { addYears, closestIndexTo, compareDesc, isBefore, isPast, isToday, isTomorrow, isWeekend, setHours } from "date-fns";
 import * as Hammer from "hammerjs";
 import * as $ from "jquery";
 import * as Cookies from "js-cookie";
@@ -15,7 +15,7 @@ import Raven from "raven-js";
 import { SuplGetterBrowser } from "./lib/getting/suplGetter";
 import { ChybejiciRecord, ChybejiciTable } from "./lib/parsing/ChybejiciParser";
 import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
-import { DozorRecord, NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, parseVyucujiciPage, Record, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
+import { DozorRecord, NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, parseVyucujiciPage, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
 import { addBackToTop } from "./lib/utils/backToTop";
 
 const suplGetter = new SuplGetterBrowser();

@@ -5,7 +5,7 @@ import "./style_tv.css";
 import "./tv.html";
 
 // NPM Modules
-import { addYears, closestIndexTo, compareDesc, isBefore, isPast, isToday, isTomorrow, isWeekend, setHours, startOfTomorrow } from "date-fns";
+import { closestIndexTo, compareDesc, isBefore, isPast, isToday, isWeekend, setHours } from "date-fns";
 import * as $ from "jquery";
 import Raven from "raven-js";
 
@@ -13,7 +13,7 @@ import Raven from "raven-js";
 import { SuplGetterBrowser } from "./lib/getting/suplGetter";
 import { ChybejiciRecord, ChybejiciTable } from "./lib/parsing/ChybejiciParser";
 import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
-import { DozorRecord, NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, parseVyucujiciPage, Record, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
+import { DozorRecord, NahradniUcebnaRecord, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
 
 const suplGetter = new SuplGetterBrowser();
 

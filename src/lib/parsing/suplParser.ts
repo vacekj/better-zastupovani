@@ -1,9 +1,8 @@
 import * as array2d from "array2d";
-import { format, parse } from "date-fns";
 
-import { $context, load, parseTable } from "../utils/DOMUtils";
+import { load, parseTable } from "../utils/DOMUtils";
 
-import { ChybejiciRecord, ChybejiciTable, parseChybejiciTable } from "./ChybejiciParser";
+import { ChybejiciTable, parseChybejiciTable } from "./ChybejiciParser";
 
 /**
  * Parses a classes page into an array of class strings

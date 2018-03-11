@@ -46,7 +46,8 @@
 		"trailing-comma": false,
 		"no-trailing-whitespace": true,
 		"max-line-length": false,
-		"space-before-function-paren": false
+		"space-before-function-paren": false,
+		"no-unused-variable": true
 	},
 	"jsRules": {
 		"indent": [
