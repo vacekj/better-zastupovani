@@ -1,13 +1,6 @@
-// Polyfills
-import "babel-polyfill";
-import "whatwg-fetch";
+import "./commonImports";
 
-// Bootstrap imports
-import "./bootstrap-md.min.css";
-
-// Webpack imports
-import "./favicon.png";
-import "./robots.txt";
+// Page-specific imports
 import "./style_tv.css";
 import "./tv.html";
 
