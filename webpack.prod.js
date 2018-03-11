@@ -2,7 +2,7 @@ const merge = require("webpack-merge");
 const common = require("./webpack.common.js");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const ClosureCompiler = require("google-closure-compiler-js").webpack;
+const ClosureCompilerPlugin = require('webpack-closure-compiler');
 
 module.exports = merge(common, {
 	module: {
@@ -17,12 +17,12 @@ module.exports = merge(common, {
 	plugins: [
 		new CleanWebpackPlugin(["dist/"]),
 		new ExtractTextPlugin("[name].css"),
-		new ClosureCompiler({
-			options: {
-				languageIn: "ECMASCRIPT_2017",
-				languageOut: "ECMASCRIPT5",
-				warningLevel: "QUIET"
-			}
+		new ClosureCompilerPlugin({
+			compiler: {
+				language_in: 'ECMASCRIPT_2017',
+				language_out: 'ECMASCRIPT5'
+			},
+			concurrency: 3,
 		})
 	]
 });
