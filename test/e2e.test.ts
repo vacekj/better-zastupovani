@@ -139,9 +139,3 @@ async function innerHTML(selector: string): Promise<string> {
 		return document.querySelector(el).innerHTML;
 	}, selector);
 }
-
-async function getElement(selector: string): Promise<Element> {
-	return page.evaluate((el) => {
-		return document.querySelector(el);
-	}, selector);
-}
