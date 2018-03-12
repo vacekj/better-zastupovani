@@ -415,7 +415,13 @@ namespace FilterHandler {
 		});
 	}
 
-	function objectContainsString<T>(object: T, filter: string) {
+	export function objectContainsString<T>(object: T, rawFilter: string) {
+		let filter = rawFilter;
+		// If filter is one of the teachers with initial after their acronym, slice the initial
+		if (teachersWithInitials.includes(rawFilter)) {
+			filter = rawFilter.slice(0, rawFilter.length - 1);
+		}
+
 		// If filter is a class, match only whole word to prevent II.A from matching II.A6
 		const classRegex = new RegExp(".*\.[ABC]");
 		const isClass = classRegex.test(filter) ? "\\b" : "";
@@ -424,6 +430,10 @@ namespace FilterHandler {
 			return regex.test(value);
 		});
 	}
+
+	const teachersWithInitials = [
+		"Navm", "Navl", "Havk", "Krel", "Chrj", "Stám", "Zatj"
+	];
 }
 
 namespace Utils {
