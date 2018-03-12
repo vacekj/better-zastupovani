@@ -7,6 +7,7 @@ import "./tv.html";
 // NPM Modules
 import { closestIndexTo, compareDesc, isBefore, isPast, isToday, isWeekend, setHours } from "date-fns";
 import * as $ from "jquery";
+import * as later from "later";
 import ms from "ms";
 import Raven from "raven-js";
 
@@ -15,6 +16,23 @@ import { SuplGetterBrowser } from "./lib/getting/suplGetter";
 import { ChybejiciRecord, ChybejiciTable } from "./lib/parsing/ChybejiciParser";
 import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
 import { DozorRecord, NahradniUcebnaRecord, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
+
+// Refresh data every REFRESH_PERIOD
+const REFRESH_PERIOD = ms("30 seconds");
+setInterval(() => {
+	Utils.refreshData();
+}, REFRESH_PERIOD);
+
+// Timer to update today and tomorrow date
+const textSched = later.parse.text("every weekday at 15:35");
+const reload = later.setInterval(bootstrap, textSched);
+
+// Reload page every RELOAD_PERIOD
+const RELOAD_PERIOD = ms("1 hour");
+setInterval(() => {
+	window.location.reload();
+}, RELOAD_PERIOD);
+
 const suplGetter = new SuplGetterBrowser();
 
 // tslint:disable-next-line:prefer-const
@@ -30,18 +48,6 @@ $(document).ready(bootstrap);
 
 function bootstrap() {
 	Raven.config("https://9d2a2a92d6d84dc08743bfb197a5cb65@sentry.io/296434").install();
-
-	// Refresh data every REFRESH_PERIOD
-	const REFRESH_PERIOD = ms("30 seconds");
-	setInterval(() => {
-		Utils.refresh();
-	}, REFRESH_PERIOD);
-
-	// Reload page every RELOAD_PERIOD
-	const RELOAD_PERIOD = ms("1 hour");
-	setInterval(() => {
-		window.location.reload();
-	}, RELOAD_PERIOD);
 
 	suplGetter.getDatesPage()
 		.then(parseDatesPage)
@@ -273,7 +279,7 @@ namespace Utils {
 		$("#alert-row").append(alertHtml);
 	}
 
-	export function refresh() {
+	export function refreshData() {
 		DatesHandler.selectDate(state.currentDates);
 	}
 }
