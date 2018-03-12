@@ -7,7 +7,6 @@ import "./tv.html";
 // NPM Modules
 import { closestIndexTo, compareDesc, isBefore, isPast, isToday, isWeekend, setHours } from "date-fns";
 import * as $ from "jquery";
-import * as later from "later";
 import ms from "ms";
 import Raven from "raven-js";
 
@@ -22,10 +21,6 @@ const REFRESH_PERIOD = ms("30 seconds");
 setInterval(() => {
 	Utils.refreshData();
 }, REFRESH_PERIOD);
-
-// Timer to update today and tomorrow date
-const textSched = later.parse.text("every weekday at 15:35");
-const reload = later.setInterval(bootstrap, textSched);
 
 // Reload page every RELOAD_PERIOD
 const RELOAD_PERIOD = ms("1 hour");
