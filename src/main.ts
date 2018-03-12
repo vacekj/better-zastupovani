@@ -409,19 +409,24 @@ namespace FilterHandler {
 			RenderHandler.render(state.currentSuplovaniPage);
 		}
 	}
-	export function objectContainsOneOf<T>(object: T, filters: string[]) {
+	export function objectContainsOneOf<T>(object: T, rawFilters: string[]) {
+		const filters = rawFilters;
+
+		// Expand teacher acronym to full name silently
+		filters.map((filter) => {
+			teachersWithInitialsMap.map((teacher) => {
+				if (teacher.acronym === filter) {
+					filters.push(teacher.full);
+				}
+			});
+		});
+
 		return filters.some((filter) => {
 			return objectContainsString(object, filter);
 		});
 	}
 
-	export function objectContainsString<T>(object: T, rawFilter: string) {
-		let filter = rawFilter;
-		// If filter is one of the teachers with initial after their acronym, slice the initial
-		if (teachersWithInitials.includes(rawFilter)) {
-			filter = rawFilter.slice(0, rawFilter.length - 1);
-		}
-
+	export function objectContainsString<T>(object: T, filter: string) {
 		// If filter is a class, match only whole word to prevent II.A from matching II.A6
 		const classRegex = new RegExp(".*\.[ABC]");
 		const isClass = classRegex.test(filter) ? "\\b" : "";
@@ -431,8 +436,31 @@ namespace FilterHandler {
 		});
 	}
 
-	const teachersWithInitials = [
-		"Navm", "Navl", "Havk", "Krel", "Chrj", "Stám", "Zatj"
+	const teachersWithInitialsMap = [
+		{
+			acronym: "Navm", full: "Navrátil"
+		},
+		{
+			acronym: "Navl", full: "Navrátilová"
+		},
+		{
+			acronym: "Havk", full: "Havelková"
+		},
+		{
+			acronym: "Krel", full: "Krejčířová"
+		},
+		{
+			acronym: "Kre", full: "Krejčíř"
+		},
+		{
+			acronym: "Chrj", full: "Chromá"
+		},
+		{
+			acronym: "Stám", full: "Stánec"
+		},
+		{
+			acronym: "Zatj", full: "Zatloukalová"
+		}
 	];
 }
 
