@@ -17,7 +17,6 @@ module.exports = merge(common, {
 	},
 	plugins: [
 		new CleanWebpackPlugin(["dist/"]),
-		new ExtractTextPlugin("[name].css"),
 		new SentryCliPlugin({
 			include: './dist',
 			ignore: ['node_modules', 'webpack.config.js'],
@@ -26,9 +25,11 @@ module.exports = merge(common, {
 		new ClosureCompilerPlugin({
 			compiler: {
 				language_in: 'ECMASCRIPT_2017',
-				language_out: 'ECMASCRIPT5'
+				language_out: 'ECMASCRIPT5',
+				create_source_map: true
 			},
 			concurrency: 5,
-		})
+		}),
+		new ExtractTextPlugin("[name].css"),
 	]
 });
