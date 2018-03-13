@@ -534,6 +534,6 @@ namespace Utils {
 			</div>
 			`;
 
-		$("#alert-row").append(alertHtml);
+		$("#alert-row").html(alertHtml);
 	}
 }
