@@ -8,6 +8,7 @@ module.exports = {
 		"main": ["babel-polyfill", "whatwg-fetch", "./src/main.ts"],
 		"tv": "./src/tv.ts"
 	},
+	devtool: "source-map",
 	output: {
 		filename: "[name].js",
 		path: path.resolve(__dirname, "dist"),

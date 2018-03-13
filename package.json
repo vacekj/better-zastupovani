@@ -47,7 +47,7 @@
 		"webpack-merge": "^4.1.2"
 	},
 	"scripts": {
-		"build": "webpack -p --config webpack.prod.js",
+		"build": "webpack --config webpack.prod.js",
 		"dev": "webpack-dev-server --open --config webpack.dev.js",
 		"test": "mocha ./src/**/*.test.ts",
 		"e2e": "mocha ./test/*.test.ts",
