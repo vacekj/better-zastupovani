@@ -272,13 +272,12 @@ namespace RenderHandler {
 
 	export function renderSuplovani(suplovaniRecords: SuplovaniRecord[]) {
 		const suplovaniTable = $("#table_suplovani > tbody");
-		suplovaniTable.empty();
 
-		const contentToAppend = suplovaniRecords.length
+		const content = suplovaniRecords.length
 			? suplovaniRecords.map(RenderHandler.suplovaniRecordToTr).join("")
 			: RenderHandler.rowHeader("Žádné suplování", 8);
 
-		suplovaniTable.append(contentToAppend);
+		suplovaniTable.html(content);
 	}
 
 	export function suplovaniRecordToTr(suplovaniRecord: SuplovaniRecord): string {
@@ -297,13 +296,12 @@ namespace RenderHandler {
 
 	export function renderDozory(dozorRecords: DozorRecord[]) {
 		const dozorTable = $("#table_dozory > tbody");
-		dozorTable.empty();
 
-		const contentToAppend = dozorRecords.length
+		const content = dozorRecords.length
 			? dozorRecords.map(RenderHandler.dozorRecordToTr).join("")
 			: RenderHandler.rowHeader("Žádné dozory", 6);
 
-		dozorTable.append(contentToAppend);
+		dozorTable.html(content);
 	}
 
 	export function dozorRecordToTr(dozorRecord: DozorRecord): string {
@@ -319,7 +317,6 @@ namespace RenderHandler {
 
 	export function renderChybejici(chybejici: ChybejiciTable) {
 		const chybejiciTable = $("#table_chybejici > tbody");
-		chybejiciTable.empty();
 
 		const noChybejici = RenderHandler.rowHeader("Žádní chybějící", 9);
 
@@ -327,7 +324,7 @@ namespace RenderHandler {
 		const tridy = chybejici.tridy.map(RenderHandler.chybejiciRecordToTr).join("");
 		const ucebny = chybejici.ucebny.map(RenderHandler.chybejiciRecordToTr).join("");
 
-		const contentToAppend = `
+		const content = `
 			${RenderHandler.rowHeader("Učitelé", 9)}
 			${ucitele.length ? ucitele : noChybejici}
 			${RenderHandler.rowHeader("Třídy", 9)}
@@ -336,7 +333,7 @@ namespace RenderHandler {
 			${ucebny.length ? ucebny : noChybejici}
 		`;
 
-		chybejiciTable.append(contentToAppend);
+		chybejiciTable.html(content);
 	}
 
 	export function chybejiciRecordToTr(chybejiciRecord: ChybejiciRecord) {
@@ -358,13 +355,12 @@ namespace RenderHandler {
 
 	export function renderNahradniUcebny(nahradniUcebnyRecords: NahradniUcebnaRecord[]) {
 		const nahradniUcebnyTable = $("#table_nahradniUcebny > tbody");
-		nahradniUcebnyTable.empty();
 
-		const contentToAppend = nahradniUcebnyRecords.length
+		const content = nahradniUcebnyRecords.length
 			? nahradniUcebnyRecords.map(RenderHandler.nahradniUcebnaRecordToTr).join("")
 			: RenderHandler.rowHeader("Žádné náhradní učebny", 8);
 
-		nahradniUcebnyTable.append(contentToAppend);
+		nahradniUcebnyTable.html(content);
 	}
 
 	export function nahradniUcebnaRecordToTr(nahradniUcebna: NahradniUcebnaRecord) {
