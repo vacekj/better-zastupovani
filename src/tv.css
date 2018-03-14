@@ -3,33 +3,23 @@ Main color: #2d548d
 */
 
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
-@media (min-width: 576px) {
-	.container {
-		max-width: 1000px;
-	}
-}
-
-html {
-	height: 100%;
-}
-
-body {
-	height: 100%;
-	margin-top: 0px !important;
-	background-color: #F5F7FE;
-}
 
 body>* {
 	background-color: white;
-	font-size: 14px;
 }
 
-#container {
-	/* height: 100% !important;
-	max-width: 1080px; */
-	box-shadow: 0 0 30px #E1E2FA;
-	/* height: 100%; */
-	padding-top: 1px;
+.container-fluid {
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-top: 15px;
+}
+
+h5 {
+	margin-bottom: 5px;
+}
+
+.col-lg-6 {
+	padding: 0;
 }
 
 /* Header */
@@ -59,7 +49,6 @@ table thead {
 
 table thead th {
 	font-size: 0.7rem !important;
-	overflow: hidden;
 	color: black !important;
 }
 
@@ -78,10 +67,10 @@ table thead th {
 
 table td {
 	white-space: nowrap;
-	padding: 0.3rem !important;
+	padding: 0.2rem !important;
 	text-align: left;
 	font-family: "Tahoma";
-	font-size: 13px;
+	font-size: 0.8rem;
 }
 
 table:not(.table_chybejici) td:last-child {
