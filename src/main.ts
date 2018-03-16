@@ -455,7 +455,7 @@ namespace FilterHandler {
 			acronym: "Stám", full: "Stánec"
 		},
 		{
-			acronym: "Zatj", full: "Zatloukalová"
+			acronym: "ZatI", full: "Zatloukalová"
 		}
 	];
 }
