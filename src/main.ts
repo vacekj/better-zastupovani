@@ -6,6 +6,8 @@ import "./main.css";
 
 // NPM Modules
 import { addYears, closestIndexTo, compareDesc, isBefore, isPast, isToday, isTomorrow, isWeekend, setHours } from "date-fns";
+import * as Driver from "driver.js";
+import "driver.js/dist/driver.min.css";
 import * as Hammer from "hammerjs";
 import * as $ from "jquery";
 import * as Cookies from "js-cookie";
@@ -101,6 +103,10 @@ function bootstrap() {
 			} else {
 				// Fallback if no best day found, just select the first in the list
 				DatesHandler.selectDate(sortedDates[0]);
+			}
+
+			if (/* isFirstTimeViewing */true) {
+				Tutorial.start();
 			}
 		}).catch((ex) => {
 			Raven.captureException(ex);
@@ -531,5 +537,111 @@ namespace Utils {
 			`;
 
 		$("#alert-row").html(alertHtml);
+	}
+}
+
+namespace Tutorial {
+	let driver;
+	function initialize() {
+		driver = new Driver({
+			animate: true,
+			opacity: 0.75,
+			padding: 10,
+			allowClose: true,
+			doneBtnText: "Dokončit",
+			closeBtnText: "Zavřít",
+			stageBackground: "black",
+			nextBtnText: "Další",
+			prevBtnText: "Předchozí",
+			scrollIntoViewOptions: {},
+			onHighlighted: (Element) => {
+				// TODO: automatically insert filter text to show functionality
+			},
+			onDeselected: (Element) => {
+				// TODO: clear filter or something
+			},
+		});
+
+		const steps = {
+			start: {
+				element: "#logo_text > h2",
+				popover: {
+					title: "Vítejte v aplikaci Zastupování",
+					description: "Pojďme se podívat, jak aplikace funguje"
+				}
+			},
+			datum: {
+				element: "#selector_date",
+				popover: {
+					title: "Zde si vyberete datum",
+					description:
+						`Při načtení stránky je automaticky vybráno dnešní datum,
+					zítřejší pokud už je po výuce nebo nejbližší školní den
+					pokud jsou např. prázdniny nebo víkend.`
+				}
+			},
+			tlacitka: {
+				element: "#tlacitka",
+				popover: {
+					title: "Tlačítka Dnes a Zítra",
+					description:
+						`Datum taky můžete rychle vybrat
+						kliknutím na "Dnes" nebo "Zítra".
+						<br>Pokud na dnešek nebo zítřek není žádné suplování,
+						tlačítka zhasnou.
+						`
+				}
+			},
+			filtr: {
+				element: "#selector_filter",
+				popover: {
+					title: "Filtrování",
+					description:
+						`Nejpodstatnější novou funkcí je rozhodně filtrování.
+						<ul>
+						<li>Do tohoto pole můžete napsat svoji zkratku (např. Chrj),
+						a zobrazí se vám pouze změny, které se vás týkají.
+						<b>Filtr funguje na zkratky učitelů, názvy tříd, názvy učeben</b>, časy rozvrhů a další.
+						<li><b>Filtr se automaticky ukládá</b>, takže ho nemusíte při každé návštěvě vypisovat znova.
+						<li><b>Můžete filtrovat i více termínů zároveň</b>, termíny oddělujte čárkou.
+						např. "<i>VII.B8 SF11 SI21 SM31</i>" pro zobrazení změn pro třídu VII.B8
+						a semináře se zkratkami SF11, SI21 a SM31.
+						</ul>
+						`
+				}
+			},
+			chybejici: {
+				element: "#chybejiciCol",
+				popover: {
+					title: "Tabulka chybějících",
+					description:
+						`Chybějící jsou zobrazeni v přehledné tabulce.
+						Modrá výplň znamená, že subjekt nechybí, šedá případ opačný.
+						`
+				}
+			},
+			dotazy: {
+				element: "#logo_text > h2",
+				popover: {
+					title: "Závěrem..",
+					description:
+						`V případě dotazů nebo konstruktivní kritiky <a href="mailto:vacekj@outlook.com">mailujte</a>
+						`
+				}
+			}
+		};
+
+		driver.defineSteps([
+			steps.start,
+			steps.datum,
+			steps.tlacitka,
+			steps.filtr,
+			steps.chybejici
+		]);
+	}
+
+	export function start() {
+		initialize();
+		driver.start();
 	}
 }

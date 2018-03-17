@@ -7,6 +7,7 @@
 		"array2d": "0.0.5",
 		"babel-polyfill": "^6.26.0",
 		"date-fns": "^1.29.0",
+		"driver.js": "^0.2.4",
 		"hammerjs": "^2.0.8",
 		"jquery": "^3.3.1",
 		"js-cookie": "^2.2.0",
@@ -34,6 +35,7 @@
 		"js-sha256": "^0.9.0",
 		"jsdom": "11.6.2",
 		"mocha": "^5.0.1",
+		"ngrok": "^3.0.0",
 		"puppeteer": "^1.1.1",
 		"request": "^2.83.0",
 		"style-loader": "^0.18.2",
@@ -52,7 +54,8 @@
 		"test": "mocha ./src/**/*.test.ts",
 		"e2e": "mocha ./test/*.test.ts",
 		"prepush": "npm run lint && npm run test",
-		"lint": "tslint src/**/*.ts --project tsconfig.json --fix"
+		"lint": "tslint src/**/*.ts --project tsconfig.json --fix",
+		"ngrok": "ngrok http 192.168.1.200:8080 -host-header=\"192.168.1.200:8080\" -region eu"
 	},
 	"repository": {
 		"type": "git",
