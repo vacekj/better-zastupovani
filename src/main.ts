@@ -39,6 +39,7 @@ const Selectors = {
 };
 
 const COOKIE_FILTER = "filter";
+const COOKIE_TUTCOMPLETE = "tutcomplete";
 
 $(document).ready(bootstrap);
 
@@ -107,7 +108,7 @@ function bootstrap() {
 
 			// TODO: display tut only on first view
 			// TODO: add a way to restart tutorial
-			if (true) {
+			if (!Cookies.get(COOKIE_TUTCOMPLETE)) {
 				Tutorial.start();
 			}
 		}).catch((ex) => {
@@ -560,7 +561,17 @@ namespace Tutorial {
 			closeBtnText: "Zavřít",
 			stageBackground: "black",
 			nextBtnText: "Další",
-			prevBtnText: "Předchozí"
+			prevBtnText: "Předchozí",
+			onHighlighted: (Element) => {
+				if (!driver.hasNextStep()) {
+					Cookies.set(COOKIE_TUTCOMPLETE, "true");
+				}
+			},
+			onDeselected: (Element) => {
+				if (!driver.isActive) {
+					Cookies.set(COOKIE_TUTCOMPLETE, "true");
+				}
+			}
 		});
 
 		const steps = {
