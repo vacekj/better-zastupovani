@@ -553,7 +553,7 @@ namespace Tutorial {
 	function initialize() {
 		driver = new Driver({
 			animate: true,
-			opacity: 0.75,
+			opacity: 0.6,
 			padding: 10,
 			allowClose: true,
 			doneBtnText: "Dokončit",
@@ -643,7 +643,7 @@ namespace Tutorial {
 		]);
 	}
 
-	export function start(step: number = 0) {
+	export function start(step = 0) {
 		initialize();
 		driver.start(step);
 	}
