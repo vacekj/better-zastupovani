@@ -105,7 +105,9 @@ function bootstrap() {
 				DatesHandler.selectDate(sortedDates[0]);
 			}
 
-			if (/* isFirstTimeViewing */true) {
+			// TODO: display tut only on first view
+			// TODO: add a way to restart tutorial
+			if (true) {
 				Tutorial.start();
 			}
 		}).catch((ex) => {
@@ -120,6 +122,12 @@ function registerEventHandlers() {
 	Selectors.TomorrowButton.on("click", DatesHandler.tomorrowButtonHandler);
 	Selectors.DateSelector.on("change", DatesHandler.onDateChange);
 	Selectors.FilterSelector.on("keyup input", FilterHandler.onFilterChange);
+
+	$("#pruvodce").on("click", (e: JQuery.Event) => {
+		e.stopImmediatePropagation();
+		e.stopPropagation();
+		Tutorial.start(1);
+	});
 
 	// Touch Gestures
 	const hammertime = new Hammer($("#selectorField_date")[0]);
@@ -552,14 +560,7 @@ namespace Tutorial {
 			closeBtnText: "Zavřít",
 			stageBackground: "black",
 			nextBtnText: "Další",
-			prevBtnText: "Předchozí",
-			scrollIntoViewOptions: {},
-			onHighlighted: (Element) => {
-				// TODO: automatically insert filter text to show functionality
-			},
-			onDeselected: (Element) => {
-				// TODO: clear filter or something
-			},
+			prevBtnText: "Předchozí"
 		});
 
 		const steps = {
@@ -571,7 +572,7 @@ namespace Tutorial {
 				}
 			},
 			datum: {
-				element: "#selector_date",
+				element: "#selectorField_date",
 				popover: {
 					title: "Zde si vyberete datum",
 					description:
@@ -593,7 +594,7 @@ namespace Tutorial {
 				}
 			},
 			filtr: {
-				element: "#selector_filter",
+				element: "#selectorField_filter",
 				popover: {
 					title: "Filtrování",
 					description:
@@ -625,7 +626,8 @@ namespace Tutorial {
 				popover: {
 					title: "Závěrem..",
 					description:
-						`V případě dotazů nebo konstruktivní kritiky <a href="mailto:vacekj@outlook.com">mailujte</a>
+						`Průvodce můžete kdykoliv znovu spustit kliknutím na Průvdoce v patičce.
+						<br>V případě dotazů nebo konstruktivní kritiky <a href="mailto:vacekj@outlook.com">mailujte</a>
 						`
 				}
 			}
@@ -636,12 +638,13 @@ namespace Tutorial {
 			steps.datum,
 			steps.tlacitka,
 			steps.filtr,
-			steps.chybejici
+			steps.chybejici,
+			steps.dotazy
 		]);
 	}
 
-	export function start() {
+	export function start(step: number = 0) {
 		initialize();
-		driver.start();
+		driver.start(step);
 	}
 }
