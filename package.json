@@ -69,7 +69,7 @@
 		"cy:open": "npx cypress open",
 		"cy:local:dev:run": "start-server-and-test test-server-dev http://192.168.1.200:8080 cy:run",
 		"cy:local:dev:open": "start-server-and-test test-server-dev http://192.168.1.200:8080 cy:open",
-		"cy:ci:prod:run": "start-server-and-test test-server-prod http://localhost:8080 cy:run"
+		"cy:ci:prod:run": "start-server-and-test test-server-prod http://127.0.0.1:8080 cy:run"
 	},
 	"repository": {
 		"type": "git",
