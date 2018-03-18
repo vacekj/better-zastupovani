@@ -3,6 +3,24 @@
 	"version": "1.0.0",
 	"description": "Better Zastupovani",
 	"main": "dist/index.html",
+	"private": true,
+	"scripts": {
+		"build": "webpack --config webpack.prod.js",
+		"dev": "webpack-dev-server --open --config webpack.dev.js",
+		"test": "mocha ./src/**/*.test.ts",
+		"e2e": "mocha ./test/*.test.ts",
+		"prepush": "npm run lint && npm run test",
+		"lint": "tslint src/**/*.ts --project tsconfig.json --fix",
+		"ngrok": "ngrok http 192.168.1.200:8080 -host-header=\"192.168.1.200:8080\" -region eu",
+		"test-server-dev": "webpack-dev-server --config webpack.dev.js",
+		"test-server-prod": "http-server ./dist",
+		"cy:run": "npx cypress run",
+		"cy:run:record": "cypress run --record --key 11118fd8-27c7-4ee0-8c61-4ab69625c7b6",
+		"cy:open": "npx cypress open",
+		"cy:local:dev:run": "start-server-and-test test-server-dev http://192.168.1.200:8080 cy:run",
+		"cy:local:dev:open": "start-server-and-test test-server-dev http://192.168.1.200:8080 cy:open",
+		"cy:ci:prod:run": "start-server-and-test test-server-prod http://127.0.0.1:8080 cy:run:record"
+	},
 	"dependencies": {
 		"array2d": "0.0.5",
 		"date-fns": "^1.29.0",
@@ -54,23 +72,6 @@
 		"webpack-closure-compiler": "^2.1.6",
 		"webpack-dev-server": "^2.11.2",
 		"webpack-merge": "^4.1.2"
-	},
-	"scripts": {
-		"build": "webpack --config webpack.prod.js",
-		"dev": "webpack-dev-server --open --config webpack.dev.js",
-		"test": "mocha ./src/**/*.test.ts",
-		"e2e": "mocha ./test/*.test.ts",
-		"prepush": "npm run lint && npm run test",
-		"lint": "tslint src/**/*.ts --project tsconfig.json --fix",
-		"ngrok": "ngrok http 192.168.1.200:8080 -host-header=\"192.168.1.200:8080\" -region eu",
-		"test-server-dev": "webpack-dev-server --config webpack.dev.js",
-		"test-server-prod": "http-server ./dist",
-		"cy:run": "npx cypress run",
-		"cy:run:record": "cypress run --record --key 11118fd8-27c7-4ee0-8c61-4ab69625c7b6",
-		"cy:open": "npx cypress open",
-		"cy:local:dev:run": "start-server-and-test test-server-dev http://192.168.1.200:8080 cy:run",
-		"cy:local:dev:open": "start-server-and-test test-server-dev http://192.168.1.200:8080 cy:open",
-		"cy:ci:prod:run": "start-server-and-test test-server-prod http://127.0.0.1:8080 cy:run:record"
 	},
 	"repository": {
 		"type": "git",
