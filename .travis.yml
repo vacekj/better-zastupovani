@@ -5,22 +5,12 @@ node_js:
 
 dist: trusty
 
-addons:
-  apt:
-    packages:
-      # This is required to run new chrome on old trusty
-      - libnss3
-
-before_install:
-  - chmod +x build.sh
-
 before_script:
   - npm run build
 
-script: ./build.sh
-
-before_deploy:
-  - npm run build
+script:
+  - npm run cy:ci:prod:run
+	- npm run test
 
 deploy:
   provider: pages

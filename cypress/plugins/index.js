@@ -26,7 +26,7 @@ module.exports = (on) => {
 			},
 		},
 		watchOptions: {},
-	}
+	};
 
-	on('file:preprocessor', webpack(options))
-}
+	on('file:preprocessor', webpack(options));
+};
