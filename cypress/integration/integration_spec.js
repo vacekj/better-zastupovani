@@ -6,7 +6,7 @@ const sha256 = require('js-sha256');
 
 describe('Integration Tests', () => {
 	it('loads successfully', () => {
-		cy.visit(process.env.DEV_SERVER_HOST || '192.168.1.200:8080');
+		cy.visit(process.env.TEST_SERVER || '192.168.1.200:8080');
 	});
 	describe('Tutorial', () => {
 		it('displays tutorial on first visit', () => {
