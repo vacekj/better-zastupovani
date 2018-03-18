@@ -1,4 +1,5 @@
-// / <reference types="Cypress" />
+// eslint-disable-next-line spaced-comment
+/// <reference types="Cypress" />
 
 import {isWeekend, isFriday} from 'date-fns';
 
@@ -6,6 +7,7 @@ const sha256 = require('js-sha256');
 
 describe('Integration Tests', () => {
 	it('loads successfully', () => {
+		cy.log(process.env.TEST_SERVER);
 		cy.visit(process.env.TEST_SERVER || '192.168.1.200:8080');
 	});
 	describe('Tutorial', () => {
