@@ -27,19 +27,6 @@
 			"internalConsoleOptions": "openOnSessionStart"
 		},
 		{
-			"type": "node",
-			"request": "launch",
-			"name": "Mocha E2E",
-			"program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-			"args": [
-				"-u",
-				"tdd",
-				"--colors",
-				"${workspaceFolder}/test/*.test.ts"
-			],
-			"internalConsoleOptions": "openOnSessionStart"
-		},
-		{
 			"type": "chrome",
 			"request": "attach",
 			"name": "Attach to Chrome",
