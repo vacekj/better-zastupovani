@@ -7,7 +7,8 @@
 	"scripts": {
 		"build": "webpack --config webpack.prod.js",
 		"dev": "webpack-dev-server --open --config webpack.dev.js",
-		"test": "mocha ./src/**/*.test.ts",
+		"test": "mocha",
+		"cov": "nyc mocha",
 		"prepush": "npm run lint && npm run test",
 		"lint": "tslint src/**/*.ts --project tsconfig.json --fix",
 		"ngrok": "ngrok http 192.168.1.200:8080 -host-header=\"192.168.1.200:8080\" -region eu",
@@ -22,6 +23,23 @@
 		"cy:local:prod:run": "npm run build && start-server-and-test test-server-prod http://192.168.1.200:8080 cy:run",
 		"cy:ci:prod:run": "start-server-and-test test-server-prod http://127.0.0.1:8080 cy:run:record",
 		"test-deploy": "gh-pages -d dist -r git@github.com:JouzaLoL/test-site.git -b master"
+	},
+	"nyc": {
+		"extension": [
+			".ts",
+			".tsx"
+		],
+		"exclude": [
+			"**/*.d.ts",
+			"**/*.test.ts"
+		],
+		"include": [
+			"./src/**/*.ts"
+		],
+		"reporter": [
+			"html"
+		],
+		"all": true
 	},
 	"dependencies": {
 		"array2d": "0.0.5",
@@ -61,6 +79,7 @@
 		"jsdom": "11.6.2",
 		"mocha": "^5.0.4",
 		"ngrok": "^3.0.0",
+		"nyc": "^11.6.0",
 		"request": "^2.83.0",
 		"start-server-and-test": "^1.1.0",
 		"style-loader": "^0.18.2",

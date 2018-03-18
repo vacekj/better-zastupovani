@@ -21,8 +21,7 @@
 				"tdd",
 				"--timeout",
 				"999999",
-				"--colors",
-				"${workspaceFolder}/src/**/*.test.ts"
+				"--colors"
 			],
 			"internalConsoleOptions": "openOnSessionStart"
 		},
