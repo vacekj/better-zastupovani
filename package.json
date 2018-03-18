@@ -20,7 +20,8 @@
 		"cy:local:dev:open": "start-server-and-test test-server-dev http://192.168.1.200:8080 cy:open",
 		"cy:local:prod:open": "npm run build && start-server-and-test test-server-prod http://192.168.1.200:8080 cy:open",
 		"cy:local:prod:run": "npm run build && start-server-and-test test-server-prod http://192.168.1.200:8080 cy:run",
-		"cy:ci:prod:run": "start-server-and-test test-server-prod http://127.0.0.1:8080 cy:run:record"
+		"cy:ci:prod:run": "start-server-and-test test-server-prod http://127.0.0.1:8080 cy:run:record",
+		"test-deploy": "gh-pages -d dist -r git@github.com:JouzaLoL/test-site.git -b master"
 	},
 	"dependencies": {
 		"array2d": "0.0.5",
@@ -53,6 +54,7 @@
 		"eslint-plugin-cypress": "^2.0.1",
 		"extract-text-webpack-plugin": "^3.0.2",
 		"file-loader": "^0.11.2",
+		"gh-pages": "^1.1.0",
 		"global-jsdom": "^4.2.0",
 		"http-server": "^0.11.1",
 		"husky": "^0.14.3",
