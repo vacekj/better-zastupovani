@@ -12,7 +12,7 @@
 		"lint": "tslint src/**/*.ts --project tsconfig.json --fix",
 		"ngrok": "ngrok http 192.168.1.200:8080 -host-header=\"192.168.1.200:8080\" -region eu",
 		"test-server-dev": "webpack-dev-server --config webpack.dev.js",
-		"test-server-prod": "http-server ./dist",
+		"test-server-prod": "http-server ./dist --silent",
 		"cy:run": "cypress run",
 		"cy:run:record": "cypress run --record --key 11118fd8-27c7-4ee0-8c61-4ab69625c7b6",
 		"cy:open": "cypress open",
