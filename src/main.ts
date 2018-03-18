@@ -636,11 +636,11 @@ namespace Tutorial {
 				}
 			},
 			dotazy: {
-				element: "#logo_text > h2",
+				element: "#pruvodce",
 				popover: {
 					title: "Závěrem..",
 					description:
-						`Průvodce můžete kdykoliv znovu spustit kliknutím na Průvdoce v patičce.
+						`Průvodce můžete kdykoliv znovu spustit kliknutím na tlačítko Průvodce v patičce.
 						<br>V případě dotazů nebo konstruktivní kritiky <a href="mailto:vacekj@outlook.com">mailujte</a>
 						`
 				}
