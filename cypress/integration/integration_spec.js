@@ -7,8 +7,7 @@ const sha256 = require('js-sha256');
 
 describe('Integration Tests', () => {
 	it('loads successfully', () => {
-		cy.log(process.env.TEST_SERVER);
-		cy.visit(process.env.TEST_SERVER || '192.168.1.200:8080');
+		cy.visit(Cypress.env("TEST_SERVER") || '192.168.1.200:8080');
 	});
 	describe('Tutorial', () => {
 		it('displays tutorial on first visit', () => {
