@@ -1,38 +1,57 @@
-/// <reference types="Cypress" />
+// / <reference types="Cypress" />
 
-const sha256 = require("js-sha256");
+import {isWeekend, isFriday} from 'date-fns';
 
-describe("Integration Tests", () => {
-	it("loads successfully", () => {
-		cy.visit(process.env.DEV_SERVER_HOST || "192.168.1.200:8080");
+const sha256 = require('js-sha256');
+
+describe('Integration Tests', () => {
+	it('loads successfully', () => {
+		cy.visit(process.env.DEV_SERVER_HOST || '192.168.1.200:8080');
+	});
+	describe('Tutorial', () => {
+		it('displays tutorial on first visit', () => {
+			cy.get('#driver-popover-item').should('be.visible');
+		});
+
+		it('goes to next and previous steps', () => {
+			cy.get('.driver-next-btn').click();
+			cy.wait(1000);
+			cy.get('.driver-prev-btn').click();
+			cy.wait(1000);
+		});
+		it('cancels the tutorial on overlay click', () => {
+			// FIXME: driver.js throws an error here, remove this when they fix it
+			cy.on('uncaught:exception', (err, runnable) => {
+				// return false to prevent the error from
+				// failing this test
+				return false;
+			});
+			cy.get('#driver-page-overlay').click();
+		});
 	});
 
-	describe("Date buttons", () => {
+
+	describe('Date buttons', () => {
 		beforeEach(() => {
-			cy.get(test("button_today")).as("todayButton");
-			cy.get(test("button_tomorrow")).as("tomorrowButton");
-			cy.get("[data-test=datePicker]").as("datePicker");
-			cy.get("[data-test=datePicker] > option").as("option");
+			cy.get(test('button_today')).as('todayButton');
+			cy.get(test('button_tomorrow')).as('tomorrowButton');
+			cy.get('[data-test=datePicker]').as('datePicker');
+			cy.get('[data-test=datePicker] > option').as('option');
 		});
 
-		it("displays buttons", () => {
-			cy.get("@todayButton").should("exist");
-			cy.get("@tomorrowButton").should("exist");
+		it('displays buttons', () => {
+			cy.get('@todayButton').should('exist');
+			cy.get('@tomorrowButton').should('exist');
 		});
 
-		// FIXME: maybe a bug with Cypress
-		// it("disables buttons based on date", () => {
-		// 	// Weekend
-		// 	const weekend = new Date(2017, 3, 5).getTime();
-		// 	cy.clock(3000);
-		// 	cy.reload(true)
-		// 		.get("@todayButton").should("have.attr", "disabled");
-
-		// 	// Friday
-		// 	cy.clock(new Date(2018, 3, 2).getTime());
-		// 	cy.reload()
-		// 		.get("@tomorrowButton").should("have.attr", "disabled");
-		// });
+		it('disables buttons during the weekend and on friday', () => {
+			const today = new Date();
+			if (isWeekend(today)) {
+				cy.get('@todayButton').should('have.attr', 'disabled');
+			} else if (isFriday(today)) {
+				cy.get('@tomorrowButton').should('have.attr', 'disabled');
+			}
+		});
 
 		// // TODO: check that buttons change date on click to corresponding date.
 		// it("changes date when buttons are clicked", () => {
@@ -52,17 +71,18 @@ describe("Integration Tests", () => {
 
 		// });
 	});
+
 	// TODO: test hiding empty columns on mobile
 	// TODO: Add tests for the best date picking logic when time mocking is working
-	describe("Date Picker", () => {
+	describe('Date Picker', () => {
 		beforeEach(() => {
-			cy.get(test("datePicker")).as("datePicker");
-			cy.get(test("suplovaniTable")).as("suplovaniTable");
-			cy.get(test("filterTextbox")).as("filterTextbox");
+			cy.get(test('datePicker')).as('datePicker');
+			cy.get(test('suplovaniTable')).as('suplovaniTable');
+			cy.get(test('filterTextbox')).as('filterTextbox');
 		});
 
-		it("displays datePicker", () => {
-			cy.get("@datePicker").should("exist");
+		it('displays datePicker', () => {
+			cy.get('@datePicker').should('exist');
 		});
 
 		it('loads some date and corresponding data on startup', () => {
@@ -70,15 +90,15 @@ describe("Integration Tests", () => {
 		});
 
 		it('changes data on datePicker date change', () => {
-			cy.get("@suplovaniTable").then((el) => {
+			cy.get('@suplovaniTable').then((el) => {
 				return el[0].innerHTML;
 			}).then((innerHTML) => {
 				return sha256(innerHTML);
 			}).then(async (hash) => {
 				await nextDate();
 				cy
-					.get("@suplovaniTable")
-					.then(el => el[0].innerHTML)
+					.get('@suplovaniTable')
+					.then((el) => el[0].innerHTML)
 					.then((innerHTML) => {
 						expect(hash).to.not.equal(sha256(innerHTML));
 					});
@@ -88,20 +108,20 @@ describe("Integration Tests", () => {
 
 	describe('Filter textbox', () => {
 		beforeEach(() => {
-			cy.get(test("suplovaniTable")).as("suplovaniTable");
-			cy.get(test("filterTextbox")).as("filterTextbox");
+			cy.get(test('suplovaniTable')).as('suplovaniTable');
+			cy.get(test('filterTextbox')).as('filterTextbox');
 		});
 
 		it('changes data on filter text change', () => {
-			cy.get("@suplovaniTable").then((el) => {
+			cy.get('@suplovaniTable').then((el) => {
 				return el[0].innerHTML;
 			}).then((innerHTML) => {
 				return sha256(innerHTML);
 			}).then(async (hash) => {
-				cy.get("[data-test=suplovaniTable] > tbody > :nth-child(1) > :nth-child(2)").then((tds) => {
+				cy.get('[data-test=suplovaniTable] > tbody > :nth-child(1) > :nth-child(2)').then((tds) => {
 					const text = tds[0].innerText;
-					cy.get("@filterTextbox").type(text);
-					cy.get("@suplovaniTable").then(el => el[0].innerHTML).then((innerHTML) => {
+					cy.get('@filterTextbox').type(text);
+					cy.get('@suplovaniTable').then((el) => el[0].innerHTML).then((innerHTML) => {
 						expect(hash).to.not.equal(sha256(innerHTML));
 					});
 				});
@@ -111,24 +131,25 @@ describe("Integration Tests", () => {
 });
 
 function nextDate() {
-	cy.get(test("datePicker")).then(async (result) => {
+	cy.get(test('datePicker')).then(async (result) => {
 		const selectedIndex = result[0].selectedIndex;
 		cy
-			.get(test("datePicker") + " > option")
+			.get(test('datePicker') + ' > option')
 			.filter(`:nth-child(${selectedIndex + 3})`)
-			.invoke("attr", "selected", true);
+			.invoke('attr', 'selected', true);
 		await triggerDateChange();
 	});
 }
 
 function waitForLoad() {
-	cy.get("[data-test=suplovaniTable] > tbody > :nth-child(1) > :nth-child(2)");
+	// TODO: check if data matches class, room etc regexes
+	cy.get('[data-test=suplovaniTable] > tbody > :nth-child(1) > :nth-child(2)');
 }
 
 function triggerDateChange() {
 	cy
-		.get(test("datePicker"))
-		.trigger("change");
+		.get(test('datePicker'))
+		.trigger('change');
 	waitForLoad();
 }
 

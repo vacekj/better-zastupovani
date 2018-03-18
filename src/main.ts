@@ -565,12 +565,12 @@ namespace Tutorial {
 			stageBackground: "black",
 			nextBtnText: "Další",
 			prevBtnText: "Předchozí",
-			onHighlighted: (Element) => {
+			onHighlighted: () => {
 				if (!driver.hasNextStep()) {
 					Cookies.set(COOKIE_TUTCOMPLETE, "true");
 				}
 			},
-			onDeselected: (Element) => {
+			onDeselected: () => {
 				if (!driver.isActive) {
 					Cookies.set(COOKIE_TUTCOMPLETE, "true");
 				}
