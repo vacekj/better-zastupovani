@@ -51,6 +51,8 @@ const COOKIE_TUTCOMPLETE = "tutcomplete";
 
 $(document).ready(bootstrap);
 
+document.addEventListener("DOMContentLoaded", bootstrap);
+
 function bootstrap() {
 	Raven.config("https://9d2a2a92d6d84dc08743bfb197a5cb65@sentry.io/296434").install();
 	addBackToTop({
