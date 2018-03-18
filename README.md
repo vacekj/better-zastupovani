@@ -3,11 +3,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/b43ae628ba7680808cfc/maintainability)](https://codeclimate.com/github/JouzaLoL/better-zastupovani/maintainability)
 ### [Official live version](https://jouzalol.github.com/better-zastupovani)
 
-## Features
-- **Filtering**
-![Filtering example](./examples/filtr.gif)
-- **Multi filtering**
-![Filtering example](./examples/filtr_multi.gif)
+<!-- TODO: Add Build guide and development guide -->
 
 ## Feedback 
 Any feedback is highly appreciated! Please open an issue/PR or drop me a message on facebook (Josef Vacek)
@@ -27,6 +23,7 @@ Web APIs:
 	- TextDecoder (when Edge supports it)
 	- Notifications
 	- WebWorkers
+	- Background Sync
 
 
 ## Description

@@ -35,7 +35,15 @@ const Selectors = {
 	DateSelector: $("#selector_date"),
 	TodayButton: $("button#today"),
 	TomorrowButton: $("button#tomorrow"),
-	FilterSelector: $("#selector_filter")
+	FilterSelector: $("#selector_filter"),
+	NahradniUcebnyTable: $("#table_nahradniUcebny"),
+	FilterSuggestionsDatalist: $("datalist#filterSuggestions"),
+	Pruvodce: $("#pruvodce"),
+	SelectorFieldDate: $("#selectorField_date"),
+	SuplovaniTable: $("#table_suplovani"),
+	DozoryTable: $("#table_dozory"),
+	ChybejiciTable: $("#table_chybejici"),
+	AlertRow: $("#alert-row")
 };
 
 const COOKIE_FILTER = "filter";
@@ -55,26 +63,22 @@ function bootstrap() {
 	registerEventHandlers();
 
 	// Populate filter suggestions
-	const suggestionPromises = Promise.all([suplGetter.getVyucujiciPage().then(parseVyucujiciPage), suplGetter.getClassesPage().then(parseClassesPage)])
-		.catch((ex) => {
-			Raven.captureException(ex);
-			Utils.handleFetchError(ex);
-			throw ex;
-		});
-
-	suggestionPromises.then((suggestions) => {
-		const options = suggestions[0].concat(suggestions[1]).map((suggestion) => {
-			return `<option value="${suggestion}">`;
-		}).reduce((acc, el) => acc + el);
-
-		$("datalist#filterSuggestions").append(options);
-	}).catch((ex) => {
-		Raven.captureException(ex);
-		throw ex;
-	});
+	Promise.all([suplGetter.getVyucujiciPage().then(parseVyucujiciPage), suplGetter.getClassesPage().then(parseClassesPage)])
+		.then((suggestions) => {
+			return suggestions
+				.flatten()
+				.map((suggestion) => {
+					return `<option value="${suggestion}">`;
+				}).join("");
+		})
+		.then((options) => {
+			Selectors.FilterSuggestionsDatalist.append(options);
+		})
+		.catch((Utils.catchHandler));
 
 	// Populate date selector
-	suplGetter.getDatesPage()
+	suplGetter
+		.getDatesPage()
 		.then(parseDatesPage)
 		.then((dates) => {
 			// Sort dates by descending
@@ -88,9 +92,7 @@ function bootstrap() {
 			Utils.enableDayButtons();
 
 			// Transform dates to <option>'s
-			const datesOptions = sortedDates.map(RenderHandler.dateWithUrlToOption).reduce((acc, curr) => {
-				return acc + curr;
-			});
+			const datesOptions = sortedDates.map(RenderHandler.dateWithUrlToOption).join("");
 
 			// Append options to date selector
 			Selectors.DateSelector.append(datesOptions);
@@ -106,16 +108,11 @@ function bootstrap() {
 				DatesHandler.selectDate(sortedDates[0]);
 			}
 
-			// TODO: display tut only on first view
-			// TODO: add a way to restart tutorial
 			if (!Cookies.get(COOKIE_TUTCOMPLETE)) {
 				Tutorial.start();
 			}
-		}).catch((ex) => {
-			Raven.captureException(ex);
-			Utils.handleFetchError(ex);
-			throw ex;
-		});
+		})
+		.catch(Utils.catchHandler);
 }
 
 function registerEventHandlers() {
@@ -124,14 +121,15 @@ function registerEventHandlers() {
 	Selectors.DateSelector.on("change", DatesHandler.onDateChange);
 	Selectors.FilterSelector.on("keyup input", FilterHandler.onFilterChange);
 
-	$("#pruvodce").on("click", (e: JQuery.Event) => {
+	Selectors.Pruvodce.on("click", (e: JQuery.Event) => {
 		e.stopImmediatePropagation();
 		e.stopPropagation();
+		// Skip the first step
 		Tutorial.start(1);
 	});
 
 	// Touch Gestures
-	const hammertime = new Hammer($("#selectorField_date")[0]);
+	const hammertime = new Hammer(Selectors.SelectorFieldDate[0]);
 	hammertime.on("swipe", (ev) => {
 		if (ev.direction === 4 /* swipe right */) {
 			DatesHandler.previousDay();
@@ -215,16 +213,13 @@ namespace DatesHandler {
 			.then((suplovaniPage) => {
 				// Filter cookie
 				if (Cookies.get(COOKIE_FILTER)) {
-					$("#selector_filter").val(Cookies.get(COOKIE_FILTER) as string);
+					Selectors.FilterSelector.val(Cookies.get(COOKIE_FILTER) as string);
 					RenderHandler.render(undefined, $(Selectors.FilterSelector).val() as string);
 				} else {
 					RenderHandler.render(suplovaniPage);
 				}
-			}).catch((ex) => {
-				Raven.captureException(ex);
-				Utils.handleFetchError(ex);
-				throw ex;
-			});
+			})
+			.catch(Utils.catchHandler);
 	}
 
 	export function triggerDateChange() {
@@ -286,7 +281,7 @@ namespace RenderHandler {
 	}
 
 	export function renderSuplovani(suplovaniRecords: SuplovaniRecord[]) {
-		const suplovaniTable = $("#table_suplovani > tbody");
+		const suplovaniTable = Selectors.SuplovaniTable.find("tbody");
 
 		const content = suplovaniRecords.length
 			? suplovaniRecords.map(RenderHandler.suplovaniRecordToTr).join("")
@@ -310,7 +305,7 @@ namespace RenderHandler {
 	}
 
 	export function renderDozory(dozorRecords: DozorRecord[]) {
-		const dozorTable = $("#table_dozory > tbody");
+		const dozorTable = Selectors.DozoryTable.find("tbody");
 
 		const content = dozorRecords.length
 			? dozorRecords.map(RenderHandler.dozorRecordToTr).join("")
@@ -331,7 +326,7 @@ namespace RenderHandler {
 	}
 
 	export function renderChybejici(chybejici: ChybejiciTable) {
-		const chybejiciTable = $("#table_chybejici > tbody");
+		const chybejiciTable = Selectors.ChybejiciTable.find("tbody");
 
 		const noChybejici = RenderHandler.rowHeader("Žádní chybějící", 9);
 
@@ -369,7 +364,7 @@ namespace RenderHandler {
 	}
 
 	export function renderNahradniUcebny(nahradniUcebnyRecords: NahradniUcebnaRecord[]) {
-		const nahradniUcebnyTable = $("#table_nahradniUcebny > tbody");
+		const nahradniUcebnyTable = Selectors.NahradniUcebnyTable.find("tbody");
 
 		const content = nahradniUcebnyRecords.length
 			? nahradniUcebnyRecords.map(RenderHandler.nahradniUcebnaRecordToTr).join("")
@@ -477,6 +472,12 @@ namespace FilterHandler {
 
 namespace Utils {
 
+	export function catchHandler(ex) {
+		Raven.captureException(ex);
+		Utils.handleFetchError(ex);
+		throw ex;
+	}
+
 	export function hideEmptyColumns() {
 		// Clear hidden classes first
 		$("th, td").removeClass("hidden");
@@ -545,7 +546,7 @@ namespace Utils {
 			</div>
 			`;
 
-		$("#alert-row").html(alertHtml);
+		Selectors.AlertRow.html(alertHtml);
 	}
 }
 
