@@ -19,6 +19,9 @@ npm install
 npm run dev
 ```
 
+## Testing
+ see package.json
+
 ## Goal
 Provide a friendly and useful interface for anyone wanting to learn about the current changes in schedule, regardless of viewing environment. (mobile and desktop)
 
