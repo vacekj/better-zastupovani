@@ -12,6 +12,10 @@ script:
   - npm run cy:ci:prod:run
   - npm run test
 
+cache:
+  directories:
+    - $HOME/.npm
+
 deploy:
   provider: pages
   skip-cleanup: true
