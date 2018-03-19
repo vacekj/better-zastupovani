@@ -9,7 +9,7 @@
 		"dev": "webpack-dev-server --open --config webpack.dev.js",
 		"test": "mocha",
 		"cov": "nyc mocha",
-		"prepush": "npm run lint && npm run test",
+		"prepush": "npm run lint",
 		"lint": "tslint src/**/*.ts --project tsconfig.json --fix",
 		"ngrok": "ngrok http 192.168.1.200:8080 -host-header=\"192.168.1.200:8080\" -region eu",
 		"test-server-dev": "webpack-dev-server --config webpack.dev.js",
