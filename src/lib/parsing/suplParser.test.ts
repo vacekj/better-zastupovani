@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import "mocha";
 
+import { regexes } from "../../../test/shared";
 import { SuplGetterNode } from "../getting/suplGetterNode";
-
 import { DateWithUrl, parseDatesPage } from "./DatesParser";
 import { parseClassesPage, parseSuplovaniPage, SuplovaniPage } from "./suplParser";
 
@@ -29,32 +29,34 @@ describe("suplParser", () => {
 	});
 
 	it("should parse dates page", (done) => {
-		suplGetter.getDatesPage()
-			.then((datesPage) => {
-				const dates = parseDatesPage(datesPage);
+		suplGetter
+			.getDatesPage()
+			.then(parseDatesPage)
+			.then((dates) => {
 				expect(dates).to.be.an.instanceof(Array);
 				expect(dates[0]).to.be.an.instanceof(DateWithUrl);
 				expect(dates[0].date).to.be.an.instanceOf(Date);
-				const containsDate = new RegExp("pondělí|úterý|středa|čtvrtek|pátek");
-				expect(dates[0].dateString).to.match(containsDate);
+				expect(dates[0].dateString).to.match(regexes.containsDate);
 				done();
-			}).catch(done);
+			})
+			.catch(done);
 	});
 
 	it("should parse suplovani page", (done) => {
-		suplGetter.getDatesPage()
-			.then((datesPage) => {
-				const dates = parseDatesPage(datesPage);
-				const date = dates[0];
-				suplGetter.getSuplovaniPage(date.url).then((suplovaniPage) => {
-					const parsedSuplovaniPage = parseSuplovaniPage(suplovaniPage);
-					expect(parsedSuplovaniPage).to.be.an.instanceOf(SuplovaniPage);
-					expect(parsedSuplovaniPage).to.not.satisfy(containsNullOrUndefined);
-					expect(parsedSuplovaniPage.chybejici.tridy.map((record) => record.kdo)).to.satisfy((array) => arrayMatchesRegex(array, regexes.trida));
-					expect(parsedSuplovaniPage.chybejici.ucebny.map((record) => record.kdo)).to.satisfy((array) => arrayMatchesRegex(array, regexes.ucebna));
-					done();
-				}).catch(done);
-			}).catch(done);
+		suplGetter
+			.getDatesPage()
+			.then(parseDatesPage)
+			.then((dates) => dates[0])
+			.then((date) => suplGetter.getSuplovaniPage(date.url))
+			.then(parseSuplovaniPage)
+			.then((parsedSuplovaniPage) => {
+				expect(parsedSuplovaniPage).to.be.an.instanceOf(SuplovaniPage);
+				expect(parsedSuplovaniPage).to.not.satisfy(containsNullOrUndefined);
+				expect(parsedSuplovaniPage.chybejici.tridy.map((record) => record.kdo)).to.satisfy((array) => arrayMatchesRegex(array, regexes.trida));
+				expect(parsedSuplovaniPage.chybejici.ucebny.map((record) => record.kdo)).to.satisfy((array) => arrayMatchesRegex(array, regexes.ucebna));
+				done();
+			})
+			.catch(done);
 	});
 
 	after(() => {
@@ -83,8 +85,3 @@ function containsNullOrUndefined(obj: object): boolean {
 		}
 	}, false);
 }
-
-const regexes = {
-	trida: new RegExp("[IX|IV|V?I{0,3}]\.[A-C][1-8]?"),
-	ucebna: new RegExp("[1-8]\.[A-C][1-8]?d?|[ABC].{3}d?"),
-};
