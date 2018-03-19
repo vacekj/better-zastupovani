@@ -566,7 +566,7 @@ namespace Tutorial {
 			stageBackground: "black",
 			nextBtnText: "Další",
 			prevBtnText: "Předchozí",
-			/* onHighlighted: () => {
+			onHighlighted: () => {
 				if (!driver.hasNextStep()) {
 					Cookies.set(COOKIE_TUTCOMPLETE, "true");
 				}
@@ -575,7 +575,7 @@ namespace Tutorial {
 				if (!driver.isActive) {
 					Cookies.set(COOKIE_TUTCOMPLETE, "true");
 				}
-			} */
+			}
 		});
 
 		const steps = {

@@ -24,7 +24,7 @@ describe("suplParser", () => {
 			.then((classes) => {
 				expect(classes).to.be.an.instanceof(Array);
 				expect(classes[0]).to.equal("I.A8");
-				expect(classes).to.include.members(["I.A6", "I.A", "I."]);
+				expect(classes).to.include.members(["I.A6", "I.A"]);
 				done();
 			})
 			.catch(done);
