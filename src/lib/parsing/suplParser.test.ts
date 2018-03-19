@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import "mocha";
 
-import { regexes } from "../../../test/shared";
-import { SuplGetterNode } from "../getting/suplGetterNode";
+import { SuplGetterNode } from "src/lib/getting/suplGetterNode";
+import { regexes } from "test/shared";
 import { DateWithUrl, parseDatesPage } from "./DatesParser";
 import { parseClassesPage, parseSuplovaniPage, SuplovaniPage } from "./suplParser";
 
