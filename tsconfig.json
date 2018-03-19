@@ -21,6 +21,6 @@
 		"enable": true
 	},
 	"exclude": [
-		"./test/**.*"
+		"node_modules"
 	]
 }
