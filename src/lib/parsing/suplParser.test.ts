@@ -18,14 +18,16 @@ describe("suplParser", () => {
 	});
 
 	it("should parse classes page", (done) => {
-		suplGetter.getClassesPage()
-			.then((classesPage) => {
-				const classes = parseClassesPage(classesPage);
+		suplGetter
+			.getClassesPage()
+			.then(parseClassesPage)
+			.then((classes) => {
 				expect(classes).to.be.an.instanceof(Array);
 				expect(classes[0]).to.equal("I.A8");
-				expect(classes).to.include.members(["I.A6", "I.A"]);
+				expect(classes).to.include.members(["I.A6", "I.A", "I."]);
 				done();
-			}).catch(done);
+			})
+			.catch(done);
 	});
 
 	it("should parse dates page", (done) => {
@@ -78,7 +80,7 @@ function containsNullOrUndefined(obj: object): boolean {
 	return Object.values(obj).reduce((acc, value) => {
 		if (value === undefined || value == null) {
 			return true;
-		} else if (typeof value === "object" && value !== null) {
+		} else if (typeof value === "object") {
 			containsNullOrUndefined(value);
 		} else if (Array.isArray(value) && value.length) {
 			arrayContainsNullOrUndefined(value);
