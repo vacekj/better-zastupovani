@@ -46,7 +46,7 @@ export abstract class SuplGetter {
 export class SuplGetterBrowser extends SuplGetter {
 	public async request(url: string): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
-			fetch(url)
+			this.fetch_retry(url, {}, 5)
 				.then((res) => {
 					// Fetch doesn't reject the promise on codes like 404
 					if (!res.ok) {
@@ -75,5 +75,17 @@ export class SuplGetterBrowser extends SuplGetter {
 
 	public async getVyucujiciPage(): Promise<string> {
 		return this.request(this.URL_VYUCUJICI);
+	}
+
+	private async fetch_retry(url, options, n) {
+		try {
+			return await fetch(url, options);
+		} catch (err) {
+			if (n === 1) {
+				throw err;
+			}
+			console.log("Fetch failed, retrying...");
+			return await this.fetch_retry(url, options, n - 1);
+		}
 	}
 }

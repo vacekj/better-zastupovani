@@ -90,6 +90,10 @@ describe('Integration Tests', () => {
 			waitForLoad();
 		});
 
+/* 		it('changes date on datePicker swipe', () => {
+			cy.
+		}); */
+
 		it('changes data on datePicker date change', () => {
 			cy.get('@suplovaniTable').then((el) => {
 				return el[0].innerHTML;
