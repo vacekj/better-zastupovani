@@ -6,6 +6,7 @@ node_js:
 dist: trusty
 
 install:
+  - npm i -g npm@5.7.0
   - npm ci  
 
 before_script:
