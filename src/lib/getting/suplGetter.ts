@@ -84,7 +84,6 @@ export class SuplGetterBrowser extends SuplGetter {
 			if (n === 1) {
 				throw err;
 			}
-			console.log("Fetch failed, retrying...");
 			return await this.fetch_retry(url, options, n - 1);
 		}
 	}
