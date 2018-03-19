@@ -1,5 +1,5 @@
 import { parseTable } from "../utils/DOMUtils";
-// TODO: Test this
+// TODO: Test this using real, live data
 export function parseChybejiciTable(chybejiciTable: Element): ChybejiciTable {
 	// First row is always empty, slice it
 	const chybejiciRows = parseTable(chybejiciTable)[0].slice(1);

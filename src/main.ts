@@ -9,6 +9,7 @@ import { addYears, closestIndexTo, compareDesc, isBefore, isPast, isToday, isTom
 import * as Driver from "driver.js";
 import "driver.js/dist/driver.min.css";
 import * as Hammer from "hammerjs";
+import * as isMobile from "is-mobile";
 import * as $ from "jquery";
 import * as Cookies from "js-cookie";
 import Raven from "raven-js";
@@ -565,7 +566,7 @@ namespace Tutorial {
 			stageBackground: "black",
 			nextBtnText: "Další",
 			prevBtnText: "Předchozí",
-			onHighlighted: () => {
+			/* onHighlighted: () => {
 				if (!driver.hasNextStep()) {
 					Cookies.set(COOKIE_TUTCOMPLETE, "true");
 				}
@@ -574,7 +575,7 @@ namespace Tutorial {
 				if (!driver.isActive) {
 					Cookies.set(COOKIE_TUTCOMPLETE, "true");
 				}
-			}
+			} */
 		});
 
 		const steps = {
@@ -593,6 +594,14 @@ namespace Tutorial {
 						`Při načtení stránky je automaticky vybráno dnešní datum,
 					zítřejší pokud už je po výuce nebo nejbližší školní den
 					pokud jsou např. prázdniny nebo víkend.`
+				}
+			},
+			mobilSwipe: {
+				element: "#selector_date",
+				popover: {
+					title: "Gesta na mobilních zařízeních",
+					description:
+						`Na mobilních zařízeních lze datum měnit také přejetím doleva/doprava	 přes pole dat.`
 				}
 			},
 			tlacitka: {
@@ -647,14 +656,22 @@ namespace Tutorial {
 			}
 		};
 
-		driver.defineSteps([
+		// tslint:disable-next-line:prefer-const
+		let orderedSteps = [
 			steps.start,
 			steps.datum,
 			steps.tlacitka,
 			steps.filtr,
 			steps.chybejici,
 			steps.dotazy
-		]);
+		];
+
+		// Dynamic steps
+		if (isMobile()) {
+			orderedSteps.splice(2, 0, steps.mobilSwipe);
+		}
+
+		driver.defineSteps(orderedSteps);
 	}
 
 	export function start(step = 0) {

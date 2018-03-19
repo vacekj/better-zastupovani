@@ -1,6 +1,6 @@
 import { parse } from "date-fns";
 import { load } from "../utils/DOMUtils";
-// TODO: Test this
+// TODO: Test this using real, live data
 /**
  * Date information corresponding to one suplovaniPage
  *
