@@ -5,8 +5,9 @@ node_js:
 
 dist: trusty
 
+install: npm run install
+
 before_script:
-  - npm install
   - npm run build
 
 script:
