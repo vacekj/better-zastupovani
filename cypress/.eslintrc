@@ -1,0 +1,31 @@
+{
+	"extends": [
+		"eslint:recommended",
+		"google"
+	],
+	"plugins": [
+		"cypress"
+	],
+	"rules": {
+		"space-before-function-paren": "off",
+		"eol-last": "off",
+		"no-var": "off",
+		"comma-dangle": "off",
+		"new-cap": "off",
+		"max-len": "off",
+		"valid-jsdoc": "off",
+		"quotes": "off",
+		"no-shadow": "error",
+		"object-curly-spacing": "off",
+		"no-invalid-this": "off",
+		"no-constant-condition": "off",
+		"semi": "error",
+		"no-console": "off",
+		"linebreak-style": "off",
+		"no-tabs": "off",
+		"require-jsdoc": "off"
+	},
+	"env": {
+		"cypress/globals": true
+	}
+}

@@ -8,16 +8,19 @@ dist: trusty
 addons:
   apt:
     packages:
-      # This is required to run new chrome on old trusty
-      - libnss3
+      - xvfb
 
-before_install:
-  - chmod +x build.sh
-
-script: ./build.sh
-
-before_deploy:
+before_script:
   - npm run build
+
+script:
+  - npm run cy:ci:prod:run
+  - npm run test
+
+cache:
+  directories:
+    - $HOME/.npm
+    - node_modules
 
 deploy:
   provider: pages
@@ -25,6 +28,5 @@ deploy:
   github-token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
   local-dir: './dist'
   fqdn: 'zastupovani.gytool.cz'
-  verbose: true
   on:
     branch: master

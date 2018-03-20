@@ -20,8 +20,13 @@ module.exports = {
 		rules: [
 			{
 				test: /\.tsx?$/,
-				use: "ts-loader",
-				exclude: [/node_modules/]
+				use: [{
+					loader: "ts-loader",
+					options: {
+						transpileOnly: true
+					}
+				}],
+				exclude: [/node_modules/],
 			},
 			{
 				test: /\.(html|txt)$/,

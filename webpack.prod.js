@@ -28,7 +28,7 @@ module.exports = merge(common, {
 				language_out: 'ECMASCRIPT5',
 				create_source_map: true
 			},
-			concurrency: 5,
+			concurrency: 5
 		}),
 		new ExtractTextPlugin("[name].css"),
 	]

@@ -34,13 +34,13 @@
 		<div class="container">
 
 			<!-- HEADER -->
-			<div class="row mt-4 mb-2 justify-content-center">
+			<div class="row mt-4 mb-2 justify-content-center" id="header">
 				<div class="col-md-1 pr-0">
 					<a href="http://www.gytool.cz">
 						<img src="./img/gh.png" class="img-fluid d-none d-md-block" alt="GH Logo">
 					</a>
 				</div>
-				<div class="col-md-5 text-center">
+				<div class="col-md-5 text-center" id="logo_text">
 					<h4 class="logo">
 						<a href="http://www.gytool.cz">Gymnázium, Olomouc - Hejčín</a>
 					</h4>
@@ -56,7 +56,7 @@
 
 			<!-- PICKERS -->
 			<div class="form-row justify-content-center">
-				<div class="col-md-3 text-center">
+				<div class="col-md-3 text-center" id="tlacitka">
 					<div class="btn-group">
 						<button type="button" class="btn btn-raised btn-primary" id="today" data-test="button_today" disabled>Dnes</button>
 						<button type="button" class="btn btn-raised btn-primary" id="tomorrow" data-test="button_tomorrow" disabled>Zítra</button>
@@ -66,7 +66,7 @@
 					<label for="selector_date" class="bmd-label-floating">Datum</label>
 					<select class="form-control" name="selector_date" id="selector_date" data-test="datePicker"></select>
 				</fieldset>
-				<fieldset class="col-md-7 form-group">
+				<fieldset class="col-md-7 form-group" id="selectorField_filter">
 					<label for="selector_filter" class="bmd-label-floating">Filtr</label>
 					<input type="text" class="form-control" name="selector_filter" id="selector_filter" placeholder="Učitel, třída..." list="filterSuggestions"
 					 data-test="filterTextbox">
@@ -160,7 +160,7 @@
 
 			<!-- CHYBEJICI -->
 			<div class="row">
-				<div class="col-md-12 table-responsive">
+				<div class="col-md-12 table-responsive" id="chybejiciCol">
 					<h5>Chybějící</h5>
 					<h6 class="float-left present p-2">Přítomný</h6>
 					<h6 class="float-left absent p-2">Chybějící</h6>
@@ -187,7 +187,10 @@
 
 			<!-- FOOTER -->
 			<div class="row justify-content-center text-center">
-				<div class="cold-md-12">
+				<div class="col-md-12">
+					<button type="button" class="btn btn-sm btn-info" id="pruvodce">Průvodce</button>
+				</div>
+				<div class="col-md-12">
 					<div class="alert alert-light">
 						<span class="footer p-3">&copy;
 							<a href="https://github.com/JouzaLoL">Josef Vacek</a>
@@ -196,14 +199,15 @@
 							- Made with
 							<img class="glyph" src="svg/heart.svg" alt="Love"> and
 							<img class="glyph" src="svg/code.svg" alt="Code">
-
 						</span>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	<!-- Polyfill -->
 	<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+	<!-- Webpack bundle -->
 	<script src="main.js"></script>
 </body>
 

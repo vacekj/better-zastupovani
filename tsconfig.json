@@ -2,25 +2,19 @@
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
 		"moduleResolution": "node",
-		"baseUrl": ".",
+		"baseUrl": "./",
 		"outDir": "./dist/",
 		"sourceMap": true,
 		"noImplicitAny": false,
 		"target": "esnext",
-		"allowJs": true,
-		"lib": [
-			"dom",
-			"webworker",
-			"esnext",
-			"dom.iterable",
-			"es7"
-		]
-		
+		"allowJs": true
 	},
 	"typeAcquisition": {
 		"enable": true
 	},
 	"exclude": [
-		"./test/**.*"
+		"node_modules",
+		"coverage",
+		"dist"
 	]
 }

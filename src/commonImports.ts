@@ -1,8 +1,7 @@
 /* Imports shared across pages */
 
 // Polyfills
-import "babel-polyfill";
-import "whatwg-fetch";
+import "./lib/utils/DOMParserPolyfill";
 
 // Bootstrap imports
 import "./bootstrap-md.min.css";

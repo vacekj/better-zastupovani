@@ -7,6 +7,12 @@
 		
 		{
 			"type": "node",
+			"request": "attach",
+			"name": "Attach by Process ID",
+			"processId": "${command:PickProcess}"
+		},
+		{
+			"type": "node",
 			"request": "launch",
 			"name": "Mocha Tests",
 			"program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
@@ -15,21 +21,7 @@
 				"tdd",
 				"--timeout",
 				"999999",
-				"--colors",
-				"${workspaceFolder}/src/**/*.test.ts"
-			],
-			"internalConsoleOptions": "openOnSessionStart"
-		},
-		{
-			"type": "node",
-			"request": "launch",
-			"name": "Mocha E2E",
-			"program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-			"args": [
-				"-u",
-				"tdd",
-				"--colors",
-				"${workspaceFolder}/test/*.test.ts"
+				"--colors"
 			],
 			"internalConsoleOptions": "openOnSessionStart"
 		},
