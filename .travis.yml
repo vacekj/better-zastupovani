@@ -5,11 +5,6 @@ node_js:
 
 dist: trusty
 
-addons:
-  apt:
-    packages:
-      - xvfb
-
 before_script:
   - npm run build
 
