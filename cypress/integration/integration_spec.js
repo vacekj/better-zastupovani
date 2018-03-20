@@ -87,6 +87,7 @@ describe('Integration Tests', () => {
 		});
 
 		it('loads some date and corresponding data on startup', () => {
+			cy.get(test('filterTextbox')).clear();
 			waitForLoad();
 		});
 

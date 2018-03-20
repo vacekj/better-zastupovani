@@ -17,7 +17,7 @@ module.exports = (on) => {
 											"chrome": 64
 										}
 									}],
-									'babel-preset-react',
+									'babel-preset-react'
 								],
 							},
 						}],
