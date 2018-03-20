@@ -28,6 +28,5 @@ deploy:
   github-token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
   local-dir: './dist'
   fqdn: 'zastupovani.gytool.cz'
-  verbose: true
   on:
     branch: master
