@@ -568,12 +568,12 @@ namespace Tutorial {
 			prevBtnText: "Předchozí",
 			onHighlighted: () => {
 				if (!driver.hasNextStep()) {
-					Cookies.set(COOKIE_TUTCOMPLETE, "true");
+					Cookies.set(COOKIE_TUTCOMPLETE, "true", { expires: addYears(new Date(), 1) });
 				}
 			},
 			onDeselected: () => {
 				if (!driver.isActive) {
-					Cookies.set(COOKIE_TUTCOMPLETE, "true");
+					Cookies.set(COOKIE_TUTCOMPLETE, "true", { expires: addYears(new Date(), 1) });
 				}
 			}
 		});
