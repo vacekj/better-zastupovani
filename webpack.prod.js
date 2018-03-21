@@ -19,7 +19,6 @@ module.exports = merge(common, {
 		new UglifyJsPlugin({
 			cache: true,
 			parallel: true,
-			sourceMap: true,
 			uglifyOptions: {
 				ecma: 8
 			}
