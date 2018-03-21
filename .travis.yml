@@ -5,6 +5,11 @@ node_js:
 
 dist: trusty
 
+addons:
+  apt:
+    packages:
+      - xvfb
+
 install: npm install
 
 before_script:
