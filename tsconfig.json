@@ -5,6 +5,7 @@
 		"baseUrl": "./",
 		"outDir": "./dist/",
 		"noImplicitAny": false,
+		"sourceMap": true,
 		"target": "es2017",
 		"allowJs": true
 	},

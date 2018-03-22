@@ -434,13 +434,37 @@ namespace FilterHandler {
 	}
 
 	export function objectContainsString<T>(object: T, filter: string) {
-		// If filter is a class, match only whole word to prevent II.A from matching II.A6
-		const classRegex = new RegExp(".*\.[ABC]");
-		const isClass = classRegex.test(filter) ? "\\b" : "";
-		const regex = new RegExp("\\b" + Utils.escapeRegExp(filter) + isClass, "i");
+		const matchWholeWord = shouldMatchWholeWord(filter) ? "$" : "";
+
+		const regex = new RegExp("^\\b" + Utils.escapeRegExp(filter) + matchWholeWord, "i");
+
 		return Object.values(object).some((value: string) => {
 			return regex.test(value);
 		});
+	}
+
+	function shouldMatchWholeWord(filter: string) {
+		// If filter is a class, match only whole word to prevent II.A from matching II.A6
+		const classRegex = new RegExp("[1234ABCD]\.[ABC]");
+		if (classRegex.test(filter)) {
+			return true;
+		}
+
+		// If filter is an expanded teacher name, match only whole word to prevent Krejčíř from matching Krejčířová
+		if (teachersWithInitialsMap
+			.some((teacher) => filter
+				.toLowerCase()
+				.includes(teacher.full.toLowerCase()))) {
+			return true;
+		}
+
+		// If filter is a teacher without initial, match only whole word to prevent Kre from matching Krejčířová
+		const teachersWithoutInitials = ["kre", "zat"];
+		if (teachersWithoutInitials.some((teacher) => filter.toLowerCase() === teacher)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	const teachersWithInitialsMap = [
