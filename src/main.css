@@ -7,7 +7,21 @@ Main color: #2d548d
 	.container {
 		max-width: 1000px;
 	}
+
+	#header {
+		margin-top: 1.5rem;
+		margin-bottom: 1.5rem;
+	}
 }
+
+@media (max-width: 576px) {
+	#header {
+		margin-top: 0.5rem;
+		margin-bottom: 0;
+	}
+}
+
+
 
 html {
 	height: 100%;
