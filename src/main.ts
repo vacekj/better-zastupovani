@@ -66,8 +66,8 @@ function bootstrap() {
 	// Populate filter suggestions
 	Promise.all([suplGetter.getVyucujiciPage().then(parseVyucujiciPage), suplGetter.getClassesPage().then(parseClassesPage)])
 		.then((suggestions) => {
-			return suggestions
-				.flatten()
+			return suggestions[0]
+				.concat(suggestions[1])
 				.map((suggestion) => {
 					return `<option value="${suggestion}">`;
 				}).join("");
