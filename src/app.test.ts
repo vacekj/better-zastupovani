@@ -20,13 +20,8 @@ describe("FilterHandler", () => {
 					result: false
 				},
 				{
-					filter: "V.",
+					filter: "IV.B8",
 					string: "V.B8",
-					result: true
-				},
-				{
-					filter: "zat",
-					string: "Zatloukal",
 					result: false
 				},
 				{
@@ -42,7 +37,11 @@ describe("FilterHandler", () => {
 			];
 
 			assertions.map((assertion) => {
-				expect(objectContainsOneOf({ string: assertion.string }, [assertion.filter])).to.equal(assertion.result);
+				expect(objectContainsOneOf(
+					{ string: assertion.string },
+					[assertion.filter]),
+					`expected ${assertion.filter} to ${assertion.result ? "MATCH" : "NOT MATCH"} string ${assertion.string}`
+				).to.equal(assertion.result);
 			});
 		});
 	});
