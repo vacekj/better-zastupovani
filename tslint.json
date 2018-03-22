@@ -1,5 +1,8 @@
 {
-	"extends": "tslint:recommended",
+	"extends": [
+		"tslint:recommended",
+		"tslint-no-unused-expression-chai"
+	],
 	"rules": {
 		"object-literal-sort-keys": false,
 		"no-inferrable-types": true,
