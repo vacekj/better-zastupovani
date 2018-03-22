@@ -37,7 +37,7 @@ export function parseDatesPage(datesPage: string): DateWithUrl[] {
 	const $ = load(datesPage);
 	const options = $("option");
 
-	return [...options].map((option) => {
-		return new DateWithUrl(option.getAttribute("value"), option.innerHTML);
+	return Array.from(options).map((option: HTMLOptionElement) => {
+		return new DateWithUrl(option.getAttribute("value").toString(), option.innerHTML);
 	});
 }

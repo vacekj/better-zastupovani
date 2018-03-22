@@ -12,7 +12,7 @@ export function parseClassesPage(classesPage: string): string[] {
 	const $ = load(classesPage);
 	const options = $("option");
 
-	return [...options].map((option) => {
+	return Array.from(options).map((option) => {
 		return option.innerHTML;
 	});
 }
@@ -21,7 +21,7 @@ export function parseVyucujiciPage(vyucujiciPage: string): string[] {
 	const $ = load(vyucujiciPage);
 	const options = $("option");
 
-	return [...options].map((option) => {
+	return Array.from(options).map((option) => {
 		return option.innerHTML.split(" &nbsp;&nbsp;")[0];
 	});
 }

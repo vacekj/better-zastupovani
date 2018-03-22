@@ -6,7 +6,7 @@ import * as Hammer from "hammerjs";
 import * as isMobile from "is-mobile";
 import * as $ from "jquery";
 import * as Cookies from "js-cookie";
-import Raven from "raven-js";
+import * as Raven from "raven-js";
 
 // LIB Modules
 import { SuplGetterBrowser } from "./lib/getting/suplGetter";

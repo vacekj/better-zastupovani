@@ -17,9 +17,9 @@ export function parseTable(context: Element, dupCols = true, dupRows = true): st
 	let currX = 0;
 	let currY = 0;
 
-	[...$context("tr", context)].map((row, rowIDX) => {
+	Array.from($context("tr", context)).map((row, rowIDX) => {
 		currY = 0;
-		[...$context("td, th", row)].map((col, colIDX) => {
+		Array.from($context("td, th", row)).map((col, colIDX) => {
 			const rowspan = col.getAttribute("rowspan") || 1;
 			const colspan = col.getAttribute("colspan") || 1;
 			const content = col.innerHTML || "";
