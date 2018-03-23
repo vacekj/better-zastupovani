@@ -1,7 +1,7 @@
 // NPM Modules
 import { addYears, closestIndexTo, compareDesc, isBefore, isPast, isToday, isTomorrow, isWeekend, setHours } from "date-fns";
 import * as Driver from "driver.js";
-import "driver.js/dist/driver.min.css";
+import "./driver.min.css";
 import * as Hammer from "hammerjs";
 import * as isMobile from "is-mobile";
 import * as $ from "jquery";
@@ -15,7 +15,7 @@ import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
 import { DozorRecord, NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, parseVyucujiciPage, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
 import { addBackToTop } from "./lib/utils/backToTop";
 
-import {  } from "./FilterHandler";
+import { } from "./FilterHandler";
 import { objectContainsOneOf } from "./matchingLogic";
 
 const suplGetter = new SuplGetterBrowser();
@@ -505,8 +505,8 @@ namespace Tutorial {
 			doneBtnText: "Dokončit",
 			closeBtnText: "Zavřít",
 			stageBackground: "black",
-			nextBtnText: "Další",
-			prevBtnText: "Předchozí",
+			nextBtnText: "Další >",
+			prevBtnText: "<",
 			onHighlighted: () => {
 				if (!driver.hasNextStep()) {
 					Cookies.set(COOKIE_TUTCOMPLETE, "true", { expires: addYears(new Date(), 1) });
@@ -528,7 +528,7 @@ namespace Tutorial {
 				}
 			},
 			datum: {
-				element: "#selectorField_date",
+				element: "#driver_date",
 				popover: {
 					title: "Zde si vyberete datum",
 					description:
@@ -546,7 +546,7 @@ namespace Tutorial {
 				}
 			},
 			tlacitka: {
-				element: "#tlacitka",
+				element: ".btn-group",
 				popover: {
 					title: "Tlačítka Dnes a Zítra",
 					description:

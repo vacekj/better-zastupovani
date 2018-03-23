@@ -35,6 +35,7 @@
 		"strict-boolean-expressions": false,
 		"no-require-imports": false,
 		"no-namespace": false,
+		"ordered-imports": false,
 		"comment-format": [
 			true,
 			"check-space",

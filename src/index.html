@@ -62,8 +62,10 @@
 					</div>
 				</div>
 				<fieldset class="col-md-2 form-group" id="selectorField_date">
-					<label for="selector_date" class="bmd-label-floating">Datum</label>
-					<select class="form-control" name="selector_date" id="selector_date" data-test="datePicker"></select>
+					<div id="driver_date">
+						<label for="selector_date" class="bmd-label-floating">Datum</label>
+						<select class="form-control" name="selector_date" id="selector_date" data-test="datePicker"></select>
+					</div>
 				</fieldset>
 				<fieldset class="col-md-7 form-group" id="selectorField_filter">
 					<label for="selector_filter" class="bmd-label-floating">Filtr</label>
@@ -80,7 +82,8 @@
 				<div class="col-md-12">
 					<h5 class="float-left">Suplování</h5>
 					<span class="float-right text-muted small" style="position: relative; bottom: -5px;">
-						Poslední aktualizace: <span id="lastUpdated"></span>
+						Poslední aktualizace:
+						<span id="lastUpdated"></span>
 					</span>
 				</div>
 				<div class="col-md-12 table-responsive">
