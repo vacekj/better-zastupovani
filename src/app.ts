@@ -41,7 +41,8 @@ const Selectors = {
 	SuplovaniTable: $("#table_suplovani"),
 	DozoryTable: $("#table_dozory"),
 	ChybejiciTable: $("#table_chybejici"),
-	AlertRow: $("#alert-row")
+	AlertRow: $("#alert-row"),
+	LastUpdated: $("#lastUpdated")
 };
 
 const COOKIE_FILTER = "filter";
@@ -256,6 +257,7 @@ namespace RenderHandler {
 			};
 
 			RenderHandler.renderSuplovani(filterRecords(state.currentSuplovaniPage.suplovani, filter));
+			Selectors.LastUpdated.text(state.currentSuplovaniPage.lastUpdated);
 			RenderHandler.renderDozory(filterRecords(state.currentSuplovaniPage.dozory, filter));
 			RenderHandler.renderNahradniUcebny(filterRecords(state.currentSuplovaniPage.nahradniUcebny, filter));
 
@@ -267,6 +269,7 @@ namespace RenderHandler {
 		} else if (suplovaniPage) {
 			// Update render - render from supplied parameter
 			RenderHandler.renderSuplovani(suplovaniPage.suplovani);
+			Selectors.LastUpdated.text(suplovaniPage.lastUpdated);
 			RenderHandler.renderDozory(suplovaniPage.dozory);
 			RenderHandler.renderNahradniUcebny(suplovaniPage.nahradniUcebny);
 
