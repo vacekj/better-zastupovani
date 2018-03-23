@@ -48,6 +48,10 @@ h5 {
 	margin-bottom: .25rem!important;
 }
 
+hr {
+	margin-top: 0;
+}
+
 /* Header */
 
 .logo {
