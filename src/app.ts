@@ -502,6 +502,7 @@ namespace Tutorial {
 			opacity: 0.6,
 			padding: 10,
 			allowClose: true,
+			scrollIntoViewOptions: { block: "end" },
 			doneBtnText: "Dokončit",
 			closeBtnText: "Zavřít",
 			stageBackground: "black",
