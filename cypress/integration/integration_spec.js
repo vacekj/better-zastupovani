@@ -21,12 +21,6 @@ describe('Integration Tests', () => {
 			cy.wait(1000);
 		});
 		it('cancels the tutorial on overlay click', () => {
-			// FIXME: driver.js throws an error here, remove this when they fix it
-			cy.on('uncaught:exception', (err, runnable) => {
-				// return false to prevent the error from
-				// failing this test
-				return false;
-			});
 			cy.get('#driver-page-overlay').click();
 		});
 	});
