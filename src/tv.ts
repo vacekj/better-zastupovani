@@ -1,14 +1,14 @@
-import "./commonImports";
+import "./script/commonImports";
 
 // Page-specific imports
-import "./tv.css";
+import "./styles/tv.css";
 import "./tv.html";
 
 // NPM Modules
 import { closestIndexTo, compareDesc, isBefore, isPast, isToday, isWeekend, setHours } from "date-fns";
 import * as $ from "./lib/vendor/jquery.min.js";
-import ms from "ms";
-import Raven from "raven-js";
+import * as ms from "ms";
+import * as Raven from "raven-js";
 
 // LIB Modules
 import { SuplGetterBrowser } from "./lib/getting/suplGetter";
