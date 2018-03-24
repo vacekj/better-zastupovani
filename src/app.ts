@@ -107,6 +107,9 @@ function bootstrap() {
 				DatesHandler.selectDate(sortedDates[0]);
 			}
 
+			// TODO: Read and apply settings here
+			// Settings: Nahr. ucebny pred dozory: // TODO: need to add these to HTML and to Selectors $("#nahucRow").insertAfter($("#suplovaniRow"));
+			// TODO: Extract all selectors to Selectors object
 			if (!Cookies.get(COOKIE_TUTCOMPLETE)) {
 				Tutorial.start();
 			}
