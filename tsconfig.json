@@ -10,7 +10,8 @@
 		"allowJs": true,
 		"lib": [
 			"es2015",
-			"dom"
+			"dom",
+			"es2017.object"
 		]
 	},
 	"typeAcquisition": {
