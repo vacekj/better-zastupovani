@@ -13,7 +13,7 @@
 		"lint": "tslint src/**/*.ts --project tsconfig.json --fix",
 		"test-server-prod": "http-server ./dist --silent",
 		"cy:run": "cypress run",
-		"cy:run:record": "cypress run --record --key 11118fd8-27c7-4ee0-8c61-4ab69625c7b6",
+		"cy:run:record": "cypress run --record --key",
 		"cy:open": "cypress open",
 		"cy:local:prod:run": "npm run build && start-server-and-test test-server-prod http://192.168.1.200:8080 cy:run",
 		"cy:ci:prod:run": "start-server-and-test test-server-prod http://127.0.0.1:8080 cy:run:record",
