@@ -6,7 +6,7 @@ import "./tv.html";
 
 // NPM Modules
 import { closestIndexTo, compareDesc, isBefore, isPast, isToday, isWeekend, setHours } from "date-fns";
-import * as $ from "jquery";
+import * as $ from "./lib/vendor/jquery.min.js";
 import ms from "ms";
 import Raven from "raven-js";
 
