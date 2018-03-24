@@ -48,7 +48,7 @@ const Selectors = {
 const COOKIE_FILTER = "filter";
 const COOKIE_TUTCOMPLETE = "tutcomplete";
 
-$(document).ready(bootstrap);
+bootstrap();
 
 function bootstrap() {
 	Raven.config("https://9d2a2a92d6d84dc08743bfb197a5cb65@sentry.io/296434").install();
