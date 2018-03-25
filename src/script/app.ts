@@ -1,21 +1,20 @@
 // NPM Modules
 import { addYears, closestIndexTo, compareDesc, isBefore, isPast, isToday, isTomorrow, isWeekend, setHours } from "date-fns";
 import * as Driver from "driver.js";
-import "./driver.min.css";
+import "../styles/vendor/driver.min.css";
 import * as Hammer from "hammerjs";
 import * as isMobile from "is-mobile";
-import * as $ from "jquery";
+import * as $ from "../lib/vendor/jquery.min.js";
 import * as Cookies from "js-cookie";
 import * as Raven from "raven-js";
 
 // LIB Modules
-import { SuplGetterBrowser } from "./lib/getting/suplGetter";
-import { ChybejiciRecord, ChybejiciTable } from "./lib/parsing/ChybejiciParser";
-import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
-import { DozorRecord, NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, parseVyucujiciPage, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
-import { addBackToTop } from "./lib/utils/backToTop";
+import { SuplGetterBrowser } from "../lib/getting/suplGetter";
+import { ChybejiciRecord, ChybejiciTable } from "../lib/parsing/ChybejiciParser";
+import { DateWithUrl, parseDatesPage } from "../lib/parsing/DatesParser";
+import { DozorRecord, NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, parseVyucujiciPage, SuplovaniPage, SuplovaniRecord } from "../lib/parsing/suplParser";
+import { addBackToTop } from "../lib/utils/backToTop";
 
-import { } from "./FilterHandler";
 import { objectContainsOneOf } from "./matchingLogic";
 
 const suplGetter = new SuplGetterBrowser();
@@ -48,9 +47,7 @@ const Selectors = {
 const COOKIE_FILTER = "filter";
 const COOKIE_TUTCOMPLETE = "tutcomplete";
 
-$(document).ready(bootstrap);
-
-function bootstrap() {
+export default function bootstrap() {
 	Raven.config("https://9d2a2a92d6d84dc08743bfb197a5cb65@sentry.io/296434").install();
 	addBackToTop({
 		backgroundColor: "#002c5f",

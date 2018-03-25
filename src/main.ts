@@ -1,8 +1,10 @@
-import "./commonImports";
+// Import files common for all pages
+import "./script/commonImports";
 
 // Page-specific imports
 import "./index.html";
-import "./main.css";
+import "./styles/main.css";
 
-// Import app
-import "./app";
+// Import and run app
+import app from "./script/app";
+app();
