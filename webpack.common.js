@@ -5,7 +5,7 @@ require('ts-loader');
 
 module.exports = {
 	entry: {
-		"main": ["babel-polyfill", "whatwg-fetch", "./src/main.ts"],
+		"index": ["babel-polyfill", "whatwg-fetch", "./src/index.ts"],
 		"tv": "./src/tv.ts"
 	},
 	devtool: "source-map",
