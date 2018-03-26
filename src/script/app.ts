@@ -4,7 +4,8 @@ import * as Driver from "driver.js";
 import "../styles/vendor/driver.min.css";
 import * as Hammer from "hammerjs";
 import * as isMobile from "is-mobile";
-import * as $ from "../lib/vendor/jquery.min.js";
+import * as jq from "../lib/vendor/jquery.min.js";
+const $: JQueryStatic = (jq as any); // Needed for typescript definitions to work
 import * as Cookies from "js-cookie";
 import * as Raven from "raven-js";
 
@@ -19,8 +20,7 @@ import { objectContainsOneOf } from "./matchingLogic";
 
 const suplGetter = new SuplGetterBrowser();
 
-// tslint:disable-next-line:prefer-const
-let state: {
+const state: {
 	currentSuplovaniPage: SuplovaniPage | null,
 	sortedDates: DateWithUrl[] | null
 } = {
@@ -85,7 +85,8 @@ export default function bootstrap() {
 			// Update state with sorted dates (needed only once on bootstrap)
 			state.sortedDates = sortedDates;
 
-			Utils.enableDayButtons();
+			Utils.enableDateControls();
+			Utils.enableFilterControls();
 
 			// Transform dates to <option>'s
 			const datesOptions = sortedDates.map(RenderHandler.dateWithUrlToOption).join("");
@@ -442,7 +443,7 @@ namespace Utils {
 			}
 		});
 	}
-	export function enableDayButtons() {
+	export function enableDateControls() {
 		const today = state.sortedDates.find((dateWithUrl) => {
 			return isToday(dateWithUrl.date);
 		});
@@ -455,10 +456,15 @@ namespace Utils {
 			return isTomorrow(dateWithUrl.date);
 		});
 
-		// Disable tomorrow button if tomorrow is the weekend
 		if (tomorrow !== undefined) {
 			Selectors.TomorrowButton[0].removeAttribute("disabled");
 		}
+
+		Selectors.DateSelector[0].removeAttribute("disabled");
+	}
+
+	export function enableFilterControls() {
+		Selectors.FilterSelector[0].removeAttribute("readonly");
 	}
 
 	export function removeControlChars(s: string) {
