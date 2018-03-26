@@ -64,13 +64,13 @@
 				<fieldset class="col-md-2 form-group" id="selectorField_date">
 					<div id="driver_date">
 						<label for="selector_date" class="bmd-label-floating">Datum</label>
-						<select class="form-control" name="selector_date" id="selector_date" data-test="datePicker"></select>
+						<select class="form-control" name="selector_date" id="selector_date" data-test="datePicker" disabled></select>
 					</div>
 				</fieldset>
 				<fieldset class="col-md-7 form-group" id="selectorField_filter">
 					<label for="selector_filter" class="bmd-label-floating">Filtr</label>
 					<input type="text" class="form-control" name="selector_filter" id="selector_filter" placeholder="Učitel, třída..." list="filterSuggestions"
-					 data-test="filterTextbox">
+					 data-test="filterTextbox" readonly>
 					<datalist id="filterSuggestions">
 					</datalist>
 				</fieldset>
@@ -211,7 +211,7 @@
 	<!-- Polyfill  TODO: is this needed at all? -->
 	<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
 	<!-- Webpack bundle -->
-	<script src="main.js"></script>
+	<script src="index.js"></script>
 </body>
 
 </html>
