@@ -137,7 +137,7 @@ describe('Integration Tests', () => {
 				.get("#pruvodce")
 				.scrollIntoView()
 				.get("#back-to-top")
-				.click()
+				.click({ force: true })
 				.wait(300)
 				.window()
 				.then((window) => {
