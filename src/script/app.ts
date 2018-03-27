@@ -167,7 +167,7 @@ namespace DatesHandler {
 	export function selectDate(date: DateWithUrl) {
 		const dateSelector = Selectors.DateSelector[0];
 		const index = state.sortedDates.indexOf(date);
-		if (index) {
+		if (index !== undefined) {
 			(dateSelector as HTMLSelectElement).selectedIndex = index;
 			DatesHandler.triggerDateChange();
 		}
