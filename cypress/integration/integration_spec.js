@@ -48,23 +48,7 @@ describe('Integration Tests', () => {
 			}
 		});
 
-		// // TODO: check that buttons change date on click to corresponding date.
-		// it("changes date when buttons are clicked", () => {
-		// 	// mock time to monday
-		// 	const monday = new Date(2018, 2, 26).getTime();
-		// 	cy.clock(monday, ["Date"]);
-		// 	cy.reload(true);
-		// 	waitForLoad();
-		// 	triggerDateChange();
-		// 	// test that clicking tomorrow changes the date to tomorrow
-		// 	cy.get(test("button_tomorrow")).click();
-		// 	cy.get("@datePicker").then((datePicker) => {
-		// 		const index = datePicker[0].selectedIndex;
-		// 		const selectedDate = datePicker.children()[index];
-		// 		cy.wrap(selectedDate).should("have.text", "27. 2. 2018");
-		// 	});
-
-		// });
+		// TODO: test for tomorrow and today button data changing, but only if they are enabled
 	});
 
 	// TODO: test hiding empty columns on mobile

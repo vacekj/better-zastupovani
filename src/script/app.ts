@@ -169,7 +169,7 @@ namespace DatesHandler {
 		const index = state.sortedDates.indexOf(date);
 		if (index !== undefined) {
 			(dateSelector as HTMLSelectElement).selectedIndex = index;
-			DatesHandler.triggerDateChange();
+			DatesHandler.onDateChange();
 		}
 	}
 
@@ -198,9 +198,10 @@ namespace DatesHandler {
 		DatesHandler.selectDate(tomorrow);
 	}
 
-	export function onDateChange(this: HTMLSelectElement) {
+	export function onDateChange() {
+		const self = Selectors.DateSelector[0] as HTMLSelectElement;
 		Utils.showLoadingIndicators();
-		const newDateUrl: string | null = this.options[this.selectedIndex].getAttribute("url");
+		const newDateUrl: string | null = self.options[self.selectedIndex].getAttribute("url");
 		if (!newDateUrl) {
 			return;
 		}
@@ -222,10 +223,6 @@ namespace DatesHandler {
 			.catch(Utils.catchHandler);
 	}
 
-	export function triggerDateChange() {
-		Selectors.DateSelector[0].dispatchEvent(new Event("change"));
-	}
-
 	export function nextDay() {
 		const select = (Selectors.DateSelector[0] as HTMLSelectElement);
 		if (select.selectedIndex === 0) {
@@ -233,7 +230,7 @@ namespace DatesHandler {
 		} else {
 			select.selectedIndex--;
 		}
-		DatesHandler.triggerDateChange();
+		DatesHandler.onDateChange();
 	}
 	export function previousDay() {
 		const select = (Selectors.DateSelector[0] as HTMLSelectElement);
@@ -242,7 +239,7 @@ namespace DatesHandler {
 		} else {
 			select.selectedIndex++;
 		}
-		DatesHandler.triggerDateChange();
+		DatesHandler.onDateChange();
 	}
 }
 
