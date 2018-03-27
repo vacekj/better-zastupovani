@@ -138,11 +138,8 @@ describe('Integration Tests', () => {
 				.scrollIntoView()
 				.get("#back-to-top")
 				.click({ force: true })
-				.wait(300)
-				.window()
-				.then((window) => {
-					expect(window.scrollY).to.equal(0);
-				});
+				.get("#header")
+				.should("be.visible");
 		});
 	});
 });
