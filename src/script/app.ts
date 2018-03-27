@@ -410,12 +410,11 @@ export namespace FilterHandler {
 	export function onFilterChange(this: HTMLInputElement) {
 		const value = this.value.trim();
 		if (value && value.length) {
-			// Save filter to cookie
-			Cookies.set(COOKIE_FILTER, value, { expires: addYears(new Date(), 1) });
 			RenderHandler.render(undefined, value);
 		} else {
 			RenderHandler.render(state.currentSuplovaniPage);
 		}
+		Cookies.set(COOKIE_FILTER, value, { expires: addYears(new Date(), 1) });
 	}
 }
 
