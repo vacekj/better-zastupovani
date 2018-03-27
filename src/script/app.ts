@@ -167,7 +167,7 @@ namespace DatesHandler {
 	export function selectDate(date: DateWithUrl) {
 		const dateSelector = Selectors.DateSelector[0];
 		const index = state.sortedDates.indexOf(date);
-		if (index) {
+		if (index !== undefined) {
 			(dateSelector as HTMLSelectElement).selectedIndex = index;
 			DatesHandler.triggerDateChange();
 		}
@@ -410,12 +410,11 @@ export namespace FilterHandler {
 	export function onFilterChange(this: HTMLInputElement) {
 		const value = this.value.trim();
 		if (value && value.length) {
-			// Save filter to cookie
-			Cookies.set(COOKIE_FILTER, value, { expires: addYears(new Date(), 1) });
 			RenderHandler.render(undefined, value);
 		} else {
 			RenderHandler.render(state.currentSuplovaniPage);
 		}
+		Cookies.set(COOKIE_FILTER, value, { expires: addYears(new Date(), 1) });
 	}
 }
 
