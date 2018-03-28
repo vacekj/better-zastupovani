@@ -58,25 +58,26 @@ describe('Integration Tests', () => {
 		});
 
 		it("changes data on day buttons click", () => {
-			lastDate();
-			cy.get("@tomorrowButton").then((button) => {
-				if (!button[0].getAttribute("disabled")) {
-					const oldHTML = button[0].innerHTML;
-					cy.get("@tomorrowButton").click().then(() => {
-						checkHTMLChanged(oldHTML);
-					});
-				}
-			});
+			checkButtonChangesData("@todayButton");
+			checkButtonChangesData("@tomorrowButton");
 
-			lastDate();
-			cy.get("@tomorrowButton").then((button) => {
-				if (!button[0].getAttribute("disabled")) {
-					const oldHTML = button[0].innerHTML;
-					cy.get("@tomorrowButton").click().then(() => {
-						checkHTMLChanged(oldHTML);
-					});
-				}
-			});
+			function checkButtonChangesData(button) {
+				selectLastDate();
+				cy.get(button).then((btn) => {
+					if (btn[0].getAttribute("disabled") === "") {
+						return;
+					} else {
+						cy.get("@suplovaniTable").then((suplovaniTable) => {
+							const oldHTML = suplovaniTable[0].innerHTML;
+							cy.get(button).click().then(() => {
+								waitForSuplTableDataLoad().then(() => {
+									checkSuplTableChanged(oldHTML);
+								});
+							});
+						});
+					}
+				});
+			}
 		});
 	});
 
@@ -95,7 +96,7 @@ describe('Integration Tests', () => {
 
 		it('loads some date and corresponding data on startup', () => {
 			cy.get(test('filterTextbox')).clear();
-			waitForLoad();
+			waitForSuplTableDataLoad();
 		});
 
 		it('changes data on datePicker date change', () => {
@@ -103,7 +104,7 @@ describe('Integration Tests', () => {
 				return el[0].innerHTML;
 			}).then((oldHTML) => {
 				nextDate();
-				checkHTMLChanged(oldHTML);
+				checkSuplTableChanged(oldHTML);
 			});
 		});
 	});
@@ -119,7 +120,7 @@ describe('Integration Tests', () => {
 				return el[0].innerHTML;
 			}).then((innerHTML) => {
 				return sha256(innerHTML);
-			}).then(async (hash) => {
+			}).then((hash) => {
 				cy.get('[data-test=suplovaniTable] > tbody > :nth-child(1) > :nth-child(2)').then((tds) => {
 					const text = tds[0].innerText;
 					cy.get('@filterTextbox').type(text);
@@ -144,7 +145,7 @@ describe('Integration Tests', () => {
 	});
 });
 
-function checkHTMLChanged(oldHTML) {
+function checkSuplTableChanged(oldHTML) {
 	cy.get('@suplovaniTable').then((el) => {
 		return el[0].innerHTML;
 	}).then((currentHTML) => {
@@ -152,7 +153,7 @@ function checkHTMLChanged(oldHTML) {
 	});
 }
 
-function lastDate() {
+function selectLastDate() {
 	cy.get(test('datePicker')).then((result) => {
 		const optionsLength = result[0].options.length;
 		cy
@@ -166,24 +167,30 @@ function lastDate() {
 function nextDate() {
 	cy.get(test('datePicker')).then((result) => {
 		const selectedIndex = result[0].selectedIndex;
+		let offset;
+		if (selectedIndex === result[0].options.length + 1) {
+			offset = -1;
+		} else {
+			offset = 1;
+		}
 		cy
 			.get(test('datePicker') + ' > option')
-			.filter(`:nth-child(${selectedIndex + 3})`)
+			.filter(`:nth-child(${selectedIndex + 1 + offset})`)
 			.invoke('attr', 'selected', true);
 		triggerDateChange();
 	});
 }
 
-function waitForLoad() {
+function waitForSuplTableDataLoad() {
 	// TODO: check if data matches class, room etc regexes
-	cy.get('[data-test=suplovaniTable] > tbody > :nth-child(1) > :nth-child(2)');
+	return cy.get('[data-test=suplovaniTable] > tbody > :nth-child(1) > :nth-child(2)');
 }
 
 function triggerDateChange() {
 	cy
 		.get(test('datePicker'))
 		.trigger('change');
-	waitForLoad();
+	waitForSuplTableDataLoad();
 }
 
 function test(testID) {
