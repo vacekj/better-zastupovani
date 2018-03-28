@@ -497,17 +497,17 @@ namespace Utils {
 }
 
 namespace Tutorial {
-	let driver;
+	let driver: Driver;
 	function initialize() {
 		driver = new Driver({
 			animate: true,
 			opacity: 0.6,
+			stageBackground: "white",
 			padding: 10,
 			allowClose: true,
 			scrollIntoViewOptions: { block: "end" },
 			doneBtnText: "Dokončit",
 			closeBtnText: "Zavřít",
-			stageBackground: "black",
 			nextBtnText: "Další >",
 			prevBtnText: "<",
 			onHighlighted: () => {
@@ -516,7 +516,7 @@ namespace Tutorial {
 				}
 			},
 			onDeselected: () => {
-				if (!driver.isActive) {
+				if (!driver.isActivated) {
 					Cookies.set(COOKIE_TUTCOMPLETE, "true", { expires: addYears(new Date(), 1) });
 				}
 			}
@@ -545,7 +545,7 @@ namespace Tutorial {
 				popover: {
 					title: "Gesta na mobilních zařízeních",
 					description:
-						`Na mobilních zařízeních lze datum měnit také přejetím doleva/doprava	 přes pole dat.`
+						`Na mobilních zařízeních lze datum měnit také přejetím doleva/doprava přes pole dat.`
 				}
 			},
 			tlacitka: {
@@ -584,8 +584,9 @@ namespace Tutorial {
 					title: "Tabulka chybějících",
 					description:
 						`Chybějící jsou zobrazeni v přehledné tabulce.
-						Modrá výplň znamená, že subjekt nechybí, šedá případ opačný.
-						`
+						Modrá výplň znamená, že subjekt v danou hodiny nechybí, šedá případ opačný.
+						`,
+					position: "top"
 				}
 			},
 			dotazy: {
