@@ -4,8 +4,6 @@ import * as Driver from "driver.js";
 import "../styles/vendor/driver.min.css";
 import * as Hammer from "hammerjs";
 import * as isMobile from "is-mobile";
-import * as jq from "../lib/vendor/jquery.min.js";
-const $: JQueryStatic = (jq as any); // Needed for typescript definitions to work
 import * as Cookies from "js-cookie";
 import * as Raven from "raven-js";
 
