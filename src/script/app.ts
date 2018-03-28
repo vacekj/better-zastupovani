@@ -583,8 +583,8 @@ namespace Tutorial {
 				popover: {
 					title: "Tabulka chybějících",
 					description:
-						`Chybějící jsou zobrazeni v přehledné tabulce.
-						Modrá výplň znamená, že subjekt v danou hodiny nechybí, šedá případ opačný.
+						`Chybějící jsou zobrazeni v přehledné tabulce. Každá buňka reprezentuje jednu hodinu.
+						Šedá výplň znamená, že subjekt v danou hodinu chybí, modrá případ opačný.
 						`,
 					position: "top"
 				}
