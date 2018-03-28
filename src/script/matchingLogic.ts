@@ -73,7 +73,10 @@ export const teachersWithInitialsMap = [
 	},
 	{
 		acronym: "ZatI", full: "Zatloukalová"
-	}
+	}, 
+  { 
+    acronym: "Zat", full: "Zatloukalová" 
+  } 
 ];
 
 function escapeRegExp(str: string) {
