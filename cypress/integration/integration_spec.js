@@ -63,20 +63,27 @@ describe('Integration Tests', () => {
 
 			function checkButtonChangesData(button) {
 				selectLastDate();
-				cy.get(button).then((btn) => {
-					if (btn[0].getAttribute("disabled") === "") {
-						return;
-					} else {
-						cy.get("@suplovaniTable").then((suplovaniTable) => {
-							const oldHTML = suplovaniTable[0].innerHTML;
-							cy.get(button).click().then(() => {
-								waitForSuplTableDataLoad().then(() => {
-									checkSuplTableChanged(oldHTML);
+				cy
+					.get(button)
+					.then((btn) => {
+						if (btn[0].getAttribute("disabled") === "") {
+							return "";
+						} else {
+							return cy.get("@suplovaniTable").then((suplovaniTable) => suplovaniTable[0].innerHTML);
+						}
+					}).then((oldHtml) => {
+						if (oldHtml === "") {
+							return;
+						} else {
+							cy
+								.get(button)
+								.click()
+								.then(waitForSuplTableDataLoad)
+								.then(() => {
+									checkSuplTableChanged(oldHtml);
 								});
-							});
-						});
-					}
-				});
+						}
+					});
 			}
 		});
 	});
