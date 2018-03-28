@@ -29,21 +29,20 @@ const state: {
 	};
 
 const Selectors = {
-	DateSelector: $("#selector_date"),
-	TodayButton: $("button#today"),
-	TomorrowButton: $("button#tomorrow"),
-	FilterSelector: $("#selector_filter"),
-	NahradniUcebnyTable: $("#table_nahradniUcebny"),
-	FilterSuggestionsDatalist: $("datalist#filterSuggestions"),
-	Pruvodce: $("#pruvodce"),
-	SelectorFieldDate: $("#selectorField_date"),
-	SuplovaniTable: $("#table_suplovani"),
-	DozoryTable: $("#table_dozory"),
-	ChybejiciTable: $("#table_chybejici"),
-	AlertRow: $("#alert-row"),
-	LastUpdated: $("#lastUpdated")
+	get DateSelector() { return document.querySelector("#selector_date"); },
+	get TodayButton() { return document.querySelector("button#today"); },
+	get TomorrowButton() { return document.querySelector("button#tomorrow"); },
+	get FilterSelector(): HTMLInputElement { return document.querySelector("#selector_filter"); },
+	get NahradniUcebnyTable() { return document.querySelector("#table_nahradniUcebny"); },
+	get FilterSuggestionsDatalist(): HTMLDataListElement { return document.querySelector("datalist#filterSuggestions"); },
+	get Pruvodce() { return document.querySelector("#pruvodce"); },
+	get SelectorFieldDate(): HTMLElement { return document.querySelector("#selectorField_date"); },
+	get SuplovaniTable() { return document.querySelector("#table_suplovani"); },
+	get DozoryTable() { return document.querySelector("#table_dozory"); },
+	get ChybejiciTable() { return document.querySelector("#table_chybejici"); },
+	get AlertRow() { return document.querySelector("#alert-row"); },
+	get LastUpdated(): HTMLDivElement { return document.querySelector("#lastUpdated"); }
 };
-
 const COOKIE_FILTER = "filter";
 const COOKIE_TUTCOMPLETE = "tutcomplete";
 
@@ -68,7 +67,7 @@ export default function bootstrap() {
 				}).join("");
 		})
 		.then((options) => {
-			Selectors.FilterSuggestionsDatalist.append(options);
+			Selectors.FilterSuggestionsDatalist.innerHTML = options;
 		})
 		.catch((Utils.catchHandler));
 
@@ -92,7 +91,7 @@ export default function bootstrap() {
 			const datesOptions = sortedDates.map(RenderHandler.dateWithUrlToOption).join("");
 
 			// Append options to date selector
-			Selectors.DateSelector.append(datesOptions);
+			Selectors.DateSelector.innerHTML = datesOptions;
 
 			// Get and select best day
 			const closestDay: DateWithUrl = DatesHandler.getBestDay(sortedDates);
@@ -116,12 +115,13 @@ export default function bootstrap() {
 }
 
 function registerEventHandlers() {
-	Selectors.TodayButton.on("click", DatesHandler.todayButtonHandler);
-	Selectors.TomorrowButton.on("click", DatesHandler.tomorrowButtonHandler);
-	Selectors.DateSelector.on("change", DatesHandler.onDateChange);
-	Selectors.FilterSelector.on("keyup input", FilterHandler.onFilterChange);
+	Selectors.TodayButton.addEventListener("click", DatesHandler.todayButtonHandler);
+	Selectors.TomorrowButton.addEventListener("click", DatesHandler.tomorrowButtonHandler);
+	Selectors.DateSelector.addEventListener("change", DatesHandler.onDateChange);
+	Selectors.FilterSelector.addEventListener("keyup", FilterHandler.onFilterChange);
+	Selectors.FilterSelector.addEventListener("input", FilterHandler.onFilterChange);
 
-	Selectors.Pruvodce.on("click", (e: JQuery.Event) => {
+	Selectors.Pruvodce.addEventListener("click", (e) => {
 		e.stopImmediatePropagation();
 		e.stopPropagation();
 		// Skip the first step
@@ -129,7 +129,7 @@ function registerEventHandlers() {
 	});
 
 	// Touch Gestures
-	const hammertime = new Hammer(Selectors.SelectorFieldDate[0]);
+	const hammertime = new Hammer(Selectors.SelectorFieldDate);
 	hammertime.on("swipe", (ev) => {
 		if (ev.direction === 4 /* swipe right */) {
 			DatesHandler.previousDay();
@@ -165,7 +165,7 @@ namespace DatesHandler {
 		return closestDay;
 	}
 	export function selectDate(date: DateWithUrl) {
-		const dateSelector = Selectors.DateSelector[0];
+		const dateSelector = Selectors.DateSelector;
 		const index = state.sortedDates.indexOf(date);
 		if (index !== undefined) {
 			(dateSelector as HTMLSelectElement).selectedIndex = index;
@@ -199,7 +199,7 @@ namespace DatesHandler {
 	}
 
 	export function onDateChange() {
-		const self = Selectors.DateSelector[0] as HTMLSelectElement;
+		const self = Selectors.DateSelector as HTMLSelectElement;
 		Utils.showLoadingIndicators();
 		const newDateUrl: string | null = self.options[self.selectedIndex].getAttribute("url");
 		if (!newDateUrl) {
@@ -214,8 +214,8 @@ namespace DatesHandler {
 			.then((suplovaniPage) => {
 				// Filter cookie
 				if (Cookies.get(COOKIE_FILTER)) {
-					Selectors.FilterSelector.val(Cookies.get(COOKIE_FILTER) as string);
-					RenderHandler.render(undefined, $(Selectors.FilterSelector).val() as string);
+					Selectors.FilterSelector.value = Cookies.get(COOKIE_FILTER);
+					RenderHandler.render(undefined, Selectors.FilterSelector.value);
 				} else {
 					RenderHandler.render(suplovaniPage);
 				}
@@ -224,7 +224,7 @@ namespace DatesHandler {
 	}
 
 	export function nextDay() {
-		const select = (Selectors.DateSelector[0] as HTMLSelectElement);
+		const select = (Selectors.DateSelector as HTMLSelectElement);
 		if (select.selectedIndex === 0) {
 			return;
 		} else {
@@ -233,7 +233,7 @@ namespace DatesHandler {
 		DatesHandler.onDateChange();
 	}
 	export function previousDay() {
-		const select = (Selectors.DateSelector[0] as HTMLSelectElement);
+		const select = (Selectors.DateSelector as HTMLSelectElement);
 		if (select.selectedIndex === select.options.length - 1) {
 			return;
 		} else {
@@ -255,7 +255,7 @@ namespace RenderHandler {
 			};
 
 			RenderHandler.renderSuplovani(filterRecords(state.currentSuplovaniPage.suplovani, filter));
-			Selectors.LastUpdated.text(state.currentSuplovaniPage.lastUpdated);
+			Selectors.LastUpdated.innerText = state.currentSuplovaniPage.lastUpdated;
 			RenderHandler.renderDozory(filterRecords(state.currentSuplovaniPage.dozory, filter));
 			RenderHandler.renderNahradniUcebny(filterRecords(state.currentSuplovaniPage.nahradniUcebny, filter));
 
@@ -267,7 +267,7 @@ namespace RenderHandler {
 		} else if (suplovaniPage) {
 			// Update render - render from supplied parameter
 			RenderHandler.renderSuplovani(suplovaniPage.suplovani);
-			Selectors.LastUpdated.text(suplovaniPage.lastUpdated);
+			Selectors.LastUpdated.innerText = suplovaniPage.lastUpdated;
 			RenderHandler.renderDozory(suplovaniPage.dozory);
 			RenderHandler.renderNahradniUcebny(suplovaniPage.nahradniUcebny);
 
@@ -280,13 +280,13 @@ namespace RenderHandler {
 	}
 
 	export function renderSuplovani(suplovaniRecords: SuplovaniRecord[]) {
-		const suplovaniTable = Selectors.SuplovaniTable.find("tbody");
+		const suplovaniTable = Selectors.SuplovaniTable.querySelector("tbody");
 
 		const content = suplovaniRecords.length
 			? suplovaniRecords.map(RenderHandler.suplovaniRecordToTr).join("")
 			: RenderHandler.rowHeader("Žádné suplování", 8);
 
-		suplovaniTable.html(content);
+		suplovaniTable.innerHTML = content;
 	}
 
 	export function suplovaniRecordToTr(suplovaniRecord: SuplovaniRecord): string {
@@ -304,13 +304,13 @@ namespace RenderHandler {
 	}
 
 	export function renderDozory(dozorRecords: DozorRecord[]) {
-		const dozorTable = Selectors.DozoryTable.find("tbody");
+		const dozorTable = Selectors.DozoryTable.querySelector("tbody");
 
 		const content = dozorRecords.length
 			? dozorRecords.map(RenderHandler.dozorRecordToTr).join("")
 			: RenderHandler.rowHeader("Žádné dozory", 6);
 
-		dozorTable.html(content);
+		dozorTable.innerHTML = content;
 	}
 
 	export function dozorRecordToTr(dozorRecord: DozorRecord): string {
@@ -325,7 +325,7 @@ namespace RenderHandler {
 	}
 
 	export function renderChybejici(chybejici: ChybejiciTable) {
-		const chybejiciTable = Selectors.ChybejiciTable.find("tbody");
+		const chybejiciTable = Selectors.ChybejiciTable.querySelector("tbody");
 
 		const noChybejici = RenderHandler.rowHeader("Žádní chybějící", 9);
 
@@ -342,7 +342,7 @@ namespace RenderHandler {
 			${ucebny.length ? ucebny : noChybejici}
 		`;
 
-		chybejiciTable.html(content);
+		chybejiciTable.innerHTML = content;
 	}
 
 	export function chybejiciRecordToTr(chybejiciRecord: ChybejiciRecord) {
@@ -363,13 +363,13 @@ namespace RenderHandler {
 	}
 
 	export function renderNahradniUcebny(nahradniUcebnyRecords: NahradniUcebnaRecord[]) {
-		const nahradniUcebnyTable = Selectors.NahradniUcebnyTable.find("tbody");
+		const nahradniUcebnyTable = Selectors.NahradniUcebnyTable.querySelector("tbody");
 
 		const content = nahradniUcebnyRecords.length
 			? nahradniUcebnyRecords.map(RenderHandler.nahradniUcebnaRecordToTr).join("")
 			: RenderHandler.rowHeader("Žádné náhradní učebny", 8);
 
-		nahradniUcebnyTable.html(content);
+		nahradniUcebnyTable.innerHTML = content;
 	}
 
 	export function nahradniUcebnaRecordToTr(nahradniUcebna: NahradniUcebnaRecord) {
@@ -391,7 +391,7 @@ namespace RenderHandler {
 				${oznameni}
 			</div>
 		</div>` : "";
-		$("#oznameniContainer").html(template);
+		document.querySelector("#oznameniContainer").innerHTML = template;
 	}
 
 	export function rowHeader(text: string, colspan: number) {
@@ -425,17 +425,21 @@ namespace Utils {
 
 	export function hideEmptyColumns() {
 		// Clear hidden classes first
-		$("th, td").removeClass("hidden");
+		document.querySelector("th, td").classList.remove("hidden");
 
-		$("#table_suplovani th").each(function (i) {
+		Array.from(document.querySelectorAll("#table_suplovani th")).map((th, i) => {
 			let remove = 0;
 
-			const tds = $(this).parents("table").find("tr td:nth-child(" + (i + 1) + ")");
-			tds.each(function (j) { if (this.innerHTML === "") { remove++; } });
+			const tds = Array.from(th.parentNode.parentNode.parentElement.querySelectorAll("tr td:nth-child(" + (i + 1) + ")"));
+			tds.map((td) => {
+				if (td.textContent === "") {
+					remove++;
+				}
+			});
 
-			if (remove === ($("#table_suplovani tr").length - 1)) {
-				$(this).addClass("hidden");
-				tds.addClass("hidden");
+			if (remove === (document.querySelectorAll("#table_suplovani tr").length - 1)) {
+				th.classList.add("hidden");
+				tds.map((td) => td.classList.add("hidden"));
 			}
 		});
 	}
@@ -445,7 +449,7 @@ namespace Utils {
 		});
 
 		if (today !== undefined) {
-			Selectors.TodayButton.removeAttr("disabled");
+			Selectors.TodayButton.removeAttribute("disabled");
 		}
 
 		const tomorrow = state.sortedDates.find((dateWithUrl) => {
@@ -456,11 +460,11 @@ namespace Utils {
 			Selectors.TomorrowButton[0].removeAttribute("disabled");
 		}
 
-		Selectors.DateSelector[0].removeAttribute("disabled");
+		Selectors.DateSelector.removeAttribute("disabled");
 	}
 
 	export function enableFilterControls() {
-		Selectors.FilterSelector[0].removeAttribute("readonly");
+		Selectors.FilterSelector.removeAttribute("readonly");
 	}
 
 	export function removeControlChars(s: string) {
@@ -477,10 +481,10 @@ namespace Utils {
 		</td>
 		</tr>`;
 
-		$("#table_suplovani > tbody").html(indicator(8));
-		$("#table_dozory > tbody").html(indicator(6));
-		$("#table_chybejici > tbody").html(indicator(9));
-		$("#table_nahradniUcebny > tbody").html(indicator(7));
+		document.querySelector("#table_suplovani > tbody").innerHTML = indicator(8);
+		document.querySelector("#table_dozory > tbody").innerHTML = indicator(6);
+		document.querySelector("#table_chybejici > tbody").innerHTML = indicator(9);
+		document.querySelector("#table_nahradniUcebny > tbody").innerHTML = indicator(7);
 	}
 
 	export function handleFetchError(ex: any) {
@@ -492,7 +496,7 @@ namespace Utils {
 			</div>
 			`;
 
-		Selectors.AlertRow.html(alertHtml);
+		Selectors.AlertRow.innerHTML = alertHtml;
 	}
 }
 
