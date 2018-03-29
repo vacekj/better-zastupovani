@@ -145,6 +145,22 @@ describe('Integration Tests', () => {
 				});
 			});
 		});
+
+		it('remembers filter text', () => {
+			cy
+				.get('[data-test=suplovaniTable] > tbody > :nth-child(1) > :nth-child(2)')
+				.then((tds) => tds[0].innerText)
+				.then((innerText) => {
+					cy
+						.get('@filterTextbox')
+						.clear()
+						.type(innerText)
+						.setCookie("tutcomplete", "true") // Skip tutorial
+						.reload()
+						.get("@filterTextbox")
+						.should("have.value", innerText);
+				});
+		});
 	});
 
 	describe('Tertiary tests', () => {
