@@ -30,8 +30,7 @@ setInterval(() => {
 
 const suplGetter = new SuplGetterBrowser();
 
-// tslint:disable-next-line:prefer-const
-let state: {
+const state: {
 	sortedDates: DateWithUrl[] | null,
 	currentDates: [DateWithUrl, DateWithUrl]
 } = {

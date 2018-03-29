@@ -27,11 +27,19 @@ describe('Integration Tests', () => {
 		});
 
 		it('cancels the tutorial on cancel button click', () => {
-			cy.
-				clearCookies()
+			cy
 				.reload()
 				.get('#driver-popover-item > div.driver-popover-footer > button')
 				.click();
+		});
+
+		it("doesn't show tutorial after it has been cancelled", () => {
+			cy
+				.reload()
+				.get('#driver-popover-item > div.driver-popover-footer > button')
+				.click()
+				.reload()
+				.get('#driver-popover-item > div.driver-popover-footer > button').should("not.exist");
 		});
 	});
 
