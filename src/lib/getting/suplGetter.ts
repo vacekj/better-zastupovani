@@ -84,7 +84,16 @@ export class SuplGetterBrowser extends SuplGetter {
 			if (n === 1) {
 				throw err;
 			}
-			return await this.fetch_retry(url, options, n - 1);
+
+			return await this.delay(10000 / n, this).then(() => {
+				return this.fetch_retry(url, options, n - 1);
+			});
 		}
+	}
+
+	private async delay(time, v) {
+		return new Promise((resolve) => {
+			setTimeout(resolve.bind(null, v), time);
+		});
 	}
 }

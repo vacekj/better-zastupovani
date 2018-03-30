@@ -135,6 +135,8 @@ function registerEventHandlers() {
 			DatesHandler.nextDay();
 		}
 	});
+
+	document.querySelector(".refresh").addEventListener("click", () => location.reload());
 }
 
 namespace DatesHandler {
@@ -217,6 +219,9 @@ namespace DatesHandler {
 				} else {
 					RenderHandler.render(suplovaniPage);
 				}
+
+				// Remove offline-mode alert
+				Selectors.AlertRow.innerHTML = "";
 			})
 			.catch(Utils.catchHandler);
 	}
@@ -417,7 +422,15 @@ namespace Utils {
 
 	export function catchHandler(ex) {
 		Raven.captureException(ex);
-		Utils.handleFetchError(ex);
+		if (ex instanceof TypeError) {
+			Utils.showLoadingIndicators("");
+			Selectors.AlertRow.innerHTML = `<div class="col-md-12">
+			<div class="alert alert-warning" role="alert">
+				Offline mód: některá data se nemusí načítat. <button type="button" class="btn btn-outline-warning refresh">Obnovit</button>
+			</div>
+		</div>`;
+			return;
+		}
 		throw ex;
 	}
 
@@ -469,9 +482,9 @@ namespace Utils {
 		return s.replace(/[\n\r\t]/g, "");
 	}
 
-	export function showLoadingIndicators() {
+	export function showLoadingIndicators(html?) {
 		// Variable colspan for different-columned tables
-		const indicator = (colspan) =>
+		const indicator = (colspan) => html ||
 			`<tr data-test="loadingIndicator">
 		<td colspan="${colspan}" class="noCellBg">
 			<svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
@@ -479,25 +492,11 @@ namespace Utils {
 		</td>
 		</tr>`;
 
+		// TODO: convert this to Selectors
 		document.querySelector("#table_suplovani > tbody").innerHTML = indicator(8);
 		document.querySelector("#table_dozory > tbody").innerHTML = indicator(6);
 		document.querySelector("#table_chybejici > tbody").innerHTML = indicator(9);
 		document.querySelector("#table_nahradniUcebny > tbody").innerHTML = indicator(7);
-	}
-
-	export function handleFetchError(ex: any) {
-		const alertHtml = `
-			<div class="col-md-12">
-				<div class="alert alert-warning" role="alert">
-					Vypadá to, že jste offline. Některé stránky se nemusí načítat.
-				</div>
-			</div>
-			`;
-
-		Selectors.AlertRow.innerHTML = alertHtml;
-		setTimeout(() => {
-			Selectors.AlertRow.innerHTML = "";
-		}, 3000);
 	}
 }
 
