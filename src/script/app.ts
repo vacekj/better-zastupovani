@@ -135,8 +135,6 @@ function registerEventHandlers() {
 			DatesHandler.nextDay();
 		}
 	});
-
-	document.querySelector(".refresh").addEventListener("click", () => location.reload());
 }
 
 namespace DatesHandler {
@@ -426,7 +424,7 @@ namespace Utils {
 			Utils.showLoadingIndicators("");
 			Selectors.AlertRow.innerHTML = `<div class="col-md-12">
 			<div class="alert alert-warning" role="alert">
-				Offline mód: některá data se nemusí načítat. <button type="button" class="btn btn-outline-warning refresh">Obnovit</button>
+				Offline mód: některá data se nemusí načítat. <button type="button" class="btn btn-outline-warning refresh" onclick='location.reload()'>Obnovit</button>
 			</div>
 		</div>`;
 			return;
