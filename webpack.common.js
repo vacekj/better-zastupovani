@@ -32,7 +32,6 @@ module.exports = {
 				test: /\.(html|txt)$/,
 				use: [{
 					loader: "file-loader",
-
 					options: {
 						context: path.resolve(__dirname, "src"),
 						outputPath: "",
@@ -70,7 +69,8 @@ module.exports = {
 	plugins: [
 		new OfflinePlugin({
 			ServiceWorker: {
-				minify: false
+				minify: false,
+				responseStrategy: 'network-first'
 			},
 			AppCache: false
 		})
