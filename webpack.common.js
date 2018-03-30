@@ -1,7 +1,7 @@
 const path = require("path");
 require('file-loader');
 require('ts-loader');
-
+const OfflinePlugin = require('offline-plugin');
 
 module.exports = {
 	entry: {
@@ -14,7 +14,7 @@ module.exports = {
 		path: path.resolve(__dirname, "dist")
 	},
 	resolve: {
-		extensions: [".ts", ".js", ".json"]
+		extensions: [".ts", ".js"]
 	},
 	module: {
 		rules: [
@@ -32,6 +32,20 @@ module.exports = {
 				test: /\.(html|txt)$/,
 				use: [{
 					loader: "file-loader",
+
+					options: {
+						context: path.resolve(__dirname, "src"),
+						outputPath: "",
+						name: "[name].[ext]",
+					}
+				}]
+			},
+			{
+				test: /\.(json)$/,
+				type: "javascript/auto",
+				use: [{
+					loader: "file-loader",
+
 					options: {
 						context: path.resolve(__dirname, "src"),
 						outputPath: "",
@@ -52,5 +66,12 @@ module.exports = {
 					}
 				]
 			}]
-	}
+	},
+	plugins: [
+		new OfflinePlugin({
+			ServiceWorker: {
+				minify: false
+			}
+		})
+	]
 };

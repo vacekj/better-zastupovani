@@ -21,7 +21,7 @@ module.exports = merge(common, {
 				uglifyOptions: {
 					ecma: 8
 				}
-			}),]
+			})]
 	},
 	plugins: [
 		new CleanWebpackPlugin(["dist/"]),
