@@ -68,11 +68,13 @@ module.exports = {
 	},
 	plugins: [
 		new OfflinePlugin({
+			publicPath: "/test-site/",
+			responseStrategy: 'network-first',
 			ServiceWorker: {
-				minify: false,
-				responseStrategy: 'network-first'
+				minify: false
 			},
-			AppCache: false
+			AppCache: false,
+			autoUpdate: true
 		})
 	]
 };
