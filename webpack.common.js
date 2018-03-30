@@ -68,8 +68,6 @@ module.exports = {
 	},
 	plugins: [
 		new OfflinePlugin({
-			publicPath: "/test-site/",
-			responseStrategy: 'network-first',
 			ServiceWorker: {
 				events: true,
 				minify: false

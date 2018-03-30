@@ -495,6 +495,9 @@ namespace Utils {
 			`;
 
 		Selectors.AlertRow.innerHTML = alertHtml;
+		setTimeout(() => {
+			Selectors.AlertRow.innerHTML = "";
+		}, 3000);
 	}
 }
 
