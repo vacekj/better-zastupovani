@@ -68,6 +68,7 @@ module.exports = {
 	},
 	plugins: [
 		new OfflinePlugin({
+			responseStrategy: "network-first",
 			ServiceWorker: {
 				events: true,
 				minify: false
