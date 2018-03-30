@@ -1,0 +1,13 @@
+{
+    "name": "Zastupování",
+    "short_name": "Zastupování",
+    "lang": "en-GB",
+    "start_url": "/",
+    "display": "standalone",
+    "theme_color": "#2d548d",
+    "icons": [
+        {
+            "src": "img/favicon.png"
+        }
+    ]
+}
