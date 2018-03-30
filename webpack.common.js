@@ -71,7 +71,8 @@ module.exports = {
 		new OfflinePlugin({
 			ServiceWorker: {
 				minify: false
-			}
+			},
+			AppCache: false
 		})
 	]
 };
