@@ -217,9 +217,6 @@ namespace DatesHandler {
 				} else {
 					RenderHandler.render(suplovaniPage);
 				}
-
-				// Remove offline-mode alert
-				Selectors.AlertRow.innerHTML = "";
 			})
 			.catch(Utils.catchHandler);
 	}
@@ -428,7 +425,7 @@ namespace Utils {
 			</div>
 		</div>`;
 			document.querySelector(".refresh").addEventListener("click", DatesHandler.onDateChange);
-			
+			Selectors.AlertRow.innerHTML = "";
 			return;
 		}
 		throw ex;
