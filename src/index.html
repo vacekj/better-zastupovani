@@ -28,7 +28,30 @@
 	<!-- Styles -->
 	<link rel="stylesheet" href="index.css">
 	<!-- EU Cookie law -->
-	<script src="//d2z9iq901qkqk8.cloudfront.net/cz.js" async></script>
+	<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css"
+	/>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+	<script>
+		window.addEventListener("load", function () {
+			window.cookieconsent.initialise({
+				"palette": {
+					"popup": {
+						"background": "#237afc"
+					},
+					"button": {
+						"background": "#fff",
+						"text": "#237afc"
+					}
+				},
+				"position": "top",
+				"content": {
+					"message": "Tento web používá k poskytování služeb a analýze návštěvnosti soubory cookie. Používáním tohoto webu s tím souhlasíte. ",
+					"dismiss": "Souhlasím",
+					"link": "Více informací"
+				}
+			})
+		});
+	</script>
 </head>
 
 <body>
