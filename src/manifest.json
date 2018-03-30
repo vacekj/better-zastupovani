@@ -1,7 +1,7 @@
 {
     "name": "Zastupování",
     "short_name": "Zastupování",
-    "lang": "en-GB",
+    "lang": "cs-CS",
     "start_url": "/test-server/",
     "display": "standalone",
     "theme_color": "#2d548d",
