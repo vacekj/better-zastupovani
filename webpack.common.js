@@ -71,6 +71,7 @@ module.exports = {
 			publicPath: "/test-site/",
 			responseStrategy: 'network-first',
 			ServiceWorker: {
+				events: true,
 				minify: false
 			},
 			AppCache: false,
