@@ -15,8 +15,8 @@
 		"cy:run": "cypress run",
 		"cy:run:record": "cypress run --record",
 		"cy:open": "cypress open",
-		"cy:local:prod:run": "npm run build && start-server-and-test test-server-prod http://192.168.1.200:8080 cy:run",
-		"cy:ci:prod:run": "start-server-and-test test-server-prod http://127.0.0.1:8080 cy:run:record",
+		"cy:local:prod:run": "npm run build && start-server-and-test test-server-prod localhost:8080 cy:run",
+		"cy:ci:prod:run": "start-server-and-test test-server-prod localhost:8080 cy:run:record",
 		"test-deploy": "gh-pages -d dist -r git@github.com:JouzaLoL/test-site.git -b master"
 	},
 	"nyc": {

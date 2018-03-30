@@ -1,4 +1,5 @@
 {
   "projectId": "k1bim3",
+  "chromeWebSecurity": false,
   "videoUploadOnPasses": false
 }
