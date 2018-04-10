@@ -181,8 +181,11 @@ function nextDate() {
 			offset = 1;
 		}
 		cy
-			.get(test('datePicker') + ' > option')
-			.filter(`:nth-child(${selectedIndex + 1 + offset})`)
+			.get(test('datePicker'))
+			.children()
+			.invoke('attr', 'selected', false)
+			.get(test('datePicker'))
+			.children(`:nth-child(${selectedIndex + 1 + offset})`)
 			.invoke('attr', 'selected', true);
 		triggerDateChange();
 	});
