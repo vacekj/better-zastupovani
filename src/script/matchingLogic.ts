@@ -49,7 +49,7 @@ function shouldMatchWholeWord(filter: string) {
 	return false;
 }
 
-export const teachersWithInitialsMap = [
+export const teachersWithInitialsMap: Array<{ acronym: string, full: string }> = [
 	{
 		acronym: "Navm", full: "Navrátil"
 	},
@@ -79,6 +79,9 @@ export const teachersWithInitialsMap = [
 	},
 	{
 		acronym: "Havk", full: "Havranová"
+	},
+	{
+		acronym: "Pry", full: "Przybylová"
 	}
 ];
 
