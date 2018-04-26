@@ -571,7 +571,7 @@ namespace Tutorial {
 						a zobrazí se vám pouze změny, které se vás týkají.
 						<b>Filtr funguje na zkratky učitelů, názvy tříd, názvy učeben</b>, časy rozvrhů a další.
 						<li><b>Filtr se automaticky ukládá</b>, takže ho nemusíte při každé návštěvě vypisovat znova.
-						<li><b>Můžete filtrovat i více termínů zároveň</b>, termíny oddělujte čárkou.
+						<li><b>Můžete filtrovat i více termínů zároveň</b>, termíny oddělujte mezerou.
 						např. "<i>VII.B8 SF11 SI21 SM31</i>" pro zobrazení změn pro třídu VII.B8
 						a semináře se zkratkami SF11, SI21 a SM31.
 						</ul>
