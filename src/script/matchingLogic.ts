@@ -27,7 +27,7 @@ export function objectContainsString<T>(object: T, filter: string) {
 
 function shouldMatchWholeWord(filter: string) {
 	// If filter is a class, match only whole word to prevent II.A from matching II.A6
-	const classRegex = new RegExp(".*\.[ABC]");
+	const classRegex = new RegExp(".{1,4}\.[ABC][6|8]?");
 	if (classRegex.test(filter)) {
 		return true;
 	}
@@ -36,7 +36,8 @@ function shouldMatchWholeWord(filter: string) {
 	if (teachersWithInitialsMap
 		.some((teacher) => filter
 			.toLowerCase()
-			.includes(teacher.full.toLowerCase()))) {
+			.includes(teacher.full.toLowerCase())
+		)) {
 		return true;
 	}
 
