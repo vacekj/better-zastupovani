@@ -180,7 +180,12 @@ table#table_chybejici th {
 	text-align: center;
 }
 
-/* Footer */
+/* Oznameni */
+
+.card-body {
+	padding: 1rem;
+}
+
 /* 
 Loading indicator
 */

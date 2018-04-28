@@ -105,7 +105,7 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 
 	// Oznámení
 	const oznameni = $(".StyleH2")[0];
-	const oznameniText = oznameni ? oznameni.innerHTML : "";
+	const oznameniText = oznameni ? oznameni.innerHTML.replace(new RegExp("<br><br>", "g"), "<br>") : "";
 
 	return new SuplovaniPage({
 		date,
