@@ -156,7 +156,18 @@ table:not(#table_chybejici).table-striped>tbody>tr:nth-child(2n+1)>td:not(.noCel
 	background-color: rgba(51, 82, 139, 0.267);
 }
 
+
+/* Oznameni */
+
+.card-body {
+	padding: 1rem;
+}
+
 /* Chybejici */
+
+h6.present, h6.absent {
+	font-weight: normal;
+}
 
 .present, .absent {
 	color: white;
@@ -178,12 +189,6 @@ table#table_chybejici td {
 
 table#table_chybejici th {
 	text-align: center;
-}
-
-/* Oznameni */
-
-.card-body {
-	padding: 1rem;
 }
 
 /* 
