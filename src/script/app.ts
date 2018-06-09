@@ -86,7 +86,6 @@ export default function bootstrap() {
 			state.sortedDates = sortedDates;
 
 			Utils.enableDateControls();
-			Utils.enableFilterControls();
 
 			// Transform dates to <option>'s
 			const datesOptions = sortedDates.map(RenderHandler.dateWithUrlToOption).join("");
@@ -104,10 +103,6 @@ export default function bootstrap() {
 				// Fallback if no best day found, just select the first in the list
 				DatesHandler.selectDate(sortedDates[0]);
 			}
-
-			// TODO: Read and apply settings here
-			// Settings: Nahr. ucebny pred dozory: // TODO: need to add these to HTML and to Selectors $("#nahucRow").insertAfter($("#suplovaniRow"));
-			// TODO: Extract all selectors to Selectors object
 			if (!Cookies.get(COOKIE_TUTCOMPLETE)) {
 				Tutorial.start();
 			}
@@ -219,6 +214,7 @@ namespace DatesHandler {
 				} else {
 					RenderHandler.render(suplovaniPage);
 				}
+				Utils.enableFilterControls();
 			})
 			.catch(Utils.catchHandler);
 	}
