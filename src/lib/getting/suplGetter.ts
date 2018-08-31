@@ -47,7 +47,7 @@ export class SuplGetterBrowser extends SuplGetter {
 	public async request(url: string): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			this.fetch_retry(url, {}, 5)
-				.then((res) => {
+				.then((res: Response) => {
 					// Fetch doesn't reject the promise on codes like 404
 					if (!res.ok) {
 						reject({ error: "res not ok" });

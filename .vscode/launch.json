@@ -20,9 +20,11 @@
 			"internalConsoleOptions": "openOnSessionStart"
 		},
 		{
-			"type": "firefox",
-			"request": "attach",
-			"name": "Attach"
+			"name": "Launch localhost",
+			"type": "chrome",
+			"request": "launch",
+			"url": "http://localhost/",
+			"webRoot": "${workspaceFolder}/"
 		},
 		{
 			"type": "node",
