@@ -46,10 +46,10 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 
 	// Suplovani
 	const suplovaniRecords: SuplovaniRecord[] = [];
-	const suplovaniAnchor = $("td.StyleC3")[0];
+	const suplovaniAnchor = Array.from($("div.StyleZ4")).find((div) => div.innerHTML === "Suplování");
 	if (suplovaniAnchor) {
-		const suplovaniTable = suplovaniAnchor.parentElement.parentElement.parentElement;
-		const correctedSuplArray = array2d.transpose(parseTable(suplovaniTable)).slice(2);
+		const suplovaniTable = suplovaniAnchor.nextElementSibling;
+		const correctedSuplArray = array2d.transpose(parseTable(suplovaniTable)).slice(1);
 		array2d.eachRow(correctedSuplArray, (row) => {
 			suplovaniRecords.push(new SuplovaniRecord({
 				hodina: row[0],
@@ -66,18 +66,18 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 
 	// Nahradni ucebny
 	const nahradniUcebnaRecords: NahradniUcebnaRecord[] = [];
-	const nahradniUcebnaAnchor = $("td.StyleD3")[0];
+	const nahradniUcebnaAnchor = Array.from($("div.StyleZ4")).find((div) => div.innerHTML === "Náhradní učebny");
 	if (nahradniUcebnaAnchor) {
-		const nahradniUCebnaTable = nahradniUcebnaAnchor.parentElement.parentElement.parentElement;
-		const correctedNahradniUcebnyArray = array2d.transpose(parseTable(nahradniUCebnaTable)).slice(2);
+		const nahradniUCebnaTable = nahradniUcebnaAnchor.nextElementSibling;
+		const correctedNahradniUcebnyArray = array2d.transpose(parseTable(nahradniUCebnaTable)).slice(1);
 		array2d.eachRow(correctedNahradniUcebnyArray, (row) => {
 			nahradniUcebnaRecords.push(new NahradniUcebnaRecord({
 				hodina: row[0],
 				trida: row[1],
-				predmet: row[2],
-				chybucebna: row[3],
-				nahucebna: row[4],
-				vyuc: row[5],
+				vyuc: row[2],
+				predmet: row[3],
+				chybucebna: row[4],
+				nahucebna: row[5],
 				pozn: row[6]
 			}));
 		});
@@ -85,9 +85,9 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 
 	// Dozory
 	const dozorRecords: DozorRecord[] = [];
-	const dozoryTable = $('table[width="605"]')[0];
-	if (dozoryTable) {
-		const dozorRows = array2d.transpose(parseTable(dozoryTable)).slice(2);
+	const dozoryAnchor = Array.from($("div.StyleZ4")).find((div) => div.innerHTML === "Dozor");
+	if (dozoryAnchor) {
+		const dozorRows = array2d.transpose(parseTable(dozoryAnchor.nextElementSibling)).slice(1);
 		array2d.eachRow(dozorRows, (dozorRow) => {
 			dozorRecords.push(new DozorRecord({
 				timeStart: dozorRow[0],

@@ -22,7 +22,7 @@ export function parseTable(context: Element, dupCols = true, dupRows = true): st
 		Array.from($context("td, th", row)).map((col, colIDX) => {
 			const rowspan = col.getAttribute("rowspan") || 1;
 			const colspan = col.getAttribute("colspan") || 1;
-			const content = col.innerHTML || "";
+			const content = col.children[0].innerHTML || "";
 
 			let x = 0;
 			let y = 0;

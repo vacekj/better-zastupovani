@@ -2,7 +2,7 @@ import { parseTable } from "../utils/DOMUtils";
 // TODO: Test this using real, live data
 export function parseChybejiciTable(chybejiciTable: Element): ChybejiciTable {
 	// First row is always empty, slice it
-	const chybejiciRows = parseTable(chybejiciTable)[0].slice(1);
+	const chybejiciRows = parseTable(chybejiciTable)[1];
 	const chybejiciArray = chybejiciRows.map((row) => {
 		// If row is empty or only contains a space, return empty array
 		if (!row || row === "&nbsp;") {
