@@ -71,7 +71,8 @@ describe('Integration Tests', () => {
 						} else {
 							return cy.get("@suplovaniTable").then((suplovaniTable) => suplovaniTable[0].innerHTML);
 						}
-					}).then((oldHtml) => {
+					})
+					.then((oldHtml) => {
 						if (oldHtml === "") {
 							return;
 						} else {
@@ -191,9 +192,13 @@ function nextDate() {
 	});
 }
 
+/**
+ * Wait for loading spinner to disappear
+ *
+ * @returns
+ */
 function waitForSuplTableDataLoad() {
-	// TODO: check if data matches class, room etc regexes
-	return cy.get('[data-test=suplovaniTable] > tbody > :nth-child(1) > :nth-child(2)');
+	return cy.get('[data-test=suplovaniTable] svg.spinner').should('not.exist');
 }
 
 function triggerDateChange() {
