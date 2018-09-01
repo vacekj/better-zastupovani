@@ -25,6 +25,7 @@ describe("suplParser", () => {
 				expect(classes).to.be.an.instanceof(Array);
 				expect(classes[0]).to.equal("I.A8");
 				expect(classes).to.include.members(["I.A6", "I.A"]);
+				expect(classes.every((trida) => regexes.trida.test(trida))).to.be.true;
 				done();
 			})
 			.catch(done);
@@ -36,10 +37,9 @@ describe("suplParser", () => {
 			.then(parseDatesPage)
 			.then((dates) => {
 				expect(dates).to.be.an.instanceof(Array);
-				expect(dates[0]).to.be.an.instanceof(DateWithUrl);
-				expect(dates[0].date).to.be.an.instanceOf(Date);
-				// TODO: fix this regex
-				/* expect(regexes.date.test(dates[0].dateString)).to.be.true; */
+				expect(dates.every((date) => date instanceof DateWithUrl)).to.be.true;
+				expect(dates.every((date) => date.date instanceof Date)).to.be.true;
+				expect(dates.every((date) => regexes.date.test(date.dateString))).to.be.true;
 				done();
 			})
 			.catch(done);
