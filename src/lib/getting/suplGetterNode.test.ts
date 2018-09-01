@@ -15,36 +15,42 @@ describe("suplGetter", () => {
 	});
 
 	it("should get classes page", (done) => {
-		suplGetter.getClassesPage()
+		suplGetter
+			.getClassesPage()
 			.then((classesPage) => {
 				expect(classesPage).to.be.a("string");
+				expect(classesPage).length.to.be.least(10);
 				done();
-			}).catch((err) => {
-				done(err);
-			});
+			})
+			.catch(done);
 	});
 
 	it("should get dates page", (done) => {
-		suplGetter.getDatesPage()
+		suplGetter
+			.getDatesPage()
 			.then((datesPage) => {
 				expect(datesPage).to.be.a("string");
+				expect(datesPage).length.to.be.least(10);
 				done();
-			}).catch((err) => {
-				done(err);
-			});
+			})
+			.catch(done);
 	});
 
 	it("should get suplovani page", (done) => {
 		suplGetter
-			.getDatesPage().then((datesPage) => {
+			.getDatesPage()
+			.then((datesPage) => {
 				const dates = parseDatesPage(datesPage);
-				const date = dates[0];
-				suplGetter.getSuplovaniPage(date.url).then((suplovaniPage) => {
-					expect(suplovaniPage).to.be.a("string");
-					done();
-				}).catch((err) => {
-					done(err);
+				const suplPages = dates.map((date) => {
+					return suplGetter
+						.getSuplovaniPage(date.url)
+						.then((suplovaniPage) => {
+							expect(suplovaniPage).to.be.a("string");
+							expect(suplovaniPage).length.to.be.least(10);
+						})
+						.catch(done);
 				});
+				Promise.all(suplPages).then(() => done(), done);
 			}, done);
 	});
 
