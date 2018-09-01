@@ -49,20 +49,32 @@ describe("suplParser", () => {
 		suplGetter
 			.getDatesPage()
 			.then(parseDatesPage)
-			.then((dates) => dates[0])
-			.then((date) => suplGetter.getSuplovaniPage(date.url))
-			.then(parseSuplovaniPage)
-			.then((parsedSuplovaniPage) => {
-				expect(parsedSuplovaniPage).to.be.an.instanceOf(SuplovaniPage);
-				expect(parsedSuplovaniPage).to.not.satisfy(containsNullOrUndefined);
-				expect(parsedSuplovaniPage.chybejici.tridy.map((record) => record.kdo)).to.satisfy((array) => arrayMatchesRegex(array, regexes.trida));
-				expect(parsedSuplovaniPage.chybejici.ucebny.map((record) => record.kdo)).to.satisfy((array) => arrayMatchesRegex(array, regexes.ucebna));
-				done();
+			.then((dates) => {
+				const promises = dates.map((date) => {
+					return suplGetter.getSuplovaniPage(date.url)
+						.then(parseSuplovaniPage)
+						.then((parsedSuplovaniPage) => {
+							expect(parsedSuplovaniPage).to.be.an.instanceOf(SuplovaniPage);
+							expect(parsedSuplovaniPage).to.not.satisfy(containsNullOrUndefined);
+							expect(parsedSuplovaniPage.chybejici.tridy.map((record) => record.kdo)).to.satisfy((array) => arrayMatchesRegex(array, regexes.trida));
+							expect(parsedSuplovaniPage.chybejici.ucebny.map((record) => record.kdo)).to.satisfy((array) => arrayMatchesRegex(array, regexes.ucebna));
+						})
+						.then(() => true)
+						.catch(() => false);
+				});
+				Promise
+					.all(promises)
+					.then((results) => {
+						expect(results.every((result) => result === true)).to.be.true;
+						done();
+					})
+					.catch(done);
 			})
 			.catch(done);
 	});
 
 	after(() => {
+		/* Cleanup jsdom */
 		jsdom();
 	});
 });
