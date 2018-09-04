@@ -108,10 +108,11 @@ describe('Integration Tests', () => {
 		});
 
 		it('changes data on datePicker date change', () => {
+			selectLastDate();
 			cy.get('@suplovaniTable').then((el) => {
 				return el[0].innerHTML;
 			}).then((oldHTML) => {
-				nextDate();
+				selectFirstDate();
 				checkSuplTableChanged(oldHTML);
 			});
 		});
@@ -163,10 +164,25 @@ function checkSuplTableChanged(oldHTML) {
 
 function selectLastDate() {
 	cy.get(test('datePicker')).then((result) => {
-		const optionsLength = result[0].options.length;
 		cy
+			.get(test('datePicker'))
+			.children()
+			.invoke('attr', 'selected', false)
 			.get(test('datePicker') + ' > option')
-			.filter(`:nth-child(${optionsLength - 1})`)
+			.filter(`:last-child`)
+			.invoke('attr', 'selected', true);
+		triggerDateChange();
+	});
+}
+
+function selectFirstDate() {
+	cy.get(test('datePicker')).then((result) => {
+		cy
+			.get(test('datePicker'))
+			.children()
+			.invoke('attr', 'selected', false)
+			.get(test('datePicker') + ' > option')
+			.filter(`:first-child`)
 			.invoke('attr', 'selected', true);
 		triggerDateChange();
 	});
