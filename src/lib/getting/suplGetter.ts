@@ -53,9 +53,8 @@ export class SuplGetterBrowser extends SuplGetter {
 						reject({ error: "res not ok" });
 					}
 
-					return res.arrayBuffer();
+					return res.text();
 				})
-				.then(decode)
 				.then(resolve)
 				.catch(reject);
 		});
