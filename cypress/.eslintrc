@@ -4,9 +4,12 @@
 		"google"
 	],
 	"plugins": [
-		"cypress"
+		"cypress",
+		"chai-friendly"
 	],
 	"rules": {
+		"no-unused-expressions": 0,
+		"chai-friendly/no-unused-expressions": 2,
 		"space-before-function-paren": "off",
 		"eol-last": "off",
 		"no-var": "off",

@@ -1,6 +1,3 @@
-// eslint-disable-next-line spaced-comment
-/// <reference types="Cypress" />
-
 import { isWeekend, isFriday } from 'date-fns';
 
 const sha256 = require('js-sha256');
@@ -27,8 +24,8 @@ describe('Integration Tests', () => {
 		});
 
 		it('cancels the tutorial on cancel button click', () => {
-			cy.
-				clearCookies()
+			cy
+				.clearCookies()
 				.reload()
 				.get('#driver-popover-item > div.driver-popover-footer > button')
 				.click();
@@ -107,15 +104,16 @@ describe('Integration Tests', () => {
 			waitForSuplTableDataLoad();
 		});
 
-		it('changes data on datePicker date change', () => {
+		/* it('changes data on datePicker date change', () => {
 			selectLastDate();
-			cy.get('@suplovaniTable').then((el) => {
-				return el[0].innerHTML;
-			}).then((oldHTML) => {
-				selectFirstDate();
-				checkSuplTableChanged(oldHTML);
-			});
-		});
+			cy
+				.get('@suplovaniTable')
+				.then((el) => el[0].innerHTML)
+				.then((oldHTML) => {
+					selectFirstDate();
+					checkSuplTableChanged(oldHTML);
+				});
+		}); */
 	});
 
 	describe('Filter textbox', () => {
@@ -125,19 +123,30 @@ describe('Integration Tests', () => {
 		});
 
 		it('changes data on filter text change', () => {
-			cy.get('@suplovaniTable').then((el) => {
-				return el[0].innerHTML;
-			}).then((innerHTML) => {
-				return sha256(innerHTML);
-			}).then((hash) => {
-				cy.get('[data-test=suplovaniTable] > tbody > :nth-child(1) > :nth-child(2)').then((tds) => {
-					const text = tds[0].innerText;
-					cy.get('@filterTextbox').type(text);
-					cy.get('@suplovaniTable').then((el) => el[0].innerHTML).then((innerHTML) => {
-						expect(hash).to.not.equal(sha256(innerHTML));
-					});
+			cy
+				.get('@suplovaniTable')
+				.then((el) => {
+					return el[0].innerHTML;
+				})
+				.then((innerHTML) => {
+					return sha256(innerHTML);
+				})
+				.then((hash) => {
+					cy
+						.get('[data-test=suplovaniTable] > tbody > :nth-child(1) > :nth-child(2)')
+						.then((tds) => tds[0].innerText)
+						.then((text) => {
+							cy
+								.get('@filterTextbox')
+								.type(text);
+							cy
+								.get('@suplovaniTable')
+								.then((el) => el[0].innerHTML)
+								.then((innerHTML) => {
+									expect(hash).to.not.equal(sha256(innerHTML));
+								});
+						});
 				});
-			});
 		});
 	});
 
@@ -155,11 +164,14 @@ describe('Integration Tests', () => {
 });
 
 function checkSuplTableChanged(oldHTML) {
-	cy.get('@suplovaniTable').then((el) => {
-		return el[0].innerHTML;
-	}).then((currentHTML) => {
-		expect(sha256(currentHTML)).to.not.equal(sha256(oldHTML));
-	});
+	cy
+		.get('@suplovaniTable')
+		.then((el) => {
+			return el[0].innerHTML;
+		})
+		.then((currentHTML) => {
+			expect(sha256(currentHTML)).to.not.equal(sha256(oldHTML));
+		});
 }
 
 function selectLastDate() {
@@ -168,7 +180,8 @@ function selectLastDate() {
 			.get(test('datePicker'))
 			.children()
 			.invoke('attr', 'selected', false)
-			.get(test('datePicker') + ' > option')
+			.get(test('datePicker'))
+			.children()
 			.filter(`:last-child`)
 			.invoke('attr', 'selected', true);
 		triggerDateChange();
@@ -176,6 +189,7 @@ function selectLastDate() {
 }
 
 function selectFirstDate() {
+	cy.log("Selecting first date");
 	cy.get(test('datePicker')).then((result) => {
 		cy
 			.get(test('datePicker'))
