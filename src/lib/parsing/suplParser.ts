@@ -104,7 +104,7 @@ export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 	const lastUpdated = $('table[width="700"] td.StyleZ5')[0].innerHTML;
 
 	// Oznámení
-	const oznameni = $(".StyleH2")[0];
+	const oznameni = $(".CellStyle_G0 > div.cell")[0];
 	const oznameniText = oznameni ? oznameni.innerHTML.replace(new RegExp("<br><br>", "g"), "<br>") : "";
 
 	return new SuplovaniPage({
