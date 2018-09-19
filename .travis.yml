@@ -10,8 +10,6 @@ addons:
     packages:
       - xvfb
 
-install: npm install
-
 before_script:
   - npm run build
 
@@ -21,8 +19,11 @@ script:
 
 cache:
   directories:
-    - node_modules
-    - $HOME/travis/.cache/Cypress/3.1.0/Cypress/Cypress
+    - ~/.npm
+    - ~/.cache
+  
+install:
+  - npm ci
 
 deploy:
   provider: pages
