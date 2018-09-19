@@ -44,7 +44,7 @@ export abstract class SuplGetter {
  * @extends {SuplGetter}
  */
 export class SuplGetterBrowser extends SuplGetter {
-	public async request(url: string): Promise<string> {
+	public async request(url: string, decodeWin1250: boolean = false): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			this.fetch_retry(url, {}, 5)
 				.then((res: Response) => {
@@ -52,8 +52,11 @@ export class SuplGetterBrowser extends SuplGetter {
 					if (!res.ok) {
 						reject({ error: "res not ok" });
 					}
-
-					return res.text();
+					if (decodeWin1250) {
+						return res.arrayBuffer().then(buf => { return decode(buf) })
+					} else {
+						return res.text();
+					}
 				})
 				.then(resolve)
 				.catch(reject);
@@ -73,7 +76,7 @@ export class SuplGetterBrowser extends SuplGetter {
 	}
 
 	public async getVyucujiciPage(): Promise<string> {
-		return this.request(this.URL_VYUCUJICI);
+		return this.request(this.URL_VYUCUJICI, true);
 	}
 
 	private async fetch_retry(url, options, n) {
