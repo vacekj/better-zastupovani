@@ -44,7 +44,7 @@ export abstract class SuplGetter {
  * @extends {SuplGetter}
  */
 export class SuplGetterBrowser extends SuplGetter {
-	public async request(url: string, decodeWin1250: boolean = false): Promise<string> {
+	public async request(url: string, decodeWin1250 = false): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			this.fetch_retry(url, {}, 5)
 				.then((res: Response) => {
@@ -53,7 +53,7 @@ export class SuplGetterBrowser extends SuplGetter {
 						reject({ error: "res not ok" });
 					}
 					if (decodeWin1250) {
-						return res.arrayBuffer().then(buf => { return decode(buf) })
+						return res.arrayBuffer().then((buf) => decode(buf));
 					} else {
 						return res.text();
 					}
