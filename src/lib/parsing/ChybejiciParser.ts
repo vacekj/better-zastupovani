@@ -1,29 +1,38 @@
 import { parseTable } from "../utils/DOMUtils";
 // TODO: Test this using real, live data
 export function parseChybejiciTable(chybejiciTable: Element): ChybejiciTable {
-	// First row is always empty, slice it
-	const chybejiciRows = parseTable(chybejiciTable)[1];
-	const chybejiciArray = chybejiciRows.map((row) => {
-		// If row is empty or only contains a space, return empty array
-		if (!row || row === "&nbsp;") {
-			return [];
-		}
+	const chybejiciRows = parseTable(chybejiciTable);
 
-		// Split the row into individual missing records
-		const chybejiciRecords = row.split(", ");
+	const indexUcitele = chybejiciRows[0].indexOf("VyuÄŤujĂ­cĂ­:");
+	const ucitele = indexUcitele !== -1 ? parseChybejiciRow(chybejiciRows[1][indexUcitele]) : [];
 
-		return chybejiciRecords.map((elem) => {
-			const kdo = elem.split("(")[0];
-			const range = extractRange(elem);
+	const indexTridy = chybejiciRows[0].indexOf("Třída:");
+	const tridy = indexTridy !== -1 ? parseChybejiciRow(chybejiciRows[1][indexTridy]) : [];
 
-			return new ChybejiciRecord({
-				kdo,
-				schedule: rangeToSchedule(range)
-			});
+	const indexUcebny = chybejiciRows[0].indexOf("UÄŤebna:");
+	const ucebny = indexUcebny !== -1 ? parseChybejiciRow(chybejiciRows[1][indexUcebny]) : [];
+
+	return new ChybejiciTable(ucitele, tridy, ucebny);
+}
+
+function parseChybejiciRow(row: string) {
+	// If row is empty or only contains a space, return empty array
+	if (!row || row === "&nbsp;") {
+		return [];
+	}
+
+	// Split the row into individual missing records
+	const chybejiciRecords = row.split(", ");
+
+	return chybejiciRecords.map((elem) => {
+		const kdo = elem.split("(")[0];
+		const range = extractRange(elem);
+
+		return new ChybejiciRecord({
+			kdo,
+			schedule: rangeToSchedule(range)
 		});
 	});
-
-	return new ChybejiciTable(chybejiciArray[0] || [], chybejiciArray[1] || [], chybejiciArray[2] || []);
 }
 
 function extractRange(elem: string): [string, string] | null {
