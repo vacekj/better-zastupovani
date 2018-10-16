@@ -3,13 +3,13 @@ import { parseTable } from "../utils/DOMUtils";
 export function parseChybejiciTable(chybejiciTable: Element): ChybejiciTable {
 	const chybejiciRows = parseTable(chybejiciTable);
 
-	const indexUcitele = chybejiciRows[0].indexOf("VyuÄŤujĂ­cĂ­:");
+	const indexUcitele = chybejiciRows[0].indexOf("Vyučující:");
 	const ucitele = indexUcitele !== -1 ? parseChybejiciRow(chybejiciRows[1][indexUcitele]) : [];
 
 	const indexTridy = chybejiciRows[0].indexOf("Třída:");
 	const tridy = indexTridy !== -1 ? parseChybejiciRow(chybejiciRows[1][indexTridy]) : [];
 
-	const indexUcebny = chybejiciRows[0].indexOf("UÄŤebna:");
+	const indexUcebny = chybejiciRows[0].indexOf("Učebna:");
 	const ucebny = indexUcebny !== -1 ? parseChybejiciRow(chybejiciRows[1][indexUcebny]) : [];
 
 	return new ChybejiciTable(ucitele, tridy, ucebny);

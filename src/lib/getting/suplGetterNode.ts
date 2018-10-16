@@ -16,11 +16,9 @@ export class SuplGetterNode extends SuplGetter {
 	}
 	public request(url, cb) {
 		request_({
-			encoding: null,
 			url
 		}, (err, res, body) => {
-			const decodedBody = iconv.decode(body, "win1250");
-			cb(err, res, decodedBody);
+			cb(err, res, body);
 		});
 	}
 
