@@ -3,14 +3,14 @@ Main color: #2d548d
 */
 
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
-@import url('https://fonts.googleapis.com/css?family=Roboto&subset=latin-ext');
 @media (min-width: 576px) {
 	.container {
 		max-width: 1000px;
 	}
 	#header {
-		margin-top: 1.5rem;
-		margin-bottom: 1.5rem;
+		height: 80px;
+		padding-top: 5px;
+		padding-bottom: 5px;
 	}
 }
 
@@ -54,6 +54,17 @@ hr {
 
 /* Header */
 
+#header {
+	background: #0060A1;
+	padding-bottom: 10px;
+}
+
+#header h2 {
+	line-height: 75px;
+	color: white;
+	font-weight: bold;
+}
+
 .logo {
 	font-family: 'Open Sans', sans-serif;
 	margin: 0;
@@ -62,6 +73,16 @@ hr {
 
 a {
 	color: #33528B;
+}
+
+.img-pecet {
+	height: 90px;		
+	float: right;
+	display: none;
+}
+
+.logo-gh {
+	height: 70px;
 }
 
 /* Pickers */

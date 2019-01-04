@@ -12,5 +12,6 @@ import "../img/favicon.png";
 import "../robots.txt";
 
 // Images
-import "../img/gh.png";
+import "../img/logo.jpg";
 import "../img/pecet.jpg";
+import "../img/logo_blue_bg.png";
