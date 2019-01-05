@@ -11,13 +11,18 @@ Main color: #2d548d
 		height: 80px;
 		padding-top: 5px;
 		padding-bottom: 5px;
+		margin-bottom: 5px;
 	}
 }
 
 @media (max-width: 576px) {
 	#header {
-		margin-top: 0.5rem;
 		margin-bottom: 0;
+		height: 50px;
+	}
+
+	#header h2 {
+		line-height: 50px;
 	}
 }
 
@@ -37,11 +42,7 @@ body>* {
 }
 
 #container {
-	/* height: 100% !important;
-	max-width: 1080px; */
 	box-shadow: 0 0 30px #E1E2FA;
-	/* height: 100%; */
-	padding-top: 1px;
 }
 
 h5 {
@@ -57,10 +58,11 @@ hr {
 #header {
 	background: #0060A1;
 	padding-bottom: 10px;
+	box-shadow: 0 2px 2px gray;
 }
 
 #header h2 {
-	line-height: 75px;
+	text-shadow: 1px 1px 1px black;
 	color: white;
 	font-weight: bold;
 }
