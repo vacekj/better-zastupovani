@@ -3,7 +3,7 @@ const common = require("./webpack.common.js");
 require('style-loader');
 require('css-loader');
 
-const serverHost = process.env.DEV_SERVER_HOST || "localhost";
+const serverHost = process.env.DEV_SERVER_HOST || "192.168.1.200";
 
 module.exports = merge(common, {
 	mode: "development",

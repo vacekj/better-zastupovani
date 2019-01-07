@@ -13,5 +13,6 @@ import "../robots.txt";
 
 // Images
 import "../img/logo.jpg";
-import "../img/pecet.jpg";
+import "../img/pecet.png";
+import "../img/logo_znak.png";
 import "../img/logo_blue_bg.png";
