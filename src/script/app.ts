@@ -39,6 +39,7 @@ const Selectors = {
 	SelectorFieldDate: $("#selectorField_date"),
 	SuplovaniTable: $("#table_suplovani"),
 	DozoryTable: $("#table_dozory"),
+	DozoryRow: $("div#dozoryRow"),
 	ChybejiciTable: $("#table_chybejici"),
 	AlertRow: $("#alert-row"),
 	LastUpdated: $("#lastUpdated")
@@ -300,13 +301,34 @@ namespace RenderHandler {
 	}
 
 	export function renderDozory(dozorRecords: DozorRecord[]) {
-		const dozorTable = Selectors.DozoryTable.find("tbody");
+		const dozoryRow = Selectors.DozoryRow;
 
 		const content = dozorRecords.length
 			? dozorRecords.map(RenderHandler.dozorRecordToTr).join("")
 			: RenderHandler.rowHeader("Žádné dozory", 6);
 
-		dozorTable.html(content);
+
+		const template = `<div class="col-md-12">
+		<h5>Dozory</h5>
+	</div>
+	<div class="col-md-12 table-responsive">
+		<table class="table table-bordered table-sm table-striped table-hover" id="table_dozory" data-test="dozoryTable">
+			<thead>
+				<tr>
+					<th>Od</th>
+					<th>Do</th>
+					<th>Místo</th>
+					<th>Chybějící</th>
+					<th>Dozorující</th>
+					<th>Poznámka</th>
+				</tr>
+			</thead>
+			<tbody>
+			${content}
+			</tbody>
+		</table>
+	</div>`;
+		dozoryRow.html(template);
 	}
 
 	export function dozorRecordToTr(dozorRecord: DozorRecord): string {
