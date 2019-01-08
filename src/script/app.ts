@@ -381,12 +381,16 @@ namespace RenderHandler {
 	}
 
 	export function renderOznameni(oznameni: string) {
-		const template = oznameni ? `
-		<div class="card">
-			<div class="card-body">
-				${oznameni}
-			</div>
-		</div>` : "";
+		const template = oznameni ? `<div class="col-md-12">
+	<h5>Oznámení</h5>
+	<div class="card">
+		<div class="card-body">
+			${oznameni}
+		</div>
+	</div>
+	<hr>
+</div>
+` : "";
 		$("#oznameniContainer").html(template);
 	}
 
