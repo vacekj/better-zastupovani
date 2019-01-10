@@ -1,23 +1,42 @@
 /*
-Main color: #2d548d
+Main color: #0060A1;
 */
 
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
-@import url('https://fonts.googleapis.com/css?family=Roboto&subset=latin-ext');
 @media (min-width: 576px) {
 	.container {
 		max-width: 1000px;
 	}
 	#header {
-		margin-top: 1.5rem;
-		margin-bottom: 1.5rem;
+		height: 80px;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		margin-bottom: 5px;
+	}
+
+	#header h2 {
+		line-height: 70px;
 	}
 }
 
 @media (max-width: 576px) {
 	#header {
-		margin-top: 0.5rem;
 		margin-bottom: 0;
+		height: 50px;
+	}
+
+	#header h2 {
+		line-height: 50px;
+	}
+
+	.img-pecet {
+		height: 45px;
+		padding-right: 5px;
+	}
+
+	.logo-gh {
+		height: 45px;
+		background-image: url("../img/logo_znak.png");
 	}
 }
 
@@ -37,11 +56,7 @@ body>* {
 }
 
 #container {
-	/* height: 100% !important;
-	max-width: 1080px; */
 	box-shadow: 0 0 30px #E1E2FA;
-	/* height: 100%; */
-	padding-top: 1px;
 }
 
 h5 {
@@ -53,26 +68,46 @@ hr {
 }
 
 /* Header */
+#header {
+	background: #0060A1;
+	padding-bottom: 10px;
+	box-shadow: 0 4px 4px #E1E2FA;
+}
+
+#header h2 {
+	color: white;
+	font-weight: bold;
+	font-size: 45px;
+}
 
 .logo {
 	font-family: 'Open Sans', sans-serif;
 	margin: 0;
-	color: #33528B;
+	color: #0060A1;
 }
 
 a {
-	color: #33528B;
+	color: #0060A1;
+}
+
+.img-pecet {
+	height: 70px;		
+	float: right;
+}
+
+.logo-gh {
+	height: 70px;
 }
 
 /* Pickers */
 
 .form-control {
-	background-image: linear-gradient(0deg, #2d548d 2px, rgba(0, 150, 136, 0) 0), linear-gradient(0deg, rgba(0, 0, 0, .26) 1px, transparent 0);
+	background-image: linear-gradient(0deg, #0060A1 2px, rgba(0, 150, 136, 0) 0), linear-gradient(0deg, rgba(0, 0, 0, .26) 1px, transparent 0);
 }
 
 label {
 	font-size: 0.8rem;
-	color: #2d548d !important;
+	color: #0060A1 !important;
 	margin-bottom: 0;
 }
 
@@ -84,7 +119,7 @@ label {
 /* Buttons */
 
 .btn-primary {
-	background-color: #2d548d !important;
+	background-color: #0060A1 !important;
 }
 
 .btn-group {
@@ -113,7 +148,7 @@ table {
 }
 
 table thead {
-	border-top: 3px solid #2d548d;
+	border-top: 3px solid #0060A1;
 }
 
 table thead th {
@@ -153,7 +188,7 @@ table:not(#table_chybejici) td:last-child {
 /* Table stripes */
 
 table:not(#table_chybejici).table-striped>tbody>tr:nth-child(2n+1)>td:not(.noCellBg), .table-striped>tbody>tr:nth-child(2n+1)>th {
-	background-color: rgba(51, 82, 139, 0.267);
+	background-color: #0061a127;
 }
 
 
@@ -175,7 +210,7 @@ h6.present, h6.absent {
 }
 
 .present {
-	background-color: #2d548d;
+	background-color: #0060A1;
 }
 
 .absent {

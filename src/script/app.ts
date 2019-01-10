@@ -24,9 +24,9 @@ const state: {
 	currentSuplovaniPage: SuplovaniPage | null,
 	sortedDates: DateWithUrl[] | null
 } = {
-		currentSuplovaniPage: null,
-		sortedDates: null
-	};
+	currentSuplovaniPage: null,
+	sortedDates: null
+};
 
 const Selectors = {
 	DateSelector: $("#selector_date"),
@@ -39,6 +39,7 @@ const Selectors = {
 	SelectorFieldDate: $("#selectorField_date"),
 	SuplovaniTable: $("#table_suplovani"),
 	DozoryTable: $("#table_dozory"),
+	DozoryRow: $("div#dozoryRow"),
 	ChybejiciTable: $("#table_chybejici"),
 	AlertRow: $("#alert-row"),
 	LastUpdated: $("#lastUpdated")
@@ -250,9 +251,18 @@ namespace RenderHandler {
 				});
 			};
 
+			/* If filter is only class, dozory doesn't make sense, hide it */
+			const tridaRegex = new RegExp("[IV|V?I]{0,4}\.[A-C][1-8]?|G[3-8]{6}");
+			const shouldHideDozory = filter.split(" ").every((filterMember) => tridaRegex.test(filterMember));
+
 			RenderHandler.renderSuplovani(filterRecords(state.currentSuplovaniPage.suplovani, filter));
 			Selectors.LastUpdated.text(state.currentSuplovaniPage.lastUpdated);
-			RenderHandler.renderDozory(filterRecords(state.currentSuplovaniPage.dozory, filter));
+			/* Don't render dozory if filtering only for Classes */
+			if (shouldHideDozory) {
+				RenderHandler.renderDozory(filterRecords(state.currentSuplovaniPage.dozory, filter), true);
+			} else  {
+				RenderHandler.renderDozory(filterRecords(state.currentSuplovaniPage.dozory, filter));
+			}
 			RenderHandler.renderNahradniUcebny(filterRecords(state.currentSuplovaniPage.nahradniUcebny, filter));
 
 			// Non-filtered records
@@ -299,14 +309,37 @@ namespace RenderHandler {
 				`);
 	}
 
-	export function renderDozory(dozorRecords: DozorRecord[]) {
-		const dozorTable = Selectors.DozoryTable.find("tbody");
-
+	export function renderDozory(dozorRecords: DozorRecord[], hide = false) {
+		const dozoryRow = Selectors.DozoryRow;
+		if (hide) {
+			dozoryRow.html("");
+			return;
+		}
 		const content = dozorRecords.length
 			? dozorRecords.map(RenderHandler.dozorRecordToTr).join("")
 			: RenderHandler.rowHeader("Žádné dozory", 6);
 
-		dozorTable.html(content);
+		const template = `<div class="col-md-12">
+		<h5>Dozory</h5>
+	</div>
+	<div class="col-md-12 table-responsive">
+		<table class="table table-bordered table-sm table-striped table-hover" id="table_dozory" data-test="dozoryTable">
+			<thead>
+				<tr>
+					<th>Od</th>
+					<th>Do</th>
+					<th>Místo</th>
+					<th>Chybějící</th>
+					<th>Dozorující</th>
+					<th>Poznámka</th>
+				</tr>
+			</thead>
+			<tbody>
+			${content}
+			</tbody>
+		</table>
+	</div>`;
+		dozoryRow.html(template);
 	}
 
 	export function dozorRecordToTr(dozorRecord: DozorRecord): string {
@@ -381,12 +414,16 @@ namespace RenderHandler {
 	}
 
 	export function renderOznameni(oznameni: string) {
-		const template = oznameni ? `
-		<div class="card">
-			<div class="card-body">
-				${oznameni}
-			</div>
-		</div>` : "";
+		const template = oznameni ? `<div class="col-md-12">
+	<h5>Oznámení</h5>
+	<div class="card">
+		<div class="card-body">
+			${oznameni}
+		</div>
+	</div>
+	<hr>
+</div>
+` : "";
 		$("#oznameniContainer").html(template);
 	}
 
