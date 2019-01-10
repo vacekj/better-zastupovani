@@ -18,6 +18,18 @@ Main color: #0060A1;
 		line-height: 70px;
 		font-size: 45px;
 	}
+
+	.img-pecet {
+		height: 70px;		
+	}
+
+	.logo-gh {
+		height: 70px;
+	}
+
+	.gh-pecet{
+		display: none;
+	}
 }
 
 @media (max-width: 576px) {
@@ -38,6 +50,15 @@ Main color: #0060A1;
 
 	.logo-gh {
 		height: 45px;
+	}
+
+	.gh-pecet {
+		padding-top: 5px;
+	}
+
+	.img-pecet {
+		padding-top: 5px;
+		padding-right: 0px;
 	}
 }
 
@@ -91,12 +112,7 @@ a {
 }
 
 .img-pecet {
-	height: 70px;		
 	float: right;
-}
-
-.logo-gh {
-	height: 70px;
 }
 
 /* Pickers */
