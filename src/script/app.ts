@@ -251,7 +251,7 @@ namespace RenderHandler {
 				});
 			};
 
-			/* If filter is only class, dozory doesn't make sense, hide it */
+			/* If filter is only for classes (= students), dozory doesn't make sense */
 			const tridaRegex = new RegExp("[IV|V?I]{0,4}\.[A-C][1-8]?|G[3-8]{6}");
 			const shouldHideDozory = filter.split(" ").every((filterMember) => tridaRegex.test(filterMember));
 
