@@ -17,15 +17,17 @@ import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
 import { DozorRecord, NahradniUcebnaRecord, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
 
 // Refresh data every REFRESH_PERIOD
-const REFRESH_PERIOD = ms("30 seconds");
+const REFRESH_PERIOD = ms("5 seconds");
 setInterval(() => {
 	Utils.refreshData();
+	console.log(`Data refreshed, next refresh in ${REFRESH_PERIOD / 1000} seconds`);
 }, REFRESH_PERIOD);
 
 // Reload page every RELOAD_PERIOD
 const RELOAD_PERIOD = ms("1 hour");
 setInterval(() => {
 	window.location.reload();
+	console.log(`Page reloaded, next reload in ${RELOAD_PERIOD / 1000} seconds`);
 }, RELOAD_PERIOD);
 
 const suplGetter = new SuplGetterBrowser();
@@ -67,7 +69,6 @@ function bootstrap() {
 			}
 		}).catch((ex) => {
 			Raven.captureException(ex);
-			Utils.handleFetchError(ex);
 			throw ex;
 		});
 }
@@ -108,7 +109,6 @@ namespace DatesHandler {
 			.then(RenderHandler.render)
 			.catch((ex) => {
 				Raven.captureException(ex);
-				Utils.handleFetchError(ex);
 				throw ex;
 			});
 	}
@@ -116,21 +116,11 @@ namespace DatesHandler {
 
 namespace RenderHandler {
 	export function render([suplovaniPage, secondSuplovaniPage]: [SuplovaniPage, SuplovaniPage]) {
-		$("#datum1").text(suplovaniPage.date);
-		$("#aktualizace1").text(suplovaniPage.lastUpdated);
 		RenderHandler.renderSuplovani(suplovaniPage.suplovani, "#table_suplovani > tbody");
 		RenderHandler.renderDozory(suplovaniPage.dozory, "#table_dozory > tbody");
 		RenderHandler.renderNahradniUcebny(suplovaniPage.nahradniUcebny, "#table_nahradniUcebny > tbody");
 		RenderHandler.renderChybejici(suplovaniPage.chybejici, "#table_chybejici > tbody");
 		RenderHandler.renderOznameni(suplovaniPage.oznameni, "#oznameniContainer");
-
-		$("#datum2").text(secondSuplovaniPage.date);
-		$("#aktualizace2").text(secondSuplovaniPage.lastUpdated);
-		RenderHandler.renderSuplovani(secondSuplovaniPage.suplovani, "#table_suplovani2 > tbody");
-		RenderHandler.renderDozory(secondSuplovaniPage.dozory, "#table_dozory2 > tbody");
-		RenderHandler.renderNahradniUcebny(secondSuplovaniPage.nahradniUcebny, "#table_nahradniUcebny2 > tbody");
-		RenderHandler.renderChybejici(secondSuplovaniPage.chybejici, "#table_chybejici2 > tbody");
-		RenderHandler.renderOznameni(secondSuplovaniPage.oznameni, "#oznameniContainer2");
 	}
 
 	export function renderSuplovani(suplovaniRecords: SuplovaniRecord[], targetSelector: string) {
@@ -260,18 +250,6 @@ namespace Utils {
 
 	export function removeControlChars(s: string) {
 		return s.replace(/[\n\r\t]/g, "");
-	}
-
-	export function handleFetchError(ex: any) {
-		const alertHtml = `
-			<div class="col-md-12">
-				<div class="alert alert-warning" role="alert">
-					Vypadá to, že jste offline. Některé stránky se nemusí načítat.
-				</div>
-			</div>
-			`;
-
-		$("#alert-row").append(alertHtml);
 	}
 
 	export function refreshData() {

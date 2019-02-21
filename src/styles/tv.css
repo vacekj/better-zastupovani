@@ -38,15 +38,6 @@ h5 {
 
 /* Header */
 
-.logo {
-	font-family: 'Open Sans', sans-serif;
-	margin: 0;
-	color: #33528B;
-}
-
-a {
-	color: #33528B;
-}
 
 /* Table */
 
@@ -59,7 +50,7 @@ table {
 }
 
 table thead {
-	border-top: 3px solid #2d548d;
+	border-top: 3px solid #0060A1;
 }
 
 table thead th {
@@ -95,7 +86,7 @@ table:not(.table_chybejici) td:last-child {
 /* Table stripes */
 
 table:not(.table_chybejici).table-striped>tbody>tr:nth-child(2n+1)>td:not(.noCellBg), .table-striped>tbody>tr:nth-child(2n+1)>th {
-	background-color: rgba(51, 82, 139, 0.267);
+	background-color: #0061a127;
 }
 
 /* Chybejici */
@@ -106,7 +97,7 @@ table:not(.table_chybejici).table-striped>tbody>tr:nth-child(2n+1)>td:not(.noCel
 }
 
 .present {
-	background-color: #2d548d;
+	background-color: #0060A1;
 }
 
 .absent {
@@ -125,7 +116,7 @@ table.table_chybejici th {
 /* Footer */
 
 .backlink {
-	background-color: #2d548d;
+	background-color: #0060A1;
 	color: white;
 	border-radius: 0px 0px 5px 5px;
 }
