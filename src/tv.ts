@@ -5,7 +5,7 @@ import "./styles/tv.css";
 import "./tv.html";
 
 // NPM Modules
-import { closestIndexTo, compareDesc, isBefore, isPast, isToday, isWeekend, setHours } from "date-fns";
+import { closestIndexTo, compareDesc, isBefore, isPast, isToday, isWeekend, setHours, setMinutes, startOfToday } from "date-fns";
 import * as $ from "./lib/vendor/jquery.min.js";
 import * as ms from "ms";
 import * as Raven from "raven-js";
@@ -35,11 +35,11 @@ const suplGetter = new SuplGetterBrowser();
 // tslint:disable-next-line:prefer-const
 let state: {
 	sortedDates: DateWithUrl[] | null,
-	currentDates: [DateWithUrl, DateWithUrl]
+	currentDate: DateWithUrl
 } = {
-		sortedDates: null,
-		currentDates: [null, null]
-	};
+	sortedDates: null,
+	currentDate: null
+};
 
 $(document).ready(bootstrap);
 
@@ -59,13 +59,12 @@ function bootstrap() {
 
 			// Get and select best day
 			const closestDay: DateWithUrl = DatesHandler.getBestDay(sortedDates);
-			const nextDay: DateWithUrl = sortedDates[sortedDates.indexOf(closestDay) - 1];
 			// If there's a best day, select it
 			if (closestDay) {
-				DatesHandler.selectDate([closestDay, nextDay]);
+				DatesHandler.selectDate(closestDay);
 			} else {
 				// Fallback if no best day found, just select the first two in the list
-				DatesHandler.selectDate([sortedDates[1], sortedDates[0]]);
+				DatesHandler.selectDate(sortedDates[0]);
 			}
 		}).catch((ex) => {
 			Raven.captureException(ex);
@@ -100,12 +99,11 @@ namespace DatesHandler {
 
 		return closestDay;
 	}
-	export function selectDate(dates: [DateWithUrl, DateWithUrl]) {
-		state.currentDates = dates;
-
-		const promises = Promise.all(dates.map((date) => date.url).map(suplGetter.getSuplovaniPage, suplGetter));
-		promises
-			.then((pages) => pages.map(parseSuplovaniPage))
+	export function selectDate(date: DateWithUrl) {
+		state.currentDate = date;
+		console.log(`Selecting date ${date.dateString}`);
+		suplGetter.getSuplovaniPage(date.url)
+			.then(parseSuplovaniPage)
 			.then(RenderHandler.render)
 			.catch((ex) => {
 				Raven.captureException(ex);
@@ -115,7 +113,7 @@ namespace DatesHandler {
 }
 
 namespace RenderHandler {
-	export function render([suplovaniPage, secondSuplovaniPage]: [SuplovaniPage, SuplovaniPage]) {
+	export function render(suplovaniPage: SuplovaniPage) {
 		RenderHandler.renderSuplovani(suplovaniPage.suplovani, "#table_suplovani > tbody");
 		RenderHandler.renderDozory(suplovaniPage.dozory, "#table_dozory > tbody");
 		RenderHandler.renderNahradniUcebny(suplovaniPage.nahradniUcebny, "#table_nahradniUcebny > tbody");
@@ -253,6 +251,23 @@ namespace Utils {
 	}
 
 	export function refreshData() {
-		DatesHandler.selectDate(state.currentDates);
+		DatesHandler.selectDate(state.currentDate);
+	}
+}
+
+namespace ScheduleHandler {
+	/* Delcares when the particular lessons end */
+	const lessonMappings: ILesson[] = [
+		{ hour: 8, minute: 45 }
+	];
+	export function isLessonInPast(lessonNumber) {
+		const correspondingLesson = lessonMappings[lessonNumber + 1];
+		const lessonDate = setMinutes(setHours(startOfToday(), correspondingLesson.hour), correspondingLesson.minute);
+		return isPast(lessonDate);
+	}
+
+	interface ILesson {
+		hour: number;
+		minute: number;
 	}
 }
