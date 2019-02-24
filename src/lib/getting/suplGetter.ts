@@ -49,7 +49,7 @@ export class SuplGetterBrowser extends SuplGetter {
 			this.fetch_retry(url, {}, 5)
 				.then((res: Response) => {
 					// Fetch doesn't reject the promise on codes like 404
-					if (!res.ok) {
+					if (!res.ok && res.status !== 404) {
 						reject({ error: "res not ok" });
 					}
 					if (decodeWin1250) {
