@@ -1,4 +1,4 @@
-import { closestIndexTo, compareDesc, isBefore, isPast, isToday, isWeekend, setHours, setMinutes, startOfToday } from "date-fns";
+import { compareDesc, isBefore, isPast, setHours, setMinutes, startOfToday } from "date-fns";
 
 export namespace ScheduleHandler {
 	/* Delcares when the particular lessons and breaks end */
