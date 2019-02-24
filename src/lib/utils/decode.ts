@@ -18,7 +18,7 @@ const error = (codePoint, mode) => {
 
 // Link: https://encoding.spec.whatwg.org/#single-byte-decoder
 export function decode(input: ArrayBuffer, options?) {
-	const inputView = new Uint8Array(input);
+	const inputView = Uint8Array.from(input as any);
 	let mode;
 	if (options && options.mode) {
 		mode = options.mode.toLowerCase();
