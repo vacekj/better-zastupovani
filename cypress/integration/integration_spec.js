@@ -188,40 +188,6 @@ function selectLastDate() {
 	});
 }
 
-function selectFirstDate() {
-	cy.log("Selecting first date");
-	cy.get(test('datePicker')).then((result) => {
-		cy
-			.get(test('datePicker'))
-			.children()
-			.invoke('attr', 'selected', false)
-			.get(test('datePicker') + ' > option')
-			.filter(`:first-child`)
-			.invoke('attr', 'selected', true);
-		triggerDateChange();
-	});
-}
-
-function nextDate() {
-	cy.get(test('datePicker')).then((result) => {
-		const selectedIndex = result[0].selectedIndex;
-		let offset;
-		if (selectedIndex === result[0].options.length + 1) {
-			offset = -1;
-		} else {
-			offset = 1;
-		}
-		cy
-			.get(test('datePicker'))
-			.children()
-			.invoke('attr', 'selected', false)
-			.get(test('datePicker'))
-			.children(`:nth-child(${selectedIndex + 1 + offset})`)
-			.invoke('attr', 'selected', true);
-		triggerDateChange();
-	});
-}
-
 /**
  * Wait for loading spinner to disappear
  *
