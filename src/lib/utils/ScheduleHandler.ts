@@ -27,7 +27,10 @@ export namespace ScheduleHandler {
 	export function isLessonTooFarAwayInTheFuture(lessonNumber) {
 		const currentLesson = getCurrentLesson();
 
-		return lessonNumber - currentLesson < 5;
+		/* How many lessons to show in advance */
+		const LESSON_RANGE = 3;
+
+		return lessonNumber - currentLesson > LESSON_RANGE;
 	}
 
 	export function getCurrentLesson(mockTime?: [number, number]) {

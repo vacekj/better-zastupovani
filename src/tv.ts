@@ -5,8 +5,9 @@ import "./styles/tv.css";
 import "./tv.html";
 
 // NPM Modules
-import { closestIndexTo, compareDesc, isBefore, isPast, isToday, isWeekend, setHours, setMinutes, startOfToday } from "date-fns";
-import * as $ from "./lib/vendor/jquery.min.js";
+import { closestIndexTo, compareDesc, isBefore, isPast, isToday, isWeekend, setHours } from "date-fns";
+import * as jq from "./lib/vendor/jquery.min.js";
+const $: JQueryStatic = (jq as any);
 import * as ms from "ms";
 import * as Raven from "raven-js";
 
@@ -15,6 +16,7 @@ import { SuplGetterBrowser } from "./lib/getting/suplGetter";
 import { ChybejiciRecord, ChybejiciTable } from "./lib/parsing/ChybejiciParser";
 import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
 import { DozorRecord, NahradniUcebnaRecord, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
+import { ScheduleHandler } from "./lib/utils/ScheduleHandler";
 
 // Refresh data every REFRESH_PERIOD
 const REFRESH_PERIOD = ms("5 seconds");
@@ -63,7 +65,7 @@ function bootstrap() {
 			if (closestDay) {
 				DatesHandler.selectDate(closestDay);
 			} else {
-				// Fallback if no best day found, just select the first two in the list
+				// Fallback if no best day found, just select the first in the list
 				DatesHandler.selectDate(sortedDates[0]);
 			}
 		}).catch((ex) => {
@@ -102,8 +104,10 @@ namespace DatesHandler {
 	export function selectDate(date: DateWithUrl) {
 		state.currentDate = date;
 		console.log(`Selecting date ${date.dateString}`);
-		suplGetter.getSuplovaniPage(date.url)
+		suplGetter
+			.getSuplovaniPage(date.url)
 			.then(parseSuplovaniPage)
+			.then(ScheduleFilter.filterSuplovaniPage)
 			.then(RenderHandler.render)
 			.catch((ex) => {
 				Raven.captureException(ex);
@@ -117,7 +121,6 @@ namespace RenderHandler {
 		RenderHandler.renderSuplovani(suplovaniPage.suplovani, "#table_suplovani > tbody");
 		RenderHandler.renderDozory(suplovaniPage.dozory, "#table_dozory > tbody");
 		RenderHandler.renderNahradniUcebny(suplovaniPage.nahradniUcebny, "#table_nahradniUcebny > tbody");
-		RenderHandler.renderChybejici(suplovaniPage.chybejici, "#table_chybejici > tbody");
 		RenderHandler.renderOznameni(suplovaniPage.oznameni, "#oznameniContainer");
 	}
 
@@ -255,19 +258,13 @@ namespace Utils {
 	}
 }
 
-namespace ScheduleHandler {
-	/* Delcares when the particular lessons end */
-	const lessonMappings: ILesson[] = [
-		{ hour: 8, minute: 45 }
-	];
-	export function isLessonInPast(lessonNumber) {
-		const correspondingLesson = lessonMappings[lessonNumber + 1];
-		const lessonDate = setMinutes(setHours(startOfToday(), correspondingLesson.hour), correspondingLesson.minute);
-		return isPast(lessonDate);
+namespace ScheduleFilter {
+	function shouldRecordBeShown(record: SuplovaniRecord) {
+		return !ScheduleHandler.isLessonInPast(parseInt(record.hodina, 10)) && !ScheduleHandler.isLessonTooFarAwayInTheFuture(parseInt(record.hodina, 10));
 	}
-
-	interface ILesson {
-		hour: number;
-		minute: number;
+	export function filterSuplovaniPage(suplPage: SuplovaniPage): SuplovaniPage {
+		const filtered = suplPage;
+		filtered.suplovani = suplPage.suplovani.filter(shouldRecordBeShown);
+		return filtered;
 	}
 }
