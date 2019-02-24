@@ -32,6 +32,19 @@ export function parseVyucujiciPage(vyucujiciPage: string): string[] {
 export function parseSuplovaniPage(suplovaniPage: string): SuplovaniPage {
 	const $ = load(suplovaniPage);
 
+	/* Page is empty / 404 */
+	if ($(".StyleZ3")[0] === undefined) {
+		return new SuplovaniPage({
+			date: "",
+			lastUpdated: "",
+			chybejici: new ChybejiciTable([], [], []),
+			suplovani: [],
+			nahradniUcebny: [],
+			dozory: [],
+			oznameni: ""
+		});
+	}
+
 	// Date
 	const date = $(".StyleZ3")[0].innerHTML;
 
