@@ -1,13 +1,21 @@
 /*
-Main color: #2d548d
+Main color: #0060A1;
 */
 
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
 
 /* TV-specific */
-.container {
-	padding-left: 5px;
-	padding-right: 0px;
+body {
+	background: white;
+}
+
+.container-fluid {
+	margin: 0;
+	padding: 0;
+}
+
+.main {
+	margin: 15px;	
 }
 
 h4 {
@@ -16,24 +24,6 @@ h4 {
 
 .aktualizace {
 	font-size: small;
-}
-
-body>* {
-	background-color: white;
-}
-
-.container-fluid {
-	padding-top: 5px;
-}
-
-h5 {
-	margin-bottom: 0;
-	margin-top: -15px;
-
-}
-
-.col-lg-6 {
-	padding: 0;
 }
 
 /* Header */
@@ -73,7 +63,7 @@ table thead th {
 
 table td {
 	white-space: nowrap;
-	padding: 0.1rem !important;
+	padding: 0.2rem !important;
 	text-align: left;
 	font-family: "Tahoma";
 	font-size: 0.8rem;
@@ -124,6 +114,8 @@ table.table_chybejici th {
 .glyph {
 	width: 15px;
 }
+
+
 
 /* 
 Loading indicator

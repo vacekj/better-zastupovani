@@ -1,3 +1,5 @@
+// tslint:disable no-console
+
 import "./script/commonImports";
 
 // Page-specific imports
@@ -18,6 +20,7 @@ import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
 import { DozorRecord, NahradniUcebnaRecord, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
 import { ScheduleHandler } from "./lib/utils/ScheduleHandler";
 
+//#region Failsafes
 // Refresh data every REFRESH_PERIOD
 const REFRESH_PERIOD = ms("5 seconds");
 setInterval(() => {
@@ -31,6 +34,7 @@ setInterval(() => {
 	window.location.reload();
 	console.log(`Page reloaded, next reload in ${RELOAD_PERIOD / 1000} seconds`);
 }, RELOAD_PERIOD);
+//#endregion
 
 const suplGetter = new SuplGetterBrowser();
 
