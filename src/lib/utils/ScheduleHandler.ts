@@ -1,7 +1,8 @@
 import { compareDesc, isBefore, isPast, setHours, setMinutes, startOfToday } from "date-fns";
+import { DozorRecord } from "../parsing/suplParser";
 
 export namespace ScheduleHandler {
-	/* Delcares when the particular lessons and breaks end */
+	/* Declares when the particular lessons and breaks end */
 	const lessonMappings: ILesson[] = [
 		{ hour: 8, minute: 55 },
 		{ hour: 10, minute: 0 },
@@ -54,5 +55,17 @@ export namespace ScheduleHandler {
 	interface ILesson {
 		hour: number;
 		minute: number;
+	}
+
+	export function isDozorInThePast(dozor: Partial<DozorRecord>, mockTime?: [number, number]) {
+		const dozorHour = parseInt(dozor.timeEnd.slice(0, 2), 10);
+		const dozorMinute = parseInt(dozor.timeEnd.slice(3, 5), 10);
+		const dozorDate = setMinutes(setHours(startOfToday(), dozorHour), dozorMinute);
+		if (mockTime) {
+			const mockDate = setMinutes(setHours(startOfToday(), mockTime[0]), mockTime[1]);
+			return compareDesc(dozorDate, mockDate) === 1;
+		} else {
+			return isPast(dozorDate);
+		}
 	}
 }

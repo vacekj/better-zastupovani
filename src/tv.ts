@@ -125,7 +125,7 @@ namespace RenderHandler {
 		RenderHandler.renderSuplovani(suplovaniPage.suplovani, "#table_suplovani > tbody");
 		RenderHandler.renderDozory(suplovaniPage.dozory, "#table_dozory > tbody");
 		RenderHandler.renderNahradniUcebny(suplovaniPage.nahradniUcebny, "#table_nahradniUcebny > tbody");
-		RenderHandler.renderOznameni(suplovaniPage.oznameni, "#oznameniContainer");
+		RenderHandler.renderOznameni(suplovaniPage.oznameni);
 	}
 
 	export function renderSuplovani(suplovaniRecords: SuplovaniRecord[], targetSelector: string) {
@@ -156,9 +156,9 @@ namespace RenderHandler {
 	export function renderDozory(dozorRecords: DozorRecord[], targetSelector: string) {
 		const dozorTable = $(targetSelector);
 		dozorTable.empty();
-
-		const contentToAppend = dozorRecords.length
-			? dozorRecords.map(RenderHandler.dozorRecordToTr).join("")
+		const filteredDozory = ScheduleFilter.filterDozory(dozorRecords);
+		const contentToAppend = filteredDozory.length
+			? filteredDozory.map(RenderHandler.dozorRecordToTr).join("")
 			: RenderHandler.rowHeader("Žádné dozory", 6);
 
 		dozorTable.append(contentToAppend);
@@ -236,14 +236,18 @@ namespace RenderHandler {
 			</tr>`);
 	}
 
-	export function renderOznameni(oznameni: string, targetSelector: string) {
-		const template = oznameni ? `
-		<div class="card">
-			<div class="card-body">
-				${oznameni}
-			</div>
-		</div>` : "";
-		$(targetSelector).html(template);
+	export function renderOznameni(oznameni: string) {
+		const template = oznameni ? `<div class="col-md-12">
+	<h5>Oznámení</h5>
+	<div class="card">
+		<div class="card-body">
+			${oznameni}
+		</div>
+	</div>
+	<hr>
+</div>
+` : "";
+		$("#oznameniContainer").html(template);
 	}
 
 	export function rowHeader(text: string, colspan: number) {
@@ -270,5 +274,9 @@ namespace ScheduleFilter {
 		const filtered = suplPage;
 		filtered.suplovani = suplPage.suplovani.filter(shouldRecordBeShown);
 		return filtered;
+	}
+
+	export function filterDozory(dozory: DozorRecord[]): DozorRecord[] {
+		return dozory.filter((dozor) => { ScheduleHandler.isDozorInThePast(dozor) });
 	}
 }

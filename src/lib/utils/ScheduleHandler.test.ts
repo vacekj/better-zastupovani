@@ -2,6 +2,7 @@ import { expect } from "chai";
 import "mocha";
 
 import { ScheduleHandler } from "./ScheduleHandler";
+import { DozorRecord } from "../parsing/suplParser";
 
 describe("Schedule Handler", () => {
 	it("should get current lessson", () => {
@@ -23,5 +24,47 @@ describe("Schedule Handler", () => {
 		expect(ScheduleHandler.getCurrentLesson([14, 1])).to.equal(7);
 		expect(ScheduleHandler.getCurrentLesson([14, 57])).to.equal(8);
 		expect(ScheduleHandler.getCurrentLesson([15, 39])).to.equal(8);
+	});
+
+	it("should hide old dozory", () => {
+		const sampleDozory: Array<Partial<DozorRecord>> = [
+			{
+				timeStart: "07:45",
+				timeEnd: "08:00",
+				misto: "A - 2. patro",
+				chybejici: "Sedláček",
+				dozorujici: "Mayer",
+				poznamka: ""
+			},
+			{
+				timeStart: "08:45",
+				timeEnd: "08:55",
+				misto: "B - Tv",
+				chybejici: "Dostálová",
+				dozorujici: "Krejčíř",
+				poznamka: ""
+			},
+			{
+				timeStart: "09:40",
+				timeEnd: "10:00",
+				misto: "B - Tv",
+				chybejici: "Abrahámová",
+				dozorujici: "Hamříková",
+				poznamka: ""
+			},
+			{
+				timeStart: "11:40",
+				timeEnd: "11:50",
+				misto: "B - Tv",
+				chybejici: "Juřík",
+				dozorujici: "Havranová",
+				poznamka: ""
+			}
+		];
+		expect(ScheduleHandler.isDozorInThePast(sampleDozory[0], [8, 1])).to.be.true;
+		expect(ScheduleHandler.isDozorInThePast(sampleDozory[0], [7, 59])).to.be.false;
+		expect(ScheduleHandler.isDozorInThePast(sampleDozory[1], [8, 56])).to.be.true;
+		expect(ScheduleHandler.isDozorInThePast(sampleDozory[2], [9, 41])).to.be.false;
+		expect(ScheduleHandler.isDozorInThePast(sampleDozory[2], [10, 1])).to.be.true;
 	});
 });
