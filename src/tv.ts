@@ -18,7 +18,7 @@ import { SuplGetterBrowser } from "./lib/getting/suplGetter";
 import { ChybejiciRecord, ChybejiciTable } from "./lib/parsing/ChybejiciParser";
 import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
 import { DozorRecord, NahradniUcebnaRecord, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
-import { ScheduleHandler, ScheduleFilter } from "./lib/utils/ScheduleHandler";
+import { ScheduleFilter } from "./lib/utils/ScheduleHandler";
 
 //#region Failsafes
 // Refresh data every REFRESH_PERIOD
