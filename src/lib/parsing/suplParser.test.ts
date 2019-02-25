@@ -45,7 +45,6 @@ describe("suplParser", () => {
 			.catch(done);
 	});
 
-	/* TODO: this breaks when theres a dead link in dates source. needs to be fixed in cerveny or manually checked */
 	it("should parse suplovani page", (done) => {
 		suplGetter
 			.getDatesPage()

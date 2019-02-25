@@ -18,7 +18,7 @@ import { SuplGetterBrowser } from "./lib/getting/suplGetter";
 import { ChybejiciRecord, ChybejiciTable } from "./lib/parsing/ChybejiciParser";
 import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
 import { DozorRecord, NahradniUcebnaRecord, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
-import { ScheduleHandler } from "./lib/utils/ScheduleHandler";
+import { ScheduleHandler, ScheduleFilter } from "./lib/utils/ScheduleHandler";
 
 //#region Failsafes
 // Refresh data every REFRESH_PERIOD
@@ -134,7 +134,7 @@ namespace RenderHandler {
 
 		const contentToAppend = suplovaniRecords.length
 			? suplovaniRecords.map(RenderHandler.suplovaniRecordToTr).join("")
-			: RenderHandler.rowHeader("Žádné suplování", 8);
+			: RenderHandler.rowHeader("Žádné nadcházející suplování", 8);
 
 		suplovaniTable.append(contentToAppend);
 	}
@@ -159,7 +159,7 @@ namespace RenderHandler {
 		const filteredDozory = ScheduleFilter.filterDozory(dozorRecords);
 		const contentToAppend = filteredDozory.length
 			? filteredDozory.map(RenderHandler.dozorRecordToTr).join("")
-			: RenderHandler.rowHeader("Žádné dozory", 6);
+			: RenderHandler.rowHeader("Žádné nadcházející dozory", 6);
 
 		dozorTable.append(contentToAppend);
 	}
@@ -263,20 +263,5 @@ namespace Utils {
 
 	export function refreshData() {
 		DatesHandler.selectDate(state.currentDate);
-	}
-}
-
-namespace ScheduleFilter {
-	function shouldRecordBeShown(record: SuplovaniRecord) {
-		return !ScheduleHandler.isLessonInPast(parseInt(record.hodina, 10)) && !ScheduleHandler.isLessonTooFarAwayInTheFuture(parseInt(record.hodina, 10));
-	}
-	export function filterSuplovaniPage(suplPage: SuplovaniPage): SuplovaniPage {
-		const filtered = suplPage;
-		filtered.suplovani = suplPage.suplovani.filter(shouldRecordBeShown);
-		return filtered;
-	}
-
-	export function filterDozory(dozory: DozorRecord[]): DozorRecord[] {
-		return dozory.filter((dozor) => { ScheduleHandler.isDozorInThePast(dozor) });
 	}
 }
