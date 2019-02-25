@@ -216,9 +216,9 @@ namespace RenderHandler {
 	export function renderNahradniUcebny(nahradniUcebnyRecords: NahradniUcebnaRecord[], targetSelector: string) {
 		const nahradniUcebnyTable = $(targetSelector);
 		nahradniUcebnyTable.empty();
-
-		const contentToAppend = nahradniUcebnyRecords.length
-			? nahradniUcebnyRecords.map(RenderHandler.nahradniUcebnaRecordToTr).join("")
+		const filteredNahradniUcebny = ScheduleFilter.filterNahradniUcebny(nahradniUcebnyRecords);
+		const contentToAppend = filteredNahradniUcebny.length
+			? filteredNahradniUcebny.map(RenderHandler.nahradniUcebnaRecordToTr).join("")
 			: RenderHandler.rowHeader("Žádné náhradní učebny", 8);
 
 		nahradniUcebnyTable.append(contentToAppend);

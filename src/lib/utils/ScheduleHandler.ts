@@ -72,7 +72,7 @@ export namespace ScheduleHandler {
 
 /* TODO: test this */
 export namespace ScheduleFilter {
-	export function filterNahradniUcebnyPage(nahradniUcebnyRecords: NahradniUcebnaRecord[]): NahradniUcebnaRecord[] {
+	export function filterNahradniUcebny(nahradniUcebnyRecords: NahradniUcebnaRecord[]): NahradniUcebnaRecord[] {
 		return nahradniUcebnyRecords.filter((record) => {
 			return !ScheduleHandler.isLessonInPast(parseInt(record.hodina, 10));
 		});
