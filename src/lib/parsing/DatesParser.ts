@@ -23,7 +23,7 @@ export class DateWithUrl {
 	public dateString: string;
 	constructor(url: string, dateString: string) {
 		this.url = url;
-		const extractedDate = url.slice(6, 16).replace(new RegExp("_", "g"), "-");
+		const extractedDate = url.match(/\d{4}_\d{2}_\d{2}/)[0].replace(new RegExp("_", "g"), "-");
 		this.date = parse(extractedDate);
 		this.dateString = dateString;
 	}
