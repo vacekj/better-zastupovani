@@ -46,6 +46,9 @@ export abstract class SuplGetter {
 export class SuplGetterBrowser extends SuplGetter {
 	public async request(url: string, decodeWin1250 = false): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
+			const myHeaders = new Headers();
+			myHeaders.append("pragma", "no-cache");
+			myHeaders.append("cache-control", "no-cache");
 			this.fetch_retry(url, {}, 5)
 				.then((res: Response) => {
 					// Fetch doesn't reject the promise on codes like 404
