@@ -40,6 +40,7 @@ describe("suplParser", () => {
 				expect(dates.every((date) => date instanceof DateWithUrl)).to.be.true;
 				expect(dates.every((date) => date.date instanceof Date)).to.be.true;
 				expect(dates.every((date) => regexes.date.test(date.dateString))).to.be.true;
+				expect(dates.every((date) => regexes.dateUrl.test(date.url))).to.be.true;
 				done();
 			})
 			.catch(done);

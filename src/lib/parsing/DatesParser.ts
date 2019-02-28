@@ -23,9 +23,9 @@ export class DateWithUrl {
 	public dateString: string;
 	constructor(url: string, dateString: string) {
 		this.url = url;
+		this.dateString = dateString;
 		const extractedDate = url.match(/\d{4}_\d{2}_\d{2}/)[0].replace(new RegExp("_", "g"), "-");
 		this.date = parse(extractedDate);
-		this.dateString = dateString;
 	}
 }
 
