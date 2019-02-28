@@ -10,7 +10,6 @@ import "./tv.html";
 import { closestIndexTo, compareDesc, isBefore, isPast, isToday, isWeekend, setHours } from "date-fns";
 import * as jq from "./lib/vendor/jquery.min.js";
 const $: JQueryStatic = (jq as any);
-import * as ms from "ms";
 import * as Raven from "raven-js";
 
 // LIB Modules
@@ -22,14 +21,14 @@ import { ScheduleFilter } from "./lib/utils/ScheduleHandler";
 
 //#region Failsafes
 // Refresh data every REFRESH_PERIOD
-const REFRESH_PERIOD = ms("5 seconds");
+const REFRESH_PERIOD = 5000; // 5 seconds
 setInterval(() => {
 	Utils.refreshData();
 	console.log(`Data refreshed, next refresh in ${REFRESH_PERIOD / 1000} seconds`);
 }, REFRESH_PERIOD);
 
 // Reload page every RELOAD_PERIOD
-const RELOAD_PERIOD = ms("1 hour");
+const RELOAD_PERIOD = 3.6e+6; // 1 hour
 setInterval(() => {
 	window.location.reload();
 	console.log(`Page reloaded, next reload in ${RELOAD_PERIOD / 1000} seconds`);
