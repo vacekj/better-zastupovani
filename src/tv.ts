@@ -51,7 +51,8 @@ $(document).ready(bootstrap);
 function bootstrap() {
 	Raven.config("https://9d2a2a92d6d84dc08743bfb197a5cb65@sentry.io/296434").install();
 
-	suplGetter.getDatesPage()
+	suplGetter
+		.getDatesPage()
 		.then(parseDatesPage)
 		.then((dates) => {
 			// Sort dates by descending
@@ -71,7 +72,8 @@ function bootstrap() {
 				// Fallback if no best day found, just select the first in the list
 				DatesHandler.selectDate(sortedDates[0]);
 			}
-		}).catch((ex) => {
+		})
+		.catch((ex) => {
 			Raven.captureException(ex);
 			throw ex;
 		});
