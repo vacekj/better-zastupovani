@@ -4,7 +4,7 @@ import "mocha";
 import { SuplGetterNode } from "src/lib/getting/suplGetterNode";
 import { regexes } from "test/shared";
 import { DateWithUrl, parseDatesPage } from "./DatesParser";
-import { parseClassesPage, parseSuplovaniPage, SuplovaniPage } from "./suplParser";
+import { parseClassesPage, parseSuplovaniPage, SuplovaniPage, parseVyucujiciPage } from "./suplParser";
 
 import * as globalJsdom from "global-jsdom";
 let jsdom;
@@ -26,6 +26,19 @@ describe("suplParser", () => {
 				expect(classes[0]).to.equal("I.A8");
 				expect(classes).to.include.members(["I.A6", "I.A"]);
 				expect(classes.every((trida) => regexes.trida.test(trida))).to.be.true;
+				done();
+			})
+			.catch(done);
+	});
+
+	it("should parse vyucujici page", (done) => {
+		suplGetter
+			.getVyucujiciPage()
+			.then(parseVyucujiciPage)
+			.then((vyucujici) => {
+				expect(vyucujici).to.be.an.instanceof(Array);
+				expect(vyucujici).to.not.be.empty;
+				expect(vyucujici.every((vyuc) => vyuc.length > 0)).to.be.true;
 				done();
 			})
 			.catch(done);
