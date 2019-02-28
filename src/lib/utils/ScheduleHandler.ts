@@ -79,7 +79,7 @@ export namespace ScheduleFilter {
 	}
 
 	function shouldRecordBeShown(record: SuplovaniRecord) {
-		return !ScheduleHandler.isLessonInPast(parseInt(record.hodina, 10)) && !ScheduleHandler.isLessonTooFarAwayInTheFuture(parseInt(record.hodina, 10));
+		return !ScheduleHandler.isLessonInPast(parseInt(record.hodina, 10));
 	}
 
 	export function filterSuplovaniPage(suplPage: SuplovaniPage): SuplovaniPage {
