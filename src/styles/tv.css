@@ -36,7 +36,6 @@ table {
 	border-style: hidden;
 	table-layout: auto;
 	border-collapse: collapse;
-	max-width: 1% !important;
 }
 
 table thead {
