@@ -105,12 +105,12 @@ describe('Integration Tests', () => {
 		});
 
 		/* it('changes data on datePicker date change', () => {
-			selectLastDate();
+			selectFirstDate();
 			cy
 				.get('@suplovaniTable')
 				.then((el) => el[0].innerHTML)
 				.then((oldHTML) => {
-					selectFirstDate();
+					selectLastDate();
 					checkSuplTableChanged(oldHTML);
 				});
 		}); */
@@ -122,7 +122,7 @@ describe('Integration Tests', () => {
 			cy.get(test('filterTextbox')).as('filterTextbox');
 		});
 
-		it('changes data on filter text change', () => {
+/* 		it('changes data on filter text change', () => {
 			cy
 				.get('@suplovaniTable')
 				.then((el) => {
@@ -147,7 +147,7 @@ describe('Integration Tests', () => {
 								});
 						});
 				});
-		});
+		}); */
 	});
 
 	describe('Tertiary tests', () => {
@@ -175,17 +175,15 @@ function checkSuplTableChanged(oldHTML) {
 }
 
 function selectLastDate() {
-	cy.get(test('datePicker')).then((result) => {
-		cy
-			.get(test('datePicker'))
-			.children()
-			.invoke('attr', 'selected', false)
-			.get(test('datePicker'))
-			.children()
-			.filter(`:last-child`)
-			.invoke('attr', 'selected', true);
-		triggerDateChange();
-	});
+	cy
+		.get(test('datePicker'))
+		.children()
+		.invoke('attr', 'selected', false)
+		.get(test('datePicker'))
+		.children()
+		.filter(`:last-child`)
+		.invoke('attr', 'selected', true);
+	triggerDateChange();
 }
 
 /**
@@ -202,6 +200,18 @@ function triggerDateChange() {
 		.get(test('datePicker'))
 		.trigger('change');
 	waitForSuplTableDataLoad();
+}
+
+function selectFirstDate() {
+	cy.log("Selecting first date");
+	cy
+		.get(test('datePicker'))
+		.children()
+		.invoke('attr', 'selected', false)
+		.get(test('datePicker') + ' > option')
+		.filter(`:first-child`)
+		.invoke('attr', 'selected', true);
+	triggerDateChange();
 }
 
 function test(testID) {
