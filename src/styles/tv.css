@@ -2,7 +2,7 @@
 Main color: #0060A1;
 */
 
-@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@import url("https://fonts.googleapis.com/css?family=Open+Sans");
 
 /* TV-specific */
 body {
@@ -15,7 +15,7 @@ body {
 }
 
 .main {
-	margin: 15px;	
+	margin: 15px;
 }
 
 h4 {
@@ -29,19 +29,28 @@ h4 {
 /* Table */
 
 table {
-	box-shadow: 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12), 0 3px 5px -1px rgba(0,0,0,0.20);
-	border-style: hidden;
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 	table-layout: auto;
+	/* border-top: 3px solid #0060a1; */
 	border-radius: 5px;
 }
 
 table thead {
-	border-top: 3px solid #0060A1;
+/* 	border-top: 3px solid #0060a1;
+	border-radius: 5px; */
 }
 
 table thead th {
 	font-size: 0.7rem !important;
 	width: 1%;
+}
+
+table tbody tr:last-child td:first-child {
+	border-bottom-left-radius: 5px;
+}
+
+table tbody tr:last-child td:last-child {
+	border-bottom-right-radius: 5px;
 }
 
 .hidden {
@@ -62,14 +71,15 @@ table:not(.table_chybejici) td:last-child {
 
 /* Table stripes */
 
-table:not(.table_chybejici).table-striped>tbody>tr:nth-child(2n+1)>td:not(.noCellBg), .table-striped>tbody>tr:nth-child(2n+1)>th {
+table:not(.table_chybejici).table-striped > tbody > tr:nth-child(2n + 1) > td:not(.noCellBg),
+.table-striped > tbody > tr:nth-child(2n + 1) > th {
 	background-color: #0061a127;
 }
 
 /* Footer */
 
 .backlink {
-	background-color: #0060A1;
+	background-color: #0060a1;
 	color: white;
 	border-radius: 0px 0px 5px 5px;
 }
