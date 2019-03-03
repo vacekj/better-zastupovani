@@ -1,5 +1,13 @@
 /*
-Main color: #0060A1;
+#0060a1
+
+P — Light
+
+#508dd3
+
+P — Dark
+
+#003772
 */
 
 @import url("https://fonts.googleapis.com/css?family=IBM+Plex+Sans");
@@ -52,6 +60,7 @@ table thead th {
 	font-size: 0.7rem !important;
 	width: 1%;
 	color: white !important;
+	border: none !important;
 }
 
 table tbody tr:last-child td:first-child {
@@ -72,9 +81,14 @@ table td {
 	text-align: left;
 	font-family: "IBM Plex Sans", sans-serif;
 	font-size: 0.9rem;
+	border: none !important;
 }
 
-table:not(.table_chybejici) td:last-child {
+table td:first-child:not(.noCellBg) {
+	border-right: solid 2px #003772 !important;
+}
+
+table td:last-child {
 	width: 100% !important;
 }
 

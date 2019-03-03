@@ -176,44 +176,6 @@ namespace RenderHandler {
 				</tr>`);
 	}
 
-	export function renderChybejici(chybejici: ChybejiciTable, targetSelector: string) {
-		const chybejiciTable = $(targetSelector);
-		chybejiciTable.empty();
-
-		const noChybejici = RenderHandler.rowHeader("Žádní chybějící", 9);
-
-		const ucitele = chybejici.ucitele.map(RenderHandler.chybejiciRecordToTr).join("");
-		const tridy = chybejici.tridy.map(RenderHandler.chybejiciRecordToTr).join("");
-		const ucebny = chybejici.ucebny.map(RenderHandler.chybejiciRecordToTr).join("");
-
-		const contentToAppend = `
-			${RenderHandler.rowHeader("Učitelé", 9)}
-			${ucitele.length ? ucitele : noChybejici}
-			${RenderHandler.rowHeader("Třídy", 9)}
-			${tridy.length ? tridy : noChybejici}
-			${RenderHandler.rowHeader("Učebny", 9)}
-			${ucebny.length ? ucebny : noChybejici}
-		`;
-
-		chybejiciTable.append(contentToAppend);
-	}
-
-	export function chybejiciRecordToTr(chybejiciRecord: ChybejiciRecord) {
-		const missingGraphCells = Object.keys(chybejiciRecord.schedule).map((hour) => {
-			const className = chybejiciRecord.schedule[hour] ? "present" : "absent";
-			return `<td class="${className}">${hour}</td>`;
-		});
-
-		const row = `
-			<tr>
-				<td>${chybejiciRecord.kdo}</td>
-				${missingGraphCells.join("")}
-			</tr >
-		`;
-
-		return Utils.removeControlChars(row);
-	}
-
 	export function renderNahradniUcebny(nahradniUcebnyRecords: NahradniUcebnaRecord[], targetSelector: string) {
 		const nahradniUcebnyTable = $(targetSelector);
 		nahradniUcebnyTable.empty();
