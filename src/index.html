@@ -6,7 +6,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<meta name="description" content="Aplikace Zastupování - Chytrý prohlížeč změn rozvrhu. Filtrujte změny dle jména učitele, třídy, učebny, času, ... Funguje na PC i mobilu, iOS i Androidu.">
+	<meta name="description"
+		content="Aplikace Zastupování - Chytrý prohlížeč změn rozvrhu. Filtrujte změny dle jména učitele, třídy, učebny, času, ... Funguje na PC i mobilu, iOS i Androidu.">
 	<meta name="theme-color" content="#0060A1">
 	<link rel="shortcut icon" href="./img/favicon.png" type="image/png">
 	<!-- Facebook link decorators -->
@@ -54,20 +55,23 @@
 			<div class="form-row justify-content-center">
 				<div class="col-md-3 text-center" id="tlacitka">
 					<div class="btn-group">
-						<button type="button" class="btn btn-raised btn-primary" id="today" data-test="button_today" disabled>Dnes</button>
-						<button type="button" class="btn btn-raised btn-primary" id="tomorrow" data-test="button_tomorrow" disabled>Zítra</button>
+						<button type="button" class="btn btn-raised btn-primary" id="today" data-test="button_today"
+							disabled>Dnes</button>
+						<button type="button" class="btn btn-raised btn-primary" id="tomorrow"
+							data-test="button_tomorrow" disabled>Zítra</button>
 					</div>
 				</div>
 				<fieldset class="col-md-2 form-group" id="selectorField_date">
 					<div id="driver_date">
 						<label for="selector_date" class="bmd-label-floating">Datum</label>
-						<select class="form-control" name="selector_date" id="selector_date" data-test="datePicker" disabled></select>
+						<select class="form-control" name="selector_date" id="selector_date" data-test="datePicker"
+							disabled></select>
 					</div>
 				</fieldset>
 				<fieldset class="col-md-7 form-group" id="selectorField_filter">
 					<label for="selector_filter" class="bmd-label-floating">Filtr</label>
-					<input type="text" class="form-control" name="selector_filter" id="selector_filter" placeholder="Učitel, třída..."
-					 list="filterSuggestions" data-test="filterTextbox" readonly>
+					<input type="text" class="form-control" name="selector_filter" id="selector_filter"
+						placeholder="Učitel, třída..." list="filterSuggestions" data-test="filterTextbox" readonly>
 					<datalist id="filterSuggestions">
 					</datalist>
 				</fieldset>
@@ -84,7 +88,8 @@
 					</span>
 				</div>
 				<div class="col-md-12 table-responsive">
-					<table class="table table-bordered table-sm table-striped table-hover" id="table_suplovani" data-test="suplovaniTable">
+					<table class="table table-bordered table-sm table-striped table-hover" id="table_suplovani"
+						data-test="suplovaniTable">
 						<thead>
 							<tr>
 								<th>#</th>
@@ -177,11 +182,14 @@
 							<a href="https://jouzalol.github.com/portfolio">Josef Vacek</a>
 							<span ontouchstart="this.innerHTML = '🐇'" onclick="this.innerHTML = '🐇'">-</span>
 							<a href="mailto:vacekj@outlook.com">Kontakt</a>
+							<span ontouchstart="this.innerHTML = '🐇'" onclick="this.innerHTML = '🐇'">-</span>
+							<a href="https://goo.gl/forms/UA54jYuqUcXIvJmH3" style="font-weight: bold;" target="blank">Zpětná vazba</a>
 						</span>
 					</div>
 				</div>
 				<div class="col-md-12 text-muted small">
-					Tento web používá k poskytování služeb a analýze návštěvnosti soubory cookie. Používáním tohoto webu s tímto
+					Tento web používá k poskytování služeb a analýze návštěvnosti soubory cookie. Používáním tohoto webu
+					s tímto
 					souhlasíte.
 				</div>
 			</div>
