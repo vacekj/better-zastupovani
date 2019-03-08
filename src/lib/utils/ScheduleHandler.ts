@@ -74,12 +74,12 @@ export namespace ScheduleHandler {
 export namespace ScheduleFilter {
 	export function filterNahradniUcebny(nahradniUcebnyRecords: NahradniUcebnaRecord[]): NahradniUcebnaRecord[] {
 		return nahradniUcebnyRecords.filter((record) => {
-			return !ScheduleHandler.isLessonInPast(parseInt(record.hodina, 10), [7, 15]);
+			return !ScheduleHandler.isLessonInPast(parseInt(record.hodina, 10));
 		});
 	}
 
 	function shouldRecordBeShown(record: SuplovaniRecord) {
-		return !ScheduleHandler.isLessonInPast(parseInt(record.hodina, 10), [7, 15]);
+		return !ScheduleHandler.isLessonInPast(parseInt(record.hodina, 10));
 	}
 
 	export function filterSuplovaniPage(suplPage: SuplovaniPage): SuplovaniPage {
@@ -90,7 +90,7 @@ export namespace ScheduleFilter {
 
 	export function filterDozory(dozory: DozorRecord[]): DozorRecord[] {
 		return dozory.filter((dozor) => {
-			return !ScheduleHandler.isDozorInThePast(dozor, [7, 15]);
+			return !ScheduleHandler.isDozorInThePast(dozor);
 		});
 	}
 }
