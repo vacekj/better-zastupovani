@@ -4,6 +4,7 @@ import "./script/commonImports";
 // Page-specific imports
 import "./index.html";
 import "./styles/main.css";
+import "./styles/vendor/placeholder-loading.min.css";
 
 // Import and run app
 import app from "./script/app";

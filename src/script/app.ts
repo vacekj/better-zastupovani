@@ -260,7 +260,7 @@ namespace RenderHandler {
 			/* Don't render dozory if filtering only for Classes */
 			if (shouldHideDozory) {
 				RenderHandler.renderDozory(filterRecords(state.currentSuplovaniPage.dozory, filter), true);
-			} else  {
+			} else {
 				RenderHandler.renderDozory(filterRecords(state.currentSuplovaniPage.dozory, filter));
 			}
 			RenderHandler.renderNahradniUcebny(filterRecords(state.currentSuplovaniPage.nahradniUcebny, filter));
@@ -504,11 +504,23 @@ namespace Utils {
 		// Variable colspan for different-columned tables
 		const indicator = (colspan) =>
 			`<tr data-test="loadingIndicator">
-		<td colspan="${colspan}" class="noCellBg">
-			<svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-				<circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg>
-		</td>
-		</tr>`;
+	<td colspan="${colspan}" class="noCellBg" style="padding: 0!important;">
+		<div class="ph-item">
+			<div class="ph-col-12">
+				<div class="ph-row">
+					<div class="ph-col-6 big"></div>
+					<div class="ph-col-4 empty big"></div>
+					<div class="ph-col-2 big"></div>
+					<div class="ph-col-4"></div>
+					<div class="ph-col-8 empty"></div>
+					<div class="ph-col-6"></div>
+					<div class="ph-col-6 empty"></div>
+					<div class="ph-col-12"></div>
+				</div>
+			</div>
+		</div>
+	</td>
+</tr>`;
 
 		$("#table_suplovani > tbody").html(indicator(8));
 		$("#table_dozory > tbody").html(indicator(6));

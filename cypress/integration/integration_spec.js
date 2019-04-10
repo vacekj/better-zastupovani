@@ -192,7 +192,7 @@ function selectLastDate() {
  * @returns
  */
 function waitForSuplTableDataLoad() {
-	return cy.get('[data-test=suplovaniTable] svg.spinner').should('not.exist');
+	return cy.get('[data-test=suplovaniTable] .ph-item').should('not.exist');
 }
 
 function triggerDateChange() {
