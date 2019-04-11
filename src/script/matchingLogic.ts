@@ -1,3 +1,5 @@
+import { SuplovaniRecord } from "../lib/parsing/suplParser";
+
 export function objectContainsOneOf<T>(object: T, rawFilters: string[]) {
 	const filters = rawFilters;
 
@@ -20,9 +22,30 @@ export function objectContainsString<T>(object: T, filter: string) {
 
 	const regex = new RegExp("^\\b" + escapeRegExp(filter) + matchWholeWord, "i");
 
-	return Object.values(object).some((value: string) => {
-		return regex.test(value);
-	});
+	/* II.A6 should match 'II.A6, II.B6' */
+	if ("trida" in object && (object as unknown as SuplovaniRecord).trida.includes(",")) {
+		/* split into two objects */
+		const objA = Object.assign({}, object, { trida: (object as unknown as SuplovaniRecord).trida.split(",")[0].trim() });
+		const objB = Object.assign({}, object, { trida: (object as unknown as SuplovaniRecord).trida.split(",")[1].trim() });
+
+		return (
+			Object
+				.values(objA)
+				.some((value: string) => {
+					return regex.test(value);
+				}) ||
+			Object
+				.values(objB)
+				.some((value: string) => {
+					return regex.test(value);
+				}));
+	}
+
+	return Object
+		.values(object)
+		.some((value: string) => {
+			return regex.test(value);
+		});
 }
 
 function shouldMatchWholeWord(filter: string) {
