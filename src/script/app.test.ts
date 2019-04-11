@@ -34,6 +34,11 @@ describe("FilterHandler", () => {
 					string: "Krejčířová",
 					result: false
 				},
+				{
+					filter: "II.A6",
+					string: "II.A6, II.B6",
+					result: true
+				},
 			];
 
 			assertions.map((assertion) => {
