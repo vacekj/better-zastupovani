@@ -23,10 +23,11 @@ export function objectContainsString<T>(object: T, filter: string) {
 	const regex = new RegExp("^\\b" + escapeRegExp(filter) + matchWholeWord, "i");
 
 	/* II.A6 should match 'II.A6, II.B6' */
-	if ("trida" in object && (object as unknown as SuplovaniRecord).trida.includes(",")) {
+	const commaKey = objectContainsComma(object as unknown as object);
+	if (commaKey) {
 		/* split into two objects */
-		const objA = Object.assign({}, object, { trida: (object as unknown as SuplovaniRecord).trida.split(",")[0].trim() });
-		const objB = Object.assign({}, object, { trida: (object as unknown as SuplovaniRecord).trida.split(",")[1].trim() });
+		const objA = Object.assign({}, object, { [commaKey]: (object as any)[commaKey].split(",")[0].trim() });
+		const objB = Object.assign({}, object, { [commaKey]: (object as any)[commaKey].split(",")[1].trim() });
 
 		return (
 			Object
@@ -41,11 +42,29 @@ export function objectContainsString<T>(object: T, filter: string) {
 				}));
 	}
 
+
 	return Object
 		.values(object)
 		.some((value: string) => {
 			return regex.test(value);
 		});
+}
+
+/**
+ *
+ *
+ * @param {object} object
+ * @returns false if not comma found, otherwise the key in which comma is found
+ */
+function objectContainsComma(object: object) {
+	const containsComma = Object.values(object).some((val) => val.includes(","));
+	if (!containsComma) {
+		return false;
+	} else {
+		return Object
+			.entries(object)
+			.find((entry) => entry[1].includes(","))[0];
+	}
 }
 
 function shouldMatchWholeWord(filter: string) {
