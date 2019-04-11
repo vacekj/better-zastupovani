@@ -1,3 +1,5 @@
+import { SuplovaniRecord } from "../lib/parsing/suplParser";
+
 export function objectContainsOneOf<T>(object: T, rawFilters: string[]) {
 	const filters = rawFilters;
 
@@ -20,9 +22,48 @@ export function objectContainsString<T>(object: T, filter: string) {
 
 	const regex = new RegExp("^\\b" + escapeRegExp(filter) + matchWholeWord, "i");
 
-	return Object.values(object).some((value: string) => {
-		return regex.test(value);
-	});
+	/* II.A6 should match 'II.A6, II.B6' */
+	const commaKey = objectContainsComma(object as unknown as object);
+	if (commaKey) {
+		/* split into two objects */
+		const objA = Object.assign({}, object, { [commaKey]: (object as any)[commaKey].split(",")[0].trim() });
+		const objB = Object.assign({}, object, { [commaKey]: (object as any)[commaKey].split(",")[1].trim() });
+
+		return (
+			Object
+				.values(objA)
+				.some((value: string) => {
+					return regex.test(value);
+				}) ||
+			Object
+				.values(objB)
+				.some((value: string) => {
+					return regex.test(value);
+				}));
+	}
+
+	return Object
+		.values(object)
+		.some((value: string) => {
+			return regex.test(value);
+		});
+}
+
+/**
+ *
+ *
+ * @param {object} object
+ * @returns false if not comma found, otherwise the key in which comma is found
+ */
+function objectContainsComma(object: object) {
+	const containsComma = Object.values(object).some((val) => val.includes(",") && val.split(",")[1].trim() !== "");
+	if (!containsComma) {
+		return false;
+	} else {
+		return Object
+			.entries(object)
+			.find((entry) => entry[1].includes(","))[0];
+	}
 }
 
 function shouldMatchWholeWord(filter: string) {
