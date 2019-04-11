@@ -42,7 +42,6 @@ export function objectContainsString<T>(object: T, filter: string) {
 				}));
 	}
 
-
 	return Object
 		.values(object)
 		.some((value: string) => {
@@ -57,7 +56,7 @@ export function objectContainsString<T>(object: T, filter: string) {
  * @returns false if not comma found, otherwise the key in which comma is found
  */
 function objectContainsComma(object: object) {
-	const containsComma = Object.values(object).some((val) => val.includes(","));
+	const containsComma = Object.values(object).some((val) => val.includes(",") && val.split(",")[1].trim() !== "");
 	if (!containsComma) {
 		return false;
 	} else {
