@@ -46,12 +46,7 @@ export abstract class SuplGetter {
 export class SuplGetterBrowser extends SuplGetter {
 	public async request(url: string, decodeWin1250 = false): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
-			const noCacheHeaders = new Headers();
-			noCacheHeaders.append("pragma", "no-cache");
-			noCacheHeaders.append("expires", "0");
-			noCacheHeaders.append("cache-control", "no-cache, no-store, must-revalidate");
 			this.fetch_retry(url, {
-				headers: noCacheHeaders,
 				cache: "no-store"
 			}, 5)
 				.then((res: Response) => {

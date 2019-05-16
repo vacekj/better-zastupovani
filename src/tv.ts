@@ -14,7 +14,6 @@ import * as Raven from "raven-js";
 
 // LIB Modules
 import { SuplGetterBrowser } from "./lib/getting/suplGetter";
-import { ChybejiciRecord, ChybejiciTable } from "./lib/parsing/ChybejiciParser";
 import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
 import { DozorRecord, NahradniUcebnaRecord, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
 import { ScheduleFilter } from "./lib/utils/ScheduleHandler";
