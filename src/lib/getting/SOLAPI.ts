@@ -1,7 +1,13 @@
 import {format} from "date-fns";
 
 export class SOLAPI {
-	private API_URL = "http://localhost:3000" + "/api/suplovani"; /*TODO: změnit tohle na production server*/
+
+	private static formatDate(date: Date) {
+		return format(date, "d.M.y");
+	}
+
+	private API_HOST = "http://localhost:3000";
+	private API_URL = this.API_HOST + "/api/suplovani"; /*TODO: změnit tohle na production server*/
 
 	public async getSuplovani(date: Date): Promise<IAPIresponse> {
 
@@ -31,10 +37,6 @@ export class SOLAPI {
 			}
 			return await this.fetch_retry(url, options, n - 1);
 		}
-	}
-
-	private static formatDate(date: Date) {
-		return format(date, "d.M.y");
 	}
 }
 

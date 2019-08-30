@@ -9,7 +9,6 @@ P — Dark
 
 #003772
 */
-
 @import url("https://fonts.googleapis.com/css?family=IBM+Plex+Sans");
 
 /* TV-specific */
@@ -40,35 +39,37 @@ h4 {
 table {
 	/* box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); */
 	table-layout: auto;
-	border-radius: 5px;
+	border-radius: 10px;
 }
 
 table thead {
 	background: #003772;
-	border-radius: 5px;
+	border-radius: 105px;
 }
 
 table th:first-child {
-	border-top-left-radius: 5px;
+	border-top-left-radius: 10px;
 }
 
 table th:last-child {
-	border-top-right-radius: 5px;
+	border-top-right-radius: 10px;
 }
 
 table thead th {
-	font-size: 0.7rem !important;
+	font-size: 1rem !important;
+	padding: 5px !important;
+	padding-left: 20px !important;
 	width: 1%;
 	color: white !important;
 	border: none !important;
 }
 
 table tbody tr:last-child td:first-child {
-	border-bottom-left-radius: 5px;
+	border-bottom-left-radius: 10px;
 }
 
 table tbody tr:last-child td:last-child {
-	border-bottom-right-radius: 5px;
+	border-bottom-right-radius: 10px;
 }
 
 .hidden {
@@ -79,7 +80,8 @@ table td {
 	white-space: nowrap;
 	padding: 5px !important;
 	text-align: left;
-	font-family: "IBM Plex Sans", sans-serif;
+	padding-left: 20px !important;
+	font-family: IBM Plex Sans, sans-serif;
 	font-size: 1rem;
 	border: none !important;
 }

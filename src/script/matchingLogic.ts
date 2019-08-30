@@ -1,4 +1,3 @@
-import { SuplovaniRecord } from "../lib/parsing/suplParser";
 
 export function objectContainsOneOf<T>(object: T, rawFilters: string[]) {
 	const filters = rawFilters;
@@ -23,6 +22,7 @@ export function objectContainsString<T>(object: T, filter: string) {
 	const regex = new RegExp("^\\b" + escapeRegExp(filter) + matchWholeWord, "i");
 
 	/* II.A6 should match 'II.A6, II.B6' */
+	// @ts-ignore
 	const commaKey = objectContainsComma(object as unknown as object);
 	if (commaKey) {
 		/* split into two objects */
