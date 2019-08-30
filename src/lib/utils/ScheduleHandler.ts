@@ -1,5 +1,4 @@
 import { compareDesc, isBefore, isPast, setHours, setMinutes, startOfToday } from "date-fns";
-import { DozorRecord, NahradniUcebnaRecord, SuplovaniRecord, SuplovaniPage } from "../parsing/suplParser";
 
 export namespace ScheduleHandler {
 	/* Declares when the particular lessons and breaks end */
@@ -70,15 +69,9 @@ export namespace ScheduleHandler {
 	}
 }
 
-/* TODO: test this */
 export namespace ScheduleFilter {
-	export function filterNahradniUcebny(nahradniUcebnyRecords: NahradniUcebnaRecord[]): NahradniUcebnaRecord[] {
-		return nahradniUcebnyRecords.filter((record) => {
-			return !ScheduleHandler.isLessonInPast(parseInt(record.hodina, 10));
-		});
-	}
 
-	function shouldRecordBeShown(record: SuplovaniRecord) {
+	function shouldRecordBeShown(record) {
 		return !ScheduleHandler.isLessonInPast(parseInt(record.hodina, 10));
 	}
 
@@ -86,11 +79,5 @@ export namespace ScheduleFilter {
 		const filtered = suplPage;
 		filtered.suplovani = suplPage.suplovani.filter(shouldRecordBeShown);
 		return filtered;
-	}
-
-	export function filterDozory(dozory: DozorRecord[]): DozorRecord[] {
-		return dozory.filter((dozor) => {
-			return !ScheduleHandler.isDozorInThePast(dozor);
-		});
 	}
 }

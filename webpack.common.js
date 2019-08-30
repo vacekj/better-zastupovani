@@ -5,7 +5,7 @@ require('ts-loader');
 
 module.exports = {
 	entry: {
-		"index": ["babel-polyfill", "whatwg-fetch", "./src/index.ts"],
+		/*"index": ["babel-polyfill", "whatwg-fetch", "./src/index.ts"],*/
 		"tv": "./src/tv.ts"
 	},
 	devtool: "source-map",
@@ -23,7 +23,8 @@ module.exports = {
 				use: [{
 					loader: "ts-loader",
 					options: {
-						transpileOnly: true
+						transpileOnly: true,
+
 					}
 				}],
 				exclude: [/node_modules/],

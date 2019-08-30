@@ -2,7 +2,6 @@ import { expect } from "chai";
 import "mocha";
 
 import { ScheduleHandler } from "./ScheduleHandler";
-import { DozorRecord } from "../parsing/suplParser";
 
 describe("Schedule Handler", () => {
 	it("should get current lessson", () => {

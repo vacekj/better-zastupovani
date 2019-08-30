@@ -10,7 +10,7 @@ module.exports = merge(common, {
 	devServer: {
 		host: serverHost
 	},
-	devtool: "inline-source-map",
+	devtool: "source-map",
 	module: {
 		rules: [{
 			test: /\.css$/,
