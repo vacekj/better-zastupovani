@@ -1,12 +1,14 @@
 // tslint:disable no-console
 
-import "./script/commonImports";
 // Page-specific imports
+import "./img/favicon.png";
+
+import "./styles/vendor/placeholder-loading.min.css";
+import "./styles/vendor/bootstrap-md.min.css";
 import "./styles/tv.css";
 import "./tv.html";
 // NPM Modules
 import * as $ from "./lib/vendor/jquery.min.js";
-
 import * as Raven from "raven-js";
 
 import {IAPIresponse, SOLAPI} from "./lib/getting/SOLAPI";
@@ -33,8 +35,9 @@ function bootstrap() {
 	Raven.config("https://9d2a2a92d6d84dc08743bfb197a5cb65@sentry.io/296434").install();
 
 	/* First load */
-	/* TODO: catch exceptions here */
-	loadData();
+	loadData().catch((e) => {
+		throw e;
+	});
 }
 
 async function loadData() {
