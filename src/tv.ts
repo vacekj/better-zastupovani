@@ -13,6 +13,7 @@ import {IAPIresponse, SOLAPI} from "./lib/getting/SOLAPI";
 
 import * as a2d from "array2d";
 import {ScheduleHandler} from "./lib/utils/ScheduleHandler";
+import {addBusinessDays, isWeekend, startOfWeek} from "date-fns";
 import isLessonInPast = ScheduleHandler.isLessonInPast;
 
 //#region Updates
@@ -25,19 +26,28 @@ setInterval(() => {
 }, UPDATE_PERIOD);
 //#endregion
 
+// @ts-ignore
 $(document).ready(bootstrap);
 
 function bootstrap() {
 	Raven.config("https://9d2a2a92d6d84dc08743bfb197a5cb65@sentry.io/296434").install();
 
 	/* First load */
+	/* TODO: catch exceptions here */
 	loadData();
 }
 
 async function loadData() {
 	const API = new SOLAPI();
 	const today = new Date();
-	let suplovaniForToday: IAPIresponse = await API.getSuplovani(new Date(2019, 8, 4));
+
+	let dateToDisplay;
+	if (isWeekend(today)) {
+		dateToDisplay = startOfWeek(addBusinessDays(today, 1), {
+			weekStartsOn: 1
+		});
+	}
+	const suplovaniForToday: IAPIresponse = await API.getSuplovani(dateToDisplay);
 
 	suplovaniForToday.data.parsedSuplovani = a2d.transpose(suplovaniForToday.data.parsedSuplovani);
 	const header = suplovaniForToday.data.parsedSuplovani[0];
@@ -47,6 +57,8 @@ async function loadData() {
 	const filteredSupl = filterSupl(sortedSupl);
 
 	$("#table_suplovani")[0].innerHTML = suplovaniToTable(header, filteredSupl);
+
+	$("#last_updated")[0].innerHTML = `Data aktualizována: ${suplovaniForToday.data.fetchDate}`;
 }
 
 function sortSupl(rows: string[][]) {
@@ -63,13 +75,11 @@ function filterSupl(suplovani: string[][]) {
 		let lessonNumber = row[1][0];
 		const lessonLength = row[1].match(/\(([0-9])\)/) || 0;
 		if (lessonLength) {
-			lessonNumber += parseInt(lessonLength[0], 10) - 1;
+			lessonNumber += lessonLength ? parseInt(lessonLength[0], 10) - 1 : 0;
 		}
-		return !isLessonInPast(parseInt(lessonNumber, 10), [12, 45]);
+		return !isLessonInPast(parseInt(lessonNumber, 10));
 	});
 }
-
-/* TODO: hide lessons in the past*/
 
 function suplovaniToTable(head, body) {
 	const thead =

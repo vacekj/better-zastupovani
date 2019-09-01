@@ -6,8 +6,7 @@ export class SOLAPI {
 		return format(date, "d.M.y");
 	}
 
-	private API_HOST = "http://localhost:3000";
-	private API_URL = this.API_HOST + "/api/suplovani"; /*TODO: změnit tohle na production server*/
+	private API_URL = "https://sablony.gytool.cz/solapi" + "/api/suplovani";
 
 	public async getSuplovani(date: Date): Promise<IAPIresponse> {
 

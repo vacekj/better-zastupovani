@@ -18,10 +18,7 @@ module.exports = merge(common, {
 				{
 					loader: "style-loader"
 				}, {
-					loader: "css-loader",
-					options: {
-						minimize: true
-					}
+					loader: "css-loader"
 				}
 			]
 		}]

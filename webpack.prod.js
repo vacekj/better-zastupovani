@@ -1,6 +1,7 @@
 const merge = require("webpack-merge");
 const common = require("./webpack.common.js");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
+
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
@@ -22,10 +23,10 @@ module.exports = merge(common, {
 				uglifyOptions: {
 					ecma: 8
 				}
-			}),]
+			})]
 	},
 	plugins: [
-		new CleanWebpackPlugin(["dist/"]),
+		new CleanWebpackPlugin(),
 		new MiniCssExtractPlugin({
 			filename: "[name].css",
 			chunkFilename: "[id].css"

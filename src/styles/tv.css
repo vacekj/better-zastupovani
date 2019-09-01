@@ -26,12 +26,14 @@ body {
 	margin: 15px;
 }
 
-h4 {
-	margin-bottom: 0;
+h5 {
+    margin-bottom: 5px;
+    display: inline-block;
 }
 
-.aktualizace {
+#last_updated {
 	font-size: small;
+    float: right;
 }
 
 /* Table */

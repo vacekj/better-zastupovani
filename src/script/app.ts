@@ -1,22 +1,26 @@
 // NPM Modules
-import { addYears, closestIndexTo, compareDesc, isBefore, isPast, isToday, isTomorrow, isWeekend, setHours } from "date-fns";
+import {
+	addYears,
+	closestIndexTo,
+	compareDesc,
+	isBefore,
+	isPast,
+	isToday,
+	isTomorrow,
+	isWeekend,
+	setHours
+} from "date-fns";
 import * as Driver from "driver.js";
 import "../styles/vendor/driver.min.css";
 import * as Hammer from "hammerjs";
 import * as isMobile from "is-mobile";
-import * as jq from "../lib/vendor/jquery.min.js";
-const $: JQueryStatic = (jq as any); // Needed for typescript definitions to work
+import * as $ from "../lib/vendor/jquery.min.js";
 import * as Cookies from "js-cookie";
 import * as Raven from "raven-js";
-
 // LIB Modules
-import { SuplGetterBrowser } from "../lib/getting/suplGetter";
-import { ChybejiciRecord, ChybejiciTable } from "../lib/parsing/ChybejiciParser";
-import { DateWithUrl, parseDatesPage } from "../lib/parsing/DatesParser";
-import { DozorRecord, NahradniUcebnaRecord, parseClassesPage, parseSuplovaniPage, parseVyucujiciPage, SuplovaniPage, SuplovaniRecord } from "../lib/parsing/suplParser";
-import { addBackToTop } from "../lib/utils/backToTop";
+import {addBackToTop} from "../lib/utils/backToTop";
 
-import { objectContainsOneOf } from "./matchingLogic";
+import {objectContainsOneOf} from "./matchingLogic";
 
 const suplGetter = new SuplGetterBrowser();
 
@@ -160,6 +164,7 @@ namespace DatesHandler {
 
 		return closestDay;
 	}
+
 	export function selectDate(date: DateWithUrl) {
 		const dateSelector = Selectors.DateSelector[0];
 		const index = state.sortedDates.indexOf(date);
@@ -229,6 +234,7 @@ namespace DatesHandler {
 		}
 		DatesHandler.onDateChange();
 	}
+
 	export function previousDay() {
 		const select = (Selectors.DateSelector[0] as HTMLSelectElement);
 		if (select.selectedIndex === select.options.length - 1) {
@@ -444,7 +450,7 @@ export namespace FilterHandler {
 		} else {
 			RenderHandler.render(state.currentSuplovaniPage);
 		}
-		Cookies.set(COOKIE_FILTER, value, { expires: addYears(new Date(), 1) });
+		Cookies.set(COOKIE_FILTER, value, {expires: addYears(new Date(), 1)});
 	}
 }
 
@@ -464,7 +470,11 @@ namespace Utils {
 			let remove = 0;
 
 			const tds = $(this).parents("table").find("tr td:nth-child(" + (i + 1) + ")");
-			tds.each(function (j) { if (this.innerHTML === "") { remove++; } });
+			tds.each(function (j) {
+				if (this.innerHTML === "") {
+					remove++;
+				}
+			});
 
 			if (remove === ($("#table_suplovani tr").length - 1)) {
 				$(this).addClass("hidden");
@@ -472,6 +482,7 @@ namespace Utils {
 			}
 		});
 	}
+
 	export function enableDateControls() {
 		const today = state.sortedDates.find((dateWithUrl) => {
 			return isToday(dateWithUrl.date);
@@ -543,6 +554,7 @@ namespace Utils {
 
 namespace Tutorial {
 	let driver: Driver;
+
 	function initialize() {
 		driver = new Driver({
 			animate: true,
@@ -550,19 +562,19 @@ namespace Tutorial {
 			stageBackground: "white",
 			padding: 10,
 			allowClose: true,
-			scrollIntoViewOptions: { block: "end" },
+			scrollIntoViewOptions: {block: "end"},
 			doneBtnText: "Dokončit",
 			closeBtnText: "Zavřít",
 			nextBtnText: "Další >",
 			prevBtnText: "<",
 			onHighlighted: () => {
 				if (!driver.hasNextStep()) {
-					Cookies.set(COOKIE_TUTCOMPLETE, "true", { expires: addYears(new Date(), 1) });
+					Cookies.set(COOKIE_TUTCOMPLETE, "true", {expires: addYears(new Date(), 1)});
 				}
 			},
 			onDeselected: () => {
 				if (!driver.isActivated) {
-					Cookies.set(COOKIE_TUTCOMPLETE, "true", { expires: addYears(new Date(), 1) });
+					Cookies.set(COOKIE_TUTCOMPLETE, "true", {expires: addYears(new Date(), 1)});
 				}
 			}
 		});
