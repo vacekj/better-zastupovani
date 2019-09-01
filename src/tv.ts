@@ -1,229 +1,112 @@
 // tslint:disable no-console
 
 import "./script/commonImports";
-
 // Page-specific imports
 import "./styles/tv.css";
 import "./tv.html";
-
 // NPM Modules
-import { closestIndexTo, compareDesc, isBefore, isPast, isToday, isWeekend, setHours } from "date-fns";
-import * as jq from "./lib/vendor/jquery.min.js";
-const $: JQueryStatic = (jq as any);
+import * as $ from "./lib/vendor/jquery.min.js";
+
 import * as Raven from "raven-js";
 
-// LIB Modules
-import { SuplGetterBrowser } from "./lib/getting/suplGetter";
-import { DateWithUrl, parseDatesPage } from "./lib/parsing/DatesParser";
-import { DozorRecord, NahradniUcebnaRecord, parseSuplovaniPage, SuplovaniPage, SuplovaniRecord } from "./lib/parsing/suplParser";
-import { ScheduleFilter } from "./lib/utils/ScheduleHandler";
+import {IAPIresponse, SOLAPI} from "./lib/getting/SOLAPI";
 
-//#region Failsafes
-// Refresh data every REFRESH_PERIOD
-const REFRESH_PERIOD = 5 * 1000; // 5 seconds
-setInterval(() => {
-	Utils.refreshData();
-	console.log(`Data refreshed, next refresh in ${REFRESH_PERIOD / 1000} seconds`);
-}, REFRESH_PERIOD);
+import * as a2d from "array2d";
+import {ScheduleHandler} from "./lib/utils/ScheduleHandler";
+import {addBusinessDays, isWeekend, startOfWeek} from "date-fns";
+import isLessonInPast = ScheduleHandler.isLessonInPast;
+
+//#region Updates
 
 // Reload page every RELOAD_PERIOD
-const RELOAD_PERIOD = 60 * 1000; // Every minute
+const UPDATE_PERIOD = 30 * 1000;
 setInterval(() => {
-	window.location.reload();
-	console.log(`Page reloaded, next reload in ${RELOAD_PERIOD / 1000} seconds`);
-}, RELOAD_PERIOD);
+	loadData();
+	console.log(`Page updated, next reload in ${UPDATE_PERIOD / 1000} seconds`);
+}, UPDATE_PERIOD);
 //#endregion
 
-const suplGetter = new SuplGetterBrowser();
-
-// tslint:disable-next-line:prefer-const
-let state: {
-	sortedDates: DateWithUrl[] | null,
-	currentDate: DateWithUrl
-} = {
-	sortedDates: null,
-	currentDate: null
-};
-
+// @ts-ignore
 $(document).ready(bootstrap);
 
 function bootstrap() {
 	Raven.config("https://9d2a2a92d6d84dc08743bfb197a5cb65@sentry.io/296434").install();
 
-	suplGetter
-		.getDatesPage()
-		.then(parseDatesPage)
-		.then((dates) => {
-			// Sort dates by descending
-			const sortedDates = dates.sort((a, b) => {
-				return compareDesc(a.date, b.date);
-			});
+	/* First load */
+	/* TODO: catch exceptions here */
+	loadData();
+}
 
-			// Update state with sorted dates (needed only once on bootstrap)
-			state.sortedDates = sortedDates;
+async function loadData() {
+	const API = new SOLAPI();
+	const today = new Date();
 
-			// Get and select best day
-			const closestDay: DateWithUrl = DatesHandler.getBestDay(sortedDates);
-			// If there's a best day, select it
-			if (closestDay) {
-				DatesHandler.selectDate(closestDay);
-			} else {
-				// Fallback if no best day found, just select the first in the list
-				DatesHandler.selectDate(sortedDates[0]);
-			}
-		})
-		.catch((ex) => {
-			Raven.captureException(ex);
-			throw ex;
+	let dateToDisplay;
+	if (isWeekend(today)) {
+		dateToDisplay = startOfWeek(addBusinessDays(today, 1), {
+			weekStartsOn: 1
 		});
+	}
+	const suplovaniForToday: IAPIresponse = await API.getSuplovani(dateToDisplay);
+
+	suplovaniForToday.data.parsedSuplovani = a2d.transpose(suplovaniForToday.data.parsedSuplovani);
+	const header = suplovaniForToday.data.parsedSuplovani[0];
+	const rows = suplovaniForToday.data.parsedSuplovani.slice(1);
+
+	const sortedSupl = sortSupl(rows);
+	const filteredSupl = filterSupl(sortedSupl);
+
+	$("#table_suplovani")[0].innerHTML = suplovaniToTable(header, filteredSupl);
+
+	$("#last_updated")[0].innerHTML = `Data aktualizována: ${suplovaniForToday.data.fetchDate}`;
 }
 
-namespace DatesHandler {
-	/**
-	 * Selects best day to show at startup
-	 *
-	 * @param {DateWithUrl[]} sortedDates Dates sorted by date descending. Order must be preserved
-	 * @returns
-	 */
-	export function getBestDay(sortedDates: DateWithUrl[]) {
-		const closestIndex = closestIndexTo(new Date(), sortedDates.map((date) => date.date));
-		let closestDay: DateWithUrl = state.sortedDates[closestIndex];
+function sortSupl(rows: string[][]) {
+	return rows.sort((a, b) => {
+		const hourA = a[1][0];
+		const hourB = b[1][0];
 
-		// If date is in the past, select the next date
-		if (isPast(closestDay.date)) {
-			closestDay = state.sortedDates[closestIndex - 1];
+		return parseInt(hourA, 10) - parseInt(hourB, 10);
+	});
+}
+
+function filterSupl(suplovani: string[][]) {
+	return suplovani.filter((row) => {
+		let lessonNumber = row[1][0];
+		const lessonLength = row[1].match(/\(([0-9])\)/) || 0;
+		if (lessonLength) {
+			lessonNumber += lessonLength ? parseInt(lessonLength[0], 10) - 1 : 0;
 		}
-
-		// If it's a working day and it's before TRESHOLD_HOUR, try to display today's date;
-		const THRESHOLD_HOUR = 15;
-		if ((!isWeekend(new Date()) && isBefore(new Date(), setHours(new Date(), THRESHOLD_HOUR)))) {
-			const workingClosestDay = state.sortedDates.find((date) => isToday(date.date));
-			if (workingClosestDay) {
-				closestDay = workingClosestDay;
-			}
-		}
-
-		return closestDay;
-	}
-	export function selectDate(date: DateWithUrl) {
-		state.currentDate = date;
-		console.log(`Selecting date ${date.dateString}`);
-		suplGetter
-			.getSuplovaniPage(date.url)
-			.then(parseSuplovaniPage)
-			.then(ScheduleFilter.filterSuplovaniPage)
-			.then(RenderHandler.render)
-			.catch((ex) => {
-				Raven.captureException(ex);
-				throw ex;
-			});
-	}
+		return !isLessonInPast(parseInt(lessonNumber, 10));
+	});
 }
 
-namespace RenderHandler {
-	export function render(suplovaniPage: SuplovaniPage) {
-		RenderHandler.renderSuplovani(suplovaniPage.suplovani, "#table_suplovani > tbody");
-		RenderHandler.renderDozory(suplovaniPage.dozory, "#table_dozory > tbody");
-		RenderHandler.renderNahradniUcebny(suplovaniPage.nahradniUcebny, "#table_nahradniUcebny > tbody");
-		RenderHandler.renderOznameni(suplovaniPage.oznameni);
-	}
+function suplovaniToTable(head, body) {
+	const thead =
+		`<tr> ${
+			head.map((col) => {
+				return `<th>${col}</th>`;
+			})
+				.join("")
+		} </tr>`;
 
-	export function renderSuplovani(suplovaniRecords: SuplovaniRecord[], targetSelector: string) {
-		const suplovaniTable = $(targetSelector);
-		suplovaniTable.empty();
+	const tbody =
+		body
+			.map((row) => {
+				return `<tr> ${
+					row
+						.map((col) => {
+							return `<td>${col}</td>`;
+						})
+						.join("")
+				} </tr>`;
+			})
+			.join("");
 
-		const contentToAppend = suplovaniRecords.length
-			? suplovaniRecords.map(RenderHandler.suplovaniRecordToTr).join("")
-			: RenderHandler.rowHeader("Žádné nadcházející suplování", 8);
-
-		suplovaniTable.append(contentToAppend);
-	}
-
-	export function suplovaniRecordToTr(suplovaniRecord: SuplovaniRecord): string {
-		return Utils.removeControlChars(`<tr>
-					<td>${suplovaniRecord.hodina}</td>
-					<td>${suplovaniRecord.trida}</td>
-					<td>${suplovaniRecord.predmet}</td>
-					<td>${suplovaniRecord.ucebna}</td>
-					<td>${suplovaniRecord.nahucebna}</td>
-					<td>${suplovaniRecord.vyuc}</td>
-					<td>${suplovaniRecord.zastup}</td>
-					<td>${suplovaniRecord.pozn}</td>
-				</tr>
-				`);
-	}
-
-	export function renderDozory(dozorRecords: DozorRecord[], targetSelector: string) {
-		const dozorTable = $(targetSelector);
-		dozorTable.empty();
-		const filteredDozory = ScheduleFilter.filterDozory(dozorRecords);
-		const contentToAppend = filteredDozory.length
-			? filteredDozory.map(RenderHandler.dozorRecordToTr).join("")
-			: RenderHandler.rowHeader("Žádné nadcházející dozory", 6);
-
-		dozorTable.append(contentToAppend);
-	}
-
-	export function dozorRecordToTr(dozorRecord: DozorRecord): string {
-		return Utils.removeControlChars(`<tr>
-					<td>${dozorRecord.timeStart}</td>
-					<td>${dozorRecord.timeEnd}</td>
-					<td>${dozorRecord.misto}</td>
-					<td>${dozorRecord.chybejici}</td>
-					<td>${dozorRecord.dozorujici}</td>
-					<td>${dozorRecord.poznamka}</td>
-				</tr>`);
-	}
-
-	export function renderNahradniUcebny(nahradniUcebnyRecords: NahradniUcebnaRecord[], targetSelector: string) {
-		const nahradniUcebnyTable = $(targetSelector);
-		nahradniUcebnyTable.empty();
-		const filteredNahradniUcebny = ScheduleFilter.filterNahradniUcebny(nahradniUcebnyRecords);
-		const contentToAppend = filteredNahradniUcebny.length
-			? filteredNahradniUcebny.map(RenderHandler.nahradniUcebnaRecordToTr).join("")
-			: RenderHandler.rowHeader("Žádné náhradní učebny", 8);
-
-		nahradniUcebnyTable.append(contentToAppend);
-	}
-
-	export function nahradniUcebnaRecordToTr(nahradniUcebna: NahradniUcebnaRecord) {
-		return Utils.removeControlChars(`<tr>
-				<td>${nahradniUcebna.hodina}</td>
-				<td>${nahradniUcebna.trida}</td>
-				<td>${nahradniUcebna.predmet}</td>
-				<td>${nahradniUcebna.chybucebna}</td>
-				<td>${nahradniUcebna.nahucebna}</td>
-				<td>${nahradniUcebna.vyuc}</td>
-				<td>${nahradniUcebna.pozn}</td>
-			</tr>`);
-	}
-
-	export function renderOznameni(oznameni: string) {
-		const template = oznameni ? `<div class="col-md-12">
-	<h5>Oznámení</h5>
-	<div class="card">
-		<div class="card-body">
-			${oznameni}
-		</div>
-	</div>
-	<hr>
-</div>
-` : "";
-		$("#oznameniContainer").html(template);
-	}
-
-	export function rowHeader(text: string, colspan: number) {
-		return `<tr><td colspan="${colspan}" class="noCellBg">${text}</td></tr>`;
-	}
-}
-
-namespace Utils {
-
-	export function removeControlChars(s: string) {
-		return s.replace(/[\n\r\t]/g, "");
-	}
-
-	export function refreshData() {
-		DatesHandler.selectDate(state.currentDate);
-	}
+	return `<thead>
+				${thead}
+            </thead>
+            <tbody>
+            ${tbody}
+            </tbody>`;
 }

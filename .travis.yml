@@ -14,7 +14,6 @@ before_script:
   - npm run build
 
 script:
-  - npm run cy:ci:prod:run
   - npm run test
 
 cache:

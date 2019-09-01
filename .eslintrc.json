@@ -1,19 +1,17 @@
 {
 	"env": {
 		"es6": true,
+		"jest": true,
 		"browser": true,
-		"mocha": true,
 		"commonjs": true,
 		"node": true
 	},
 	"extends": [
-		"google",
 		"eslint:recommended"
 	],
 	"parserOptions": {
 		"sourceType": "module",
-		"ecmaVersion": 8,
-		"node": true
+		"ecmaVersion": 8
 	},
 	"rules": {
 		"space-before-function-paren": "off",
@@ -28,7 +26,13 @@
 		"object-curly-spacing": "off",
 		"no-invalid-this": "off",
 		"no-constant-condition": "off",
+		"comma-spacing": "off",
 		"semi": "error",
-		"no-console": "off"
+		"no-console": "off",
+		"indent": [
+			"error",
+			"tab"
+		],
+		"no-tabs": "off"
 	}
 }

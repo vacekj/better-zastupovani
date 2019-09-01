@@ -9,6 +9,10 @@
 			"request": "launch",
 			"name": "Launch Chrome",
 			"url": "http://192.168.88.200:8080",
+			"sourceMaps": true,
+			"sourceMapPathOverrides": {
+				"webpack:///./*": "${webRoot}/*"
+			},
 			"webRoot": "${workspaceFolder}"
 		},
 		{

@@ -1,6 +1,4 @@
-import { objectContainsOneOf, teachersWithInitialsMap } from "./matchingLogic";
-
-import { expect } from "chai";
+import {objectContainsOneOf, teachersWithInitialsMap} from "./matchingLogic";
 
 describe("FilterHandler", () => {
 	describe("Filter matching logic", () => {
@@ -48,10 +46,9 @@ describe("FilterHandler", () => {
 
 			assertions.map((assertion) => {
 				expect(objectContainsOneOf(
-					{ string: assertion.string },
-					[assertion.filter]),
-					`expected ${assertion.filter} to ${assertion.result ? "MATCH" : "NOT MATCH"} string ${assertion.string}`
-				).to.equal(assertion.result);
+					{string: assertion.string},
+					[assertion.filter])
+				).toEqual(assertion.result);
 			});
 		});
 	});
