@@ -44,7 +44,7 @@ async function loadData() {
 	const API = new SOLAPI();
 	const today = new Date();
 
-	let dateToDisplay;
+	let dateToDisplay = today;
 	if (isWeekend(today)) {
 		dateToDisplay = startOfWeek(addBusinessDays(today, 1), {
 			weekStartsOn: 1
