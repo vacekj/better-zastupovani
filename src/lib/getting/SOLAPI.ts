@@ -6,7 +6,7 @@ export class SOLAPI {
 		return format(date, "d.M.y");
 	}
 
-	private API_URL = "https://sablony.gytool.cz/solapi" + "/api/suplovani";
+	private API_URL = "https://solapi.gytool.cz" + "/api/suplovani";
 
 	public async getSuplovani(date: Date): Promise<IAPIresponse> {
 
