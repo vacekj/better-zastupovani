@@ -15,7 +15,7 @@ import {IAPIresponse, SOLAPI} from "./lib/getting/SOLAPI";
 
 import * as a2d from "array2d";
 import {ScheduleHandler} from "./lib/utils/ScheduleHandler";
-import {addBusinessDays, isWeekend, startOfWeek} from "date-fns";
+import {addBusinessDays, format, isAfter, isWeekend, setHours, startOfWeek} from "date-fns";
 import isLessonInPast = ScheduleHandler.isLessonInPast;
 
 //#region Updates
@@ -45,11 +45,18 @@ async function loadData() {
 	const today = new Date();
 
 	let dateToDisplay = today;
+	const endOfSchoolDay = setHours(new Date(), 16);
+	let filter = true;
+
 	if (isWeekend(today)) {
 		dateToDisplay = startOfWeek(addBusinessDays(today, 1), {
 			weekStartsOn: 1
 		});
+	} else if (isAfter(new Date(), endOfSchoolDay)) {
+		dateToDisplay = addBusinessDays(new Date(), 1);
+		filter = false;
 	}
+
 	const suplovaniForToday: IAPIresponse = await API.getSuplovani(dateToDisplay);
 
 	suplovaniForToday.data.parsedSuplovani = a2d.transpose(suplovaniForToday.data.parsedSuplovani);
@@ -59,9 +66,11 @@ async function loadData() {
 	const sortedSupl = sortSupl(rows);
 	const filteredSupl = filterSupl(sortedSupl);
 
-	$("#table_suplovani")[0].innerHTML = suplovaniToTable(header, filteredSupl);
+	$("#table_suplovani")[0].innerHTML = suplovaniToTable(header, filter ? filteredSupl : sortedSupl);
 
 	$("#last_updated")[0].innerHTML = `Data aktualizována: ${suplovaniForToday.data.fetchDate}`;
+
+	$("#date")[0].innerHTML = format(dateToDisplay, "d.M.y");
 }
 
 function sortSupl(rows: string[][]) {
