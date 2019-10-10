@@ -55,15 +55,15 @@ async function loadData() {
 	}
 	const suplovaniForToday: IAPIresponse = await API.getSuplovani(dateToDisplay);
 
-	suplovaniForToday.data.parsedSuplovani = a2d.transpose(suplovaniForToday.data.parsedSuplovani);
-	const header = suplovaniForToday.data.parsedSuplovani[0];
-	const rows = suplovaniForToday.data.parsedSuplovani.slice(1);
+	suplovaniForToday.parsedSuplovani = a2d.transpose(suplovaniForToday.parsedSuplovani);
+	const header = suplovaniForToday.parsedSuplovani[0];
+	const rows = suplovaniForToday.parsedSuplovani.slice(1);
 
 	const sortedSupl = sortSupl(rows);
 
 	$("#table_suplovani")[0].innerHTML = suplovaniToTable(header, sortedSupl);
 
-	$("#last_updated")[0].innerHTML = `Data aktualizována: ${suplovaniForToday.data.fetchDate}`;
+	$("#last_updated")[0].innerHTML = `Data aktualizována: ${suplovaniForToday.fetchDate}`;
 
 	$("#date")[0].innerHTML = format(dateToDisplay, "d.M.y");
 }
