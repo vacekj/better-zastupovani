@@ -40,8 +40,6 @@ export class SOLAPI {
 }
 
 export interface IAPIresponse {
-	data: {
-		parsedSuplovani: [[string]],
-		fetchDate: string
-	};
+	parsedSuplovani: [[string]];
+	fetchDate: string;
 }
