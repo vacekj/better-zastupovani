@@ -4,21 +4,21 @@
 <head>
 	<title>Zastupování</title>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<meta name="description"
-	      content="Aplikace Zastupování - Chytrý prohlížeč změn rozvrhu. Filtrujte změny dle jména učitele, třídy, učebny, času, ... Funguje na PC i mobilu, iOS i Androidu.">
-	<meta name="theme-color" content="#2d548d">
-	<link rel="shortcut icon" href="./img/favicon.png" type="image/png">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<meta content="ie=edge" http-equiv="X-UA-Compatible">
+	<meta content="Aplikace Zastupování - Chytrý prohlížeč změn rozvrhu. Filtrujte změny dle jména učitele, třídy, učebny, času, ... Funguje na PC i mobilu, iOS i Androidu."
+		  name="description">
+	<meta content="#2d548d" name="theme-color">
+	<link href="./img/favicon.png" rel="shortcut icon" type="image/png">
 	<!-- Facebook link decorators -->
-	<meta property="og:title" content="Zastupování">
-	<meta property="og:description" content="A better way to view GH Zastupování">
-	<meta property="og:type" content="website">
-	<meta property="og:url" content="http://zastupovani.gytool.cz">
-	<meta property="og:image" content="http://zastupovani.gytool.cz/img/logo_znak.png">
+	<meta content="Zastupování" property="og:title">
+	<meta content="A better way to view GH Zastupování" property="og:description">
+	<meta content="website" property="og:type">
+	<meta content="http://zastupovani.gytool.cz" property="og:url">
+	<meta content="http://zastupovani.gytool.cz/img/logo_znak.png" property="og:image">
 	<!-- Styles -->
-	<link rel="stylesheet" href="tv.css">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+	<link href="tv.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
 </head>
 
 <body>
@@ -28,16 +28,13 @@
 		<!-- SUPLOVÁNÍ -->
 		<div class="row">
 			<div class="col-12 table-responsive">
-				<div style="display: flex;
-justify-content: space-between;
-    align-items: center;
-margin-bottom: 10px;"><h5>Suplování</h5>
+				<div class="header"><h5>Suplování</h5>
 					<span id="date" style="font-weight: bold;"></span>
 					<span id="last_updated"></span></div>
-				<table class="table table-sm table-striped table-hover" id="table_suplovani"
-				       data-test="suplovaniTable">
+				<table class="table table-sm table-striped table-hover" data-test="suplovaniTable"
+					   id="table_suplovani">
 					<tr data-test="loadingIndicator">
-						<td colspan="8" class="noCellBg" style="padding: 0!important;">
+						<td class="noCellBg" colspan="8" style="padding: 0!important;">
 							<div class="ph-item">
 								<div class="ph-col-12">
 									<div class="ph-row">

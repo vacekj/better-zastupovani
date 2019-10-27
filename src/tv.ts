@@ -60,6 +60,17 @@ async function loadData() {
 	const suplovaniForToday: IAPIresponse = await API.getSuplovani(dateToDisplay);
 
 	suplovaniForToday.parsedSuplovani = a2d.transpose(suplovaniForToday.parsedSuplovani);
+	// @ts-ignore
+	if (suplovaniForToday.parsedSuplovani.length == 0) {
+		$("#table_suplovani")[0].innerHTML = `<div style="text-align: center; padding: 20px">
+Žádné zastupování
+</div>`;
+
+		$("#last_updated")[0].innerHTML = `Data aktualizována: ${suplovaniForToday.fetchDate}`;
+
+		$("#date")[0].innerHTML = format(dateToDisplay, "d.M.y");
+		return;
+	}
 	const header = suplovaniForToday.parsedSuplovani[0];
 	const rows = suplovaniForToday.parsedSuplovani.slice(1);
 

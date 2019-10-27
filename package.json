@@ -20,7 +20,7 @@
 	},
 	"dependencies": {
 		"array2d": "0.0.5",
-		"date-fns": "^2.0.1",
+		"date-fns": "^2.6.0",
 		"driver.js": "^0.9.7",
 		"hammerjs": "^2.0.8",
 		"is-mobile": "^0.2.2",

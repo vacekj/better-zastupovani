@@ -11,6 +11,27 @@ P — Dark
 */
 @import url("https://fonts.googleapis.com/css?family=IBM+Plex+Sans");
 
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.header > * {
+	flex-basis: 10%;
+}
+
+#date {
+	flex-basis: 50%;
+	flex-grow: 2;
+	text-align: center;
+}
+
+#last_updated {
+	text-align: right;
+}
+
 /* TV-specific */
 body {
 	font-family: "IBM Plex Sans", sans-serif;

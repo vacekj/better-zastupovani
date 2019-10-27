@@ -1,7 +1,6 @@
 /*
 Main color: #0060A1;
 */
-
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
 @media (min-width: 576px) {
 	.container {
@@ -20,7 +19,7 @@ Main color: #0060A1;
 	}
 
 	.img-pecet {
-		height: 70px;		
+		height: 70px;
 	}
 
 	.logo-gh {
