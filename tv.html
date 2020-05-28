@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+	<title>Zastupování</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="description"
+	      content="Aplikace Zastupování - Chytrý prohlížeč změn rozvrhu. Filtrujte změny dle jména učitele, třídy, učebny, času, ... Funguje na PC i mobilu, iOS i Androidu.">
+	<meta name="theme-color" content="#2d548d">
+	<link rel="shortcut icon" href="./img/favicon.png" type="image/png">
+	<!-- Facebook link decorators -->
+	<meta property="og:title" content="Zastupování">
+	<meta property="og:description" content="A better way to view GH Zastupování">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="http://zastupovani.gytool.cz">
+	<meta property="og:image" content="http://zastupovani.gytool.cz/img/logo_znak.png">
+	<!-- Styles -->
+	<link rel="stylesheet" href="tv.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+</head>
+
+<body>
+<div class="container-fluid">
+	<!-- MAIN -->
+	<div class="main">
+		<!-- SUPLOVÁNÍ -->
+		<div class="row">
+			<div class="col-12 table-responsive">
+				<div class="header">
+					<h5>Suplování</h5>
+					<span id="date" style="font-weight: bold;"></span>
+					<span id="last_updated"></span>
+				</div>
+
+				<table class="table table-sm table-striped table-hover" id="table_suplovani"
+				       data-test="suplovaniTable">
+					<tr data-test="loadingIndicator">
+						<td colspan="8" class="noCellBg" style="padding: 0!important;">
+							<div class="ph-item">
+								<div class="ph-col-12">
+									<div class="ph-row">
+										<div class="ph-col-6 big"></div>
+										<div class="ph-col-4 empty big"></div>
+										<div class="ph-col-2 big"></div>
+										<div class="ph-col-4"></div>
+										<div class="ph-col-8 empty"></div>
+										<div class="ph-col-6"></div>
+										<div class="ph-col-6 empty"></div>
+										<div class="ph-col-12"></div>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+
+</div>
+<!-- FOOTER -->
+<div class="col-12">
+	<div class="row justify-content-center text-center">
+			<span class="footer p-3">&copy;
+				<a href="https://github.com/JouzaLoL">Josef Vacek</a>
+			</span>
+	</div>
+</div>
+<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+<script src="tv.js"></script>
+</body>
+
+</html>
